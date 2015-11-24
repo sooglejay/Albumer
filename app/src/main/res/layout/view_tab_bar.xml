@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/line_e0_e5" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/layout0"
+            style="@style/home_bottom_bar_container">
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/iv0"
+                    style="@style/home_bottom_bar_iv"
+                    android:alpha="1"
+                    android:src="@drawable/icon_tab1_unselected" />
+
+                <ImageView
+                    android:id="@+id/iv0_selected"
+                    style="@style/home_bottom_bar_iv"
+                    android:alpha="0"
+                    android:src="@drawable/icon_tab1_selected" />
+
+                <ImageView
+                    android:id="@+id/reddot0"
+                    style="@style/home_bottom_bar_reddot"
+                    android:visibility="invisible" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/tv0"
+                style="@style/home_bottom_bar_tv"
+                android:text="@string/tab_stop_insure" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/layout1"
+            style="@style/home_bottom_bar_container">
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/iv1"
+                    style="@style/home_bottom_bar_iv"
+                    android:alpha="1"
+                    android:src="@drawable/icon_tab2_unselected" />
+
+                <ImageView
+                    android:id="@+id/iv1_selected"
+                    style="@style/home_bottom_bar_iv"
+
+                    android:alpha="0"
+                    android:src="@drawable/icon_tab2_selected" />
+
+                <ImageView
+                    android:id="@+id/reddot1"
+                    style="@style/home_bottom_bar_reddot"
+                    android:visibility="invisible"></ImageView>
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/tv1"
+                style="@style/home_bottom_bar_tv"
+                android:text="@string/tab_buy_insure" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/layout2"
+            style="@style/home_bottom_bar_container">
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/iv2"
+                    style="@style/home_bottom_bar_iv"
+                    android:alpha="1"
+                    android:src="@drawable/icon_server_consultor_unselected" />
+
+                <ImageView
+                    android:id="@+id/iv2_selected"
+                    style="@style/home_bottom_bar_iv"
+                    android:alpha="0"
+                    android:src="@drawable/icon_server_consult_selected" />
+
+                <ImageView
+                    android:id="@+id/reddot2"
+                    style="@style/home_bottom_bar_reddot"
+                    android:visibility="invisible" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/tv2"
+                style="@style/home_bottom_bar_tv"
+                android:text="@string/server_consultor" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout3"
+            style="@style/home_bottom_bar_container">
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/iv3"
+                    style="@style/home_bottom_bar_iv"
+                    android:alpha="1"
+                    android:src="@drawable/icon_tab3_unselected" />
+
+                <ImageView
+                    android:id="@+id/iv3_selected"
+                    style="@style/home_bottom_bar_iv"
+                    android:alpha="0"
+                    android:src="@drawable/icon_tab3_selected" />
+
+                <ImageView
+                    android:id="@+id/reddot3"
+                    style="@style/home_bottom_bar_reddot"
+                    android:visibility="invisible" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/tv3"
+                style="@style/home_bottom_bar_tv"
+                android:text="@string/tab_me" />
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

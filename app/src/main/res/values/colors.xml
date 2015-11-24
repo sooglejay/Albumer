@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="grey"> #ebebeb</color>
+    <color name="black"> #000000</color>
+    <color name="darkgrey"> #C0C0C0</color>
+    <color name="white"> #FFFFFF</color>
+     <color name="red"> #FF0000</color>
+     <color name="darkyellow"> #FFCC33</color>
+
+    <!--APP 常用颜色值-->
+    <color name="hint_color">#00000000</color>
+    <color name="half_alpha_color">#b0000000</color>
+    <color name="white_color">#FFFFFF</color>
+    <color name="black_color">#000000</color>
+    <color name="dark_black_color">#434343</color>
+    <color name="black_gray_color">#3b3b3b</color>
+    <color name="gray_white_color">#bde5d3</color>
+
+
+    <color name="time_picker_title_bar_color">#FFF37B7A</color>
+    <color name="shut_fragment_background">#fafafa</color>
+
+
+
+
+    <color name="red_color">#FF0000</color>
+    <color name="pink_color">#f36c60</color>
+    <color name="blue_color">#20a0fa</color>
+    <color name="orange_color">#FF7F00</color>
+    <color name="more_orange_color">#fc9632</color>
+    <color name="light_orange_color">#fffeda0c</color>
+    <color name="light_orange_color_trans">#66feda0c</color>
+    <color name="green_color">#ff25ccae</color>
+    <color name="dark_green_color">#32d094</color>
+    <color name="more_dark_green_color_mid_transparent">#5525bb83</color>
+    <color name="more_dark_green_color">#25bb83</color>
+    <color name="most_dark_green_color">#1ba155</color>
+    <color name="light_green_color">#57c938</color>
+    <color name="light_orange_color1">#ff992c</color>
+    <color name="gray_color">#C0C0C0</color>
+    <color name="dark_gray_color">#666666</color>
+    <color name="dark_gray_color_2">#ff464646</color>
+    <color name="light_gray_color">#c2c2c2</color>
+    <color name="middle_gray_color">#b9b9b9</color>
+    <color name="little_middle_gray_color">#9c9c9c</color>
+
+    <color name="light_red">#e2424a</color>
+    <color name="very_light_gray_color">#f2f2f2</color>
+    <color name="tab_gray_color">#f5f5f5</color>
+    <color name="bg_gray_color">#e6e6e6</color>
+    <color name="purple_color">#ff576c94</color>
+    <color name="little_black_color">#ff6b6b6b</color>
+    <color name="transparent">#00000000</color>
+    <color name="transparent_white_color">#00FFFFFF</color>
+
+    <color name="dark_gray">#333333</color>
+    <color name="light_gray">#AFFFFFFF</color>
+    <color name="gray_trans">#33111111</color>
+
+
+    <color name="light_base_color">#50a165</color>
+    <color name="light_base_color_clicked">#ff468c50</color>
+
+
+    <color name="light_blue_color">#ff89c49a</color>
+    <color name="light_blue_color_clicked">#ff79b484</color>
+
+
+    <color name="light_green_color_trans">#32d094</color>
+    <color name="base_color">#50a165</color>
+    <color name="transparent_base_color">#73b483</color>
+    <color name="dark_base_color">#ff316a40</color>
+    <color name="most_black_tv_color">#444444</color>
+    <color name="middle_black_tv_color">#525252</color>
+    <color name="little_black_tv_color">#8e8e91</color>
+    <color name="hint_tv_color">#cdccd2</color>
+    <color name="dark_hint_tv_color">#969696</color>
+    <color name="gray_bg_color">#ecebf1</color>
+    <color name="gray_tv_color">#ecebf1</color>
+    <color name="red_tv_color">#e70118</color>
+
+
+    <color name="background_tab_pressed">#6633B5E5</color>
+    <color name="bg_gray_color_level_0">#ecebf1</color>
+
+
+
+    <color name="primary">#FF03A9F4</color>
+    <color name="primary_dark">#FF0288D1</color>
+    <color name="status_bar_color">@color/primary_dark</color>
+</resources>

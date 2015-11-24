@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="roundedimageview">
+        <attr name="border_width" format="dimension" />
+        <attr name="border_color" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="DecoView">
+        <attr name="dv_lineWidth" format="dimension" />
+        <attr name="dv_rotateAngle" format="integer" />
+        <attr name="dv_totalAngle" format="integer" />
+        <attr name="dv_arc_gravity_horizontal" format="enum">
+            <enum name="Left" value="0"/>
+            <enum name="Center" value="1"/>
+            <enum name="Right" value="2"/>
+            <enum name="Fill" value="3"/>
+        </attr>
+        <attr name="dv_arc_gravity_vertical" format="enum">
+            <enum name="Top" value="0"/>
+            <enum name="Center" value="1"/>
+            <enum name="Bottom" value="2"/>
+            <enum name="Fill" value="3"/>
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="PagerSlidingTabStrip">
+        <attr name="pstsIndicatorColor" format="color" />
+        <attr name="pstsUnderlineColor" format="color" />
+        <attr name="pstsDividerColor" format="color" />
+        <attr name="pstsIndicatorHeight" format="dimension" />
+        <attr name="pstsUnderlineHeight" format="dimension" />
+        <attr name="pstsDividerPadding" format="dimension" />
+        <attr name="pstsTabPaddingLeftRight" format="dimension" />
+        <attr name="pstsScrollOffset" format="dimension" />
+        <attr name="pstsTabBackground" format="reference" />
+        <attr name="pstsShouldExpand" format="boolean" />
+        <attr name="pstsTextAllCaps" format="boolean" />
+    </declare-styleable>
+
+
+    <!-- 自定义Switch-->
+    <declare-styleable name="SwitchButton">
+        <attr name="kswOnDrawable" format="reference"/>
+        <attr name="kswOffDrawable" format="reference"/>
+        <attr name="kswThumbDrawable" format="reference"/>
+        <attr name="kswThumb_margin" format="dimension|reference"/>
+        <attr name="kswThumb_marginTop" format="dimension|reference"/>
+        <attr name="kswThumb_marginBottom" format="dimension|reference"/>
+        <attr name="kswThumb_marginLeft" format="dimension|reference"/>
+        <attr name="kswThumb_marginRight" format="dimension|reference"/>
+        <attr name="kswThumb_width" format="dimension|reference"/>
+        <attr name="kswThumb_height" format="dimension|reference"/>
+        <attr name="kswOnColor" format="color|reference"/>
+        <attr name="kswOffColor" format="color|reference"/>
+        <attr name="kswThumbColor" format="color|reference"/>
+        <attr name="kswThumbPressedColor" format="color|reference"/>
+        <attr name="kswAnimationVelocity" format="integer"/>
+        <attr name="kswRadius" format="integer"/>
+        <attr name="kswMeasureFactor" format="float"/>
+        <attr name="kswInsetLeft" format="dimension|reference"/>
+        <attr name="kswInsetRight" format="dimension|reference"/>
+        <attr name="kswInsetTop" format="dimension|reference"/>
+        <attr name="kswInsetBottom" format="dimension|reference"/>
+    </declare-styleable>
+
+
+
+    <color name="holo_blue">#FF33E5B5</color>
+    <item name="jazzy_key" type="id"/>
+    <declare-styleable name="JazzyViewPager">
+        <attr name="style">
+            <enum name="standard" value="0" />
+            <enum name="tablet" value="1" />
+            <enum name="cubein" value="2" />
+            <enum name="cubeout" value="3" />
+            <enum name="flipvertical" value="4" />
+            <enum name="fliphorizontal" value="5" />
+            <enum name="stack" value="6" />
+            <enum name="zoomin" value="7" />
+            <enum name="zoomout" value="8" />
+            <enum name="rotateup" value="9" />
+            <enum name="rotatedown" value="10" />
+            <enum name="accordion" value="11" />
+        </attr>
+        <attr name="fadeEnabled" format="boolean" />
+        <attr name="outlineEnabled" format="boolean" />
+        <attr name="outlineColor" format="color|reference" />
+    </declare-styleable>
+</resources>
