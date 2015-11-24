@@ -7,18 +7,9 @@
 
 
 
-    <string name="tab_stop_insure">停保险</string>
-    <string name="tab_buy_insure">买保险</string>
+    <string name="tab_face_beauty">颜值</string>
+    <string name="tab_album">相册</string>
     <string name="tab_me">我的</string>
-    <string name="shut_insure_str">暂停保费</string>
-    <string name="off">OFF</string>
-    <string name="on">ON</string>
-    <string name="car_insure">车险</string>
-    <string name="jiaban_insure">加班险</string>
-    <string name="driving_insure">驾驶险</string>
-    <string name="line_insure">(待扩展)</string>
-    <string name="server_consultor">服务顾问</string>
-
 
 
 

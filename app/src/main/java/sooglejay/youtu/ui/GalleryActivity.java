@@ -1,4 +1,4 @@
-package sooglejay.youtu.activity;
+package sooglejay.youtu.ui;
 
 import android.graphics.RectF;
 import android.os.Bundle;

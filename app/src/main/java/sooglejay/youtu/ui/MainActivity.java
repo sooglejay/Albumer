@@ -1,66 +1,117 @@
 package sooglejay.youtu.ui;
 
-import android.app.Activity;
 import android.content.Context;
-import android.os.Environment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.widget.TextView;
-
-import org.json.JSONObject;
-
-import java.io.File;
+import android.view.View;
+import android.view.ViewGroup;
 
 import sooglejay.youtu.R;
-import sooglejay.youtu.widgets.youtu.Youtu;
+import sooglejay.youtu.fragment.DetectFaceBeautyFragment;
+import sooglejay.youtu.widgets.TabBar;
+import sooglejay.youtu.widgets.jazzyviewpager.JazzyViewPager;
 
 
-public class MainActivity extends Activity {
-    public static final String APP_ID = "1001633";
-    public static final String SECRET_ID = "AKIDy5bjHuCGAEM1cQsbQvxWaFBLb08VDpcS";
-    public static final String SECRET_KEY = "VRnkyrPoey4x8jtrtt0FdU2GjeCT5iLG";
-    Activity activity;
-    private TextView textView2;
+public class MainActivity extends BaseActivity {
+    private JazzyViewPager viewPager = null;
+    private TabBar tabBar = null;
+    private View lineView = null;
+    private ViewPagerAdapter viewPagerAdapter = null;
+    private int currentPos = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        textView2 = (TextView)findViewById(R.id.textView2);
-
-         activity = this;
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    String path = getImageFolderPath(activity) + File.separator +"test.jpg";
-                    Youtu faceYoutu = new Youtu(APP_ID, SECRET_ID, SECRET_KEY,Youtu.API_YOUTU_END_POINT);
-                    JSONObject respose;
-//                    respose= faceYoutu.FaceCompareUrl("http://open.youtu.qq.com/content/img/slide-1.jpg","http://open.youtu.qq.com/content/img/slide-1.jpg");
-                        respose = faceYoutu.DetectFace(path, 1);
-                    //get respose
-
-                    System.out.println(respose);
-                    Log.e("jwjw","haha try"+respose.toString());
-                } catch (Exception e) {
-                    Log.e("jwjw", "haha catch"+e.toString()) ;
-                }
-            }
-        }).start();
-
+        setUp();
     }
 
-    public static String getImageFolderPath(Context context) {
-        String packPath = "";
+    private void setUp() {
+        lineView = findViewById(R.id.line_view);
+        tabBar = (TabBar) findViewById(R.id.home_bottomBar);
+        initViewPager();
+    }
 
-        try {
-            packPath = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES).getAbsolutePath();
+    /**
+     * 初始化viewpager
+     */
+    private void initViewPager() {
+        viewPager = (JazzyViewPager) findViewById(R.id.view_pager);
+        viewPager.removeAllViews();
+        viewPager.setOffscreenPageLimit(10);
 
-        } catch (Exception e) {
-            packPath = context.getFilesDir() + File.separator + "Pictures";
+        viewPagerAdapter = new ViewPagerAdapter(this, getSupportFragmentManager(), viewPager);
+        viewPager.setAdapter(viewPagerAdapter);
+        viewPager.setTransitionEffect(JazzyViewPager.TransitionEffect.Standard);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                Log.e("viewpager", "currentPosition:" + viewPager.getCurrentItem() + " position:" + position + "  positionOffset:" + positionOffset + " positionOffsetPixels" + positionOffsetPixels);
+                tabBar.changeImageView(viewPager.getCurrentItem(), position, positionOffset, positionOffsetPixels);
 
-        } finally {
-            return packPath;
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                tabBar.selectTab(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
+        //选中当前
+        viewPager.setCurrentItem(currentPos);
+        tabBar.selectTab(viewPager.getCurrentItem());
+        tabBar.setOnTabClickListener(new TabBar.OnTabClickListener() {
+            @Override
+            public void onTabClick(int position) {
+                viewPager.setCurrentItem(position, false);
+            }
+        });
+    }
+
+
+    private static final class ViewPagerAdapter extends FragmentStatePagerAdapter {
+        private JazzyViewPager mViewPagerInAdapter;
+        public ViewPagerAdapter(Context context, FragmentManager fm, JazzyViewPager mViewPagerInAdapter) {
+            super(fm);
+            this.mViewPagerInAdapter = mViewPagerInAdapter;
+        }
+        @Override
+        public Object instantiateItem(ViewGroup container, final int position) {
+            Object obj = super.instantiateItem(container, position);
+            mViewPagerInAdapter.setObjectForPosition(obj, position);
+            return obj;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            Fragment fragment = null;
+            switch (position) {
+                case 0:
+                    fragment = new DetectFaceBeautyFragment();
+                    break;
+                case 1:
+                    fragment = new DetectFaceBeautyFragment();
+                    break;
+                case 2:
+                    fragment = new DetectFaceBeautyFragment();
+                    break;
+                default:
+                    break;
+            }
+            return fragment;
+        }
+        @Override
+        public int getCount() {
+            return 3;
         }
     }
+
 }

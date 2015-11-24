@@ -44,7 +44,7 @@
             android:value="6becdf1899cd49dd8647c12736a5dc8a" />
 
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".ui.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -57,18 +57,11 @@
             android:name=".widgets.imagepicker.MultiImageSelectorActivity"
             android:configChanges="orientation|screenSize" />
         <activity
-            android:name=".activity.GalleryActivity"
+            android:name=".ui.GalleryActivity"
             android:configChanges="orientation|screenSize" />
         <service android:name="com.amap.api.location.APSService"></service>
 
 
-
-        <activity android:name=".test.MainActivity">
-            <!--<intent-filter>-->
-            <!--<action android:name="android.intent.action.MAIN"></action>-->
-            <!--<category android:name="android.intent.category.LAUNCHER"></category>-->
-            <!--</intent-filter>-->
-        </activity>
     </application>
 
 </manifest>

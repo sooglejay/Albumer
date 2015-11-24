@@ -1,4 +1,4 @@
-package sooglejay.youtu.activity;
+package sooglejay.youtu.ui;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 

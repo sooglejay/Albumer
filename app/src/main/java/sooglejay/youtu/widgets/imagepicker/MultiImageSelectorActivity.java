@@ -10,7 +10,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import sooglejay.youtu.R;
-import sooglejay.youtu.activity.BaseActivity;
+import sooglejay.youtu.ui.BaseActivity;
 import sooglejay.youtu.widgets.TitleBar;
 
 /**
