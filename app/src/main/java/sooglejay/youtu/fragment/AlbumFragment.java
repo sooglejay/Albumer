@@ -330,7 +330,7 @@ public class AlbumFragment extends BaseFragment {
             for (Image image1 : outerFolder.images) {
                 urls.add("file://" + image1.path);
             }
-            GalleryActivity.startActivity(getActivity(), position, urls);
+            GalleryActivity.startActivity(getActivity(),outerFolder.name, position, urls);
         }
     }
 

@@ -101,7 +101,7 @@ public class TitleBar extends FrameLayout {
         if (leftBtnImageId != -1) {
             leftIv.setImageResource(leftBtnImageId);
             leftIv.setVisibility(VISIBLE);
-            leftTv.setVisibility(GONE);
+            leftTv.setVisibility(VISIBLE);
         }
 
         //右图片

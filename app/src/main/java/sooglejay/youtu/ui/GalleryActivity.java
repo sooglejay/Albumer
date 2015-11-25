@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.text.TextUtils;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -22,15 +23,17 @@ import sooglejay.youtu.widgets.TitleBar;
 
 public class GalleryActivity extends BaseActivity implements GalleryFragment.OnRectfChangeListener {
     private List<String> originUrls = new ArrayList<>();
+    private String  folderName;
     private int position;
     private ViewPager galleryViewPager;
     private float width;
     private TitleBar titleBar;
-    public static void startActivity(Activity activity,int position,ArrayList<String>urls)
+    public static void startActivity(Activity activity,String folderName,int position,ArrayList<String>urls)
     {
         Intent intent = new Intent(activity, GalleryActivity.class);
         intent.putExtra(ExtraConstants.EXTRA_POSITION, position);
         intent.putExtra(ExtraConstants.EXTRA_URLS, urls);
+        intent.putExtra(ExtraConstants.EXTRA_FOLDER_NAME, folderName);
         activity.startActivity(intent);
     }
     @Override
@@ -39,6 +42,7 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.OnR
         setContentView(R.layout.activity_gallery);
         originUrls = getIntent().getStringArrayListExtra(ExtraConstants.EXTRA_URLS);
         position = getIntent().getIntExtra(ExtraConstants.EXTRA_POSITION, 0);
+        folderName = getIntent().getStringExtra(ExtraConstants.EXTRA_FOLDER_NAME);
         initView();
 
     }
@@ -46,7 +50,8 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.OnR
         // TODO Auto-generated method stub
 
         titleBar = (TitleBar) findViewById(R.id.title_bar);
-        titleBar.initTitleBarInfo((position + 1) + "/" + originUrls.size(), R.drawable.arrow_left, -1, "", "");
+        folderName = TextUtils.isEmpty(folderName)?"lalala":folderName;
+        titleBar.initTitleBarInfo((position + 1) + "/" + originUrls.size(), R.drawable.arrow_left, -1, folderName, "");
         titleBar.setOnTitleBarClickListener(new TitleBar.OnTitleBarClickListener() {
             @Override
             public void onLeftButtonClick(View v) {
