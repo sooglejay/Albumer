@@ -1,5 +1,7 @@
 package sooglejay.youtu.ui;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,7 +9,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.util.DisplayMetrics;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -20,21 +21,23 @@ import sooglejay.youtu.widgets.TitleBar;
 
 
 public class GalleryActivity extends BaseActivity implements GalleryFragment.OnRectfChangeListener {
-
-    private ArrayList<String> urls = new ArrayList<>();
     private List<String> originUrls = new ArrayList<>();
     private int position;
     private ViewPager galleryViewPager;
     private float width;
     private TitleBar titleBar;
+    public static void startActivity(Activity activity,int position,ArrayList<String>urls)
+    {
+        Intent intent = new Intent(activity, GalleryActivity.class);
+        intent.putExtra(ExtraConstants.EXTRA_POSITION, position);
+        intent.putExtra(ExtraConstants.EXTRA_URLS, urls);
+        activity.startActivity(intent);
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
-        DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        width = metrics.widthPixels;
-        urls = getIntent().getStringArrayListExtra(ExtraConstants.EXTRA_URLS);
+        originUrls = getIntent().getStringArrayListExtra(ExtraConstants.EXTRA_URLS);
         position = getIntent().getIntExtra(ExtraConstants.EXTRA_POSITION, 0);
         initView();
 
@@ -97,10 +100,10 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.OnR
             // TODO Auto-generated method stub
             GalleryFragment fragment = new GalleryFragment();
             Bundle b = new Bundle();
-            b.putInt("position", position);
             if (originUrls != null && originUrls.size() > position) {
                 b.putString("url", originUrls.get(position));
                 b.putInt("count", originUrls.size());
+                b.putInt("position", position);
             }
             fragment.setArguments(b);
             return fragment;
@@ -122,17 +125,6 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.OnR
     @Override
     public void onRectfChanged(RectF rectF) {
         // TODO Auto-generated method stub
-//        if(rectF.left >= 0 || rectF.right <= width){
-////            if(!galleryViewPager.isScroll()){
-////                galleryViewPager.setScrollable(false);
-////            }
-//        }
-//        else {
-////            if(galleryViewPager.isScroll()){
-////                galleryViewPager.setScrollable(true);
-////            }
-//
-//        }
     }
 
 }

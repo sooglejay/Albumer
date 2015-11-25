@@ -1,25 +1,35 @@
 package sooglejay.youtu.ui;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
+
+import java.io.File;
+import java.util.List;
 
 import sooglejay.youtu.R;
+import sooglejay.youtu.fragment.AlbumFragment;
 import sooglejay.youtu.fragment.DetectFaceBeautyFragment;
+import sooglejay.youtu.utils.ImageUtils;
 import sooglejay.youtu.widgets.TabBar;
+import sooglejay.youtu.widgets.imagepicker.MultiImageSelectorActivity;
 import sooglejay.youtu.widgets.jazzyviewpager.JazzyViewPager;
 
 
 public class MainActivity extends BaseActivity {
     private JazzyViewPager viewPager = null;
     private TabBar tabBar = null;
-    private View lineView = null;
     private ViewPagerAdapter viewPagerAdapter = null;
     private int currentPos = 0;
 
@@ -31,7 +41,6 @@ public class MainActivity extends BaseActivity {
     }
 
     private void setUp() {
-        lineView = findViewById(R.id.line_view);
         tabBar = (TabBar) findViewById(R.id.home_bottomBar);
         initViewPager();
     }
@@ -98,7 +107,7 @@ public class MainActivity extends BaseActivity {
                     fragment = new DetectFaceBeautyFragment();
                     break;
                 case 1:
-                    fragment = new DetectFaceBeautyFragment();
+                    fragment = new AlbumFragment();
                     break;
                 case 2:
                     fragment = new DetectFaceBeautyFragment();

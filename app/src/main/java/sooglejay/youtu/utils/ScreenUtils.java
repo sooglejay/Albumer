@@ -3,6 +3,7 @@ package sooglejay.youtu.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Build;
 import android.util.DisplayMetrics;
@@ -51,7 +52,7 @@ public class ScreenUtils
 	}
 
 	/**
-	 * 获得状�?�栏的高�??
+	 * 获得状态栏的高度
 	 * 
 	 * @param context
 	 * @return
@@ -96,7 +97,7 @@ public class ScreenUtils
 	}
 
 	/**
-	 * 获取当前屏幕截图，不包含状�?�栏
+	 * 获取当前屏幕截图，不包含状态栏
 	 * 
 	 * @param activity
 	 * @return
