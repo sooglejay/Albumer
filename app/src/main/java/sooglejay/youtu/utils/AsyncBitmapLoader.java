@@ -6,17 +6,15 @@
  */
 package sooglejay.youtu.utils;
 
-import java.lang.ref.SoftReference;
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.List;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
-import android.widget.FrameLayout;
+
+import java.lang.ref.SoftReference;
+import java.util.HashMap;
+import java.util.List;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -60,31 +58,35 @@ public class AsyncBitmapLoader {
             if (bean != null) {
                 return bean;
             }
-        } else {
-            final Handler handler = new Handler() {
-                public void handleMessage(Message message) {
-                    callback.imageLoaded((AsyncBean) message.obj);
-                }
-            };
+        }
+
+        final Handler handler = new Handler()
+        {
+            public void handleMessage(Message message)
+            {
+                callback.imageLoaded((AsyncBean) message.obj);
+            }
+        };
+
             final ProgressDialogUtil progressDialogUtil = new ProgressDialogUtil(context);
-            new AsyncTask<String, Bitmap, Bitmap>() {
+            new AsyncTask<String, AsyncBean, AsyncBean>() {
                 @Override
                 protected void onPreExecute() {
                     super.onPreExecute();
                     progressDialogUtil.show("正在检测图片...");
                 }
                 @Override
-                protected Bitmap doInBackground(String... params) {
-                    Bitmap bitmap;
+                protected AsyncBean doInBackground(String... params) {
+                    final AsyncBean asyncBean = new AsyncBean();
+
                     Bitmap tempBitmap = ImageUtils.getBitmapFromLocalPath(params[0], 1);
-                    bitmap = ImageUtils.getResizedBitmap(tempBitmap, 600, 600);
-                    return bitmap;
+                    Bitmap  bitmap = ImageUtils.getResizedBitmap(tempBitmap, 600, 600);
+                    asyncBean.setBitmap(bitmap);
+                    return asyncBean;
                 }
                 @Override
-                protected void onPostExecute(final Bitmap bitmap) {
-                    final AsyncBean asyncBean = new AsyncBean();
-                    asyncBean.setBitmap(bitmap);
-                    DetectFaceUtil.detectFace(context, NetWorkConstant.APP_ID, Base64Util.encode(ImageUtils.Bitmap2Bytes(bitmap)), 1, new NetCallback<DetectFaceResponseBean>(context) {
+                protected void onPostExecute(final AsyncBean asyncBean) {
+                    DetectFaceUtil.detectFace(context, NetWorkConstant.APP_ID, Base64Util.encode(ImageUtils.Bitmap2Bytes(asyncBean.getBitmap())), 1, new NetCallback<DetectFaceResponseBean>(context) {
                         @Override
                         public void onFailure(RetrofitError error, String message) {
                             progressDialogUtil.hide();
@@ -102,7 +104,7 @@ public class AsyncBitmapLoader {
                     });
                 }
             }.execute(imagePath);
-        }
+
         return null;
     }
 
