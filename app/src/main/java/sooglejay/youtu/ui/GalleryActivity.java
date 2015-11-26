@@ -67,7 +67,7 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.OnR
         galleryViewPager = (ViewPager) findViewById(R.id.gallery_pager);
         final GalleryAdapter galleryAdapter = new GalleryAdapter(getSupportFragmentManager());
         galleryViewPager.setAdapter(galleryAdapter);
-        galleryViewPager.setOffscreenPageLimit(4);
+        galleryViewPager.setOffscreenPageLimit(1);
         galleryViewPager.setCurrentItem(position);
         galleryViewPager.addOnPageChangeListener(new OnPageChangeListener() {
 
