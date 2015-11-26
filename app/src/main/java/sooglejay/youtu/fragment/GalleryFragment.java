@@ -39,12 +39,10 @@ public class GalleryFragment extends BaseFragment {
     private FaceImageView imageView;
     private FrameLayout progressContainer;
     private int position;
+
     private String url;
 
     private OnRectfChangeListener onRectfChangeListener;
-
-
-    private Activity activity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -58,7 +56,6 @@ public class GalleryFragment extends BaseFragment {
         onRectfChangeListener = (OnRectfChangeListener) this.getActivity();
         position = getArguments().getInt("position", 0);
         url = getArguments().getString("url", "");
-        activity = this.getActivity();
         imageView = (FaceImageView) view.findViewById(R.id.iv_photo);
         progressContainer = (FrameLayout) view.findViewById(R.id.progress_container);
         setPhotoView();
@@ -73,7 +70,7 @@ public class GalleryFragment extends BaseFragment {
                 onRectfChangeListener.onRectfChanged(rectF);
             }
         });
-        ImageLoader.getInstance().loadImage(url, new ImageLoadingListener() {
+        ImageLoader.getInstance().displayImage(url,imageView,ImageUtils.getOptions(), new ImageLoadingListener() {
             @Override
             public void onLoadingStarted(String imageUri, View view) {
                 Log.e("Retrofit", "onLoadingStarted  " + imageUri);
@@ -90,6 +87,7 @@ public class GalleryFragment extends BaseFragment {
                 Log.e("Retrofit", "_onLoadingComplete_" + imageUri);
                 try {
                     Bitmap resizedBitmap = ImageUtils.getResizedBitmap(loadedImage, 800, 800);
+                    imageView.setCanvasBitmapRes(resizedBitmap);
                     detectface(resizedBitmap);
                 } catch (OutOfMemoryError oom) {
                     Toast.makeText(getActivity(), " >_< ! 内存不足 ", Toast.LENGTH_SHORT).show();
@@ -127,7 +125,6 @@ public class GalleryFragment extends BaseFragment {
 //            public void onLoadingCancelled(String s, View view) {
 //            }
 //        });
-
         imageView.setOnPhotoTapListener(new OnPhotoTapListener() {
 
             @Override
@@ -171,6 +168,7 @@ public class GalleryFragment extends BaseFragment {
                 } else {
                     imageView.setCanvasBitmapRes(bitmap);
                 }
+
             }
         });
     }

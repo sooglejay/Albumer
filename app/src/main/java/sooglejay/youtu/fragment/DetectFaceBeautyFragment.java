@@ -167,11 +167,12 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
                     imageList.addAll(paths);
                     if (imageList == null) return;
                     if (imageList.size() == 1) {
-                        ImageLoader.getInstance().displayImage("file://" + imageList.get(0), ivImage, ImageUtils.getOptions());
+//                        ImageLoader.getInstance().displayImage("file://" + imageList.get(0), ivImage, ImageUtils.getOptions());
                         ImageLoader.getInstance().displayImage("file://" + imageList.get(0), iv_avatar, ImageUtils.getOptions());
                         resultPath = imageList.get(0);
                         Bitmap bitmap =ImageUtils.getBitmapFromLocalPath(resultPath, 1);
                         Bitmap resizedBitmap =ImageUtils.getResizedBitmap(bitmap, 600, 600);
+                        ivImage.setImageBitmap(resizedBitmap);
                         detectface(resizedBitmap);
                     }
                 }
