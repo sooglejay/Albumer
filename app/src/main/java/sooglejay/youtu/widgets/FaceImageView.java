@@ -113,7 +113,7 @@ public class FaceImageView extends PhotoView {
 
     public void setCanvasRes(Bitmap bitmap, List<FaceItem> faceList) {
         this.bitmap = bitmap;
-        this.faceItemList=faceList;
+        this.faceItemList = faceList;
         invalidate();
     }
 
@@ -122,4 +122,14 @@ public class FaceImageView extends PhotoView {
         invalidate();
     }
 
+    public void clearCanvasRes() {
+        if (bitmap != null) {
+            bitmap.recycle();
+            bitmap = null;
+        }
+        if (faceItemList != null) {
+            faceItemList.clear();
+            faceItemList = null;
+        }
+    }
 }

@@ -1,32 +1,29 @@
 package sooglejay.youtu.fragment;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 import android.media.FaceDetector;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import java.util.List;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import sooglejay.youtu.R;
+import sooglejay.youtu.api.detectface.AsyncBean;
 import sooglejay.youtu.api.detectface.DetectFaceResponseBean;
 import sooglejay.youtu.api.detectface.DetectFaceUtil;
 import sooglejay.youtu.api.detectface.FaceItem;
 import sooglejay.youtu.constant.NetWorkConstant;
 import sooglejay.youtu.model.NetCallback;
+import sooglejay.youtu.utils.AsyncBitmapLoader;
 import sooglejay.youtu.utils.ImageUtils;
 import sooglejay.youtu.widgets.FaceImageView;
 import sooglejay.youtu.widgets.youtu.sign.Base64Util;
@@ -58,9 +55,10 @@ public class GalleryFragment extends BaseFragment {
         url = getArguments().getString("url", "");
         imageView = (FaceImageView) view.findViewById(R.id.iv_photo);
         progressContainer = (FrameLayout) view.findViewById(R.id.progress_container);
-        setPhotoView();
-
+//        setPhotoView();
+        getImage(url.substring(7, url.length()));
     }
+
     private void setPhotoView() {
         imageView.setOnMatrixChangeListener(new OnMatrixChangedListener() {
 
@@ -70,35 +68,38 @@ public class GalleryFragment extends BaseFragment {
                 onRectfChangeListener.onRectfChanged(rectF);
             }
         });
-        ImageLoader.getInstance().displayImage(url,imageView,ImageUtils.getOptions(), new ImageLoadingListener() {
-            @Override
-            public void onLoadingStarted(String imageUri, View view) {
-                Log.e("Retrofit", "onLoadingStarted  " + imageUri);
-                progressContainer.setVisibility(View.VISIBLE);
-            }
+//        ImageLoader.getInstance().displayImage(url, imageView, ImageUtils.getOptions(), new ImageLoadingListener() {
+//            @Override
+//            public void onLoadingStarted(String imageUri, View view) {
+//                Log.e("Retrofit", "onLoadingStarted url:: " + url);
+//                progressContainer.setVisibility(View.VISIBLE);
+//            }
+//
+//            @Override
+//            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+//                progressContainer.setVisibility(View.GONE);
+//            }
+//
+//            @Override
+//            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+//                Log.e("Retrofit", "_onLoadingComplete_" + imageUri);
+//                try {
+//                    Bitmap resizedBitmap = ImageUtils.getResizedBitmap(loadedImage, 800, 800);
+//                    imageView.setCanvasBitmapRes(resizedBitmap);
+//                    detectface(resizedBitmap);
+//                } catch (OutOfMemoryError oom) {
+//                    Toast.makeText(getActivity(), " >_< ! 内存不足 ", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//
+//            @Override
+//            public void onLoadingCancelled(String imageUri, View view) {
+//                Log.e("Retrofit", "onLoadingCancelled" + imageUri);
+//                progressContainer.setVisibility(View.GONE);
+//            }
+//        });
+//
 
-            @Override
-            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                progressContainer.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                Log.e("Retrofit", "_onLoadingComplete_" + imageUri);
-                try {
-                    Bitmap resizedBitmap = ImageUtils.getResizedBitmap(loadedImage, 800, 800);
-                    imageView.setCanvasBitmapRes(resizedBitmap);
-                    detectface(resizedBitmap);
-                } catch (OutOfMemoryError oom) {
-                    Toast.makeText(getActivity(), " >_< ! 内存不足 ", Toast.LENGTH_SHORT).show();
-                }
-            }
-            @Override
-            public void onLoadingCancelled(String imageUri, View view) {
-                Log.e("Retrofit", "onLoadingCancelled" + imageUri);
-                progressContainer.setVisibility(View.GONE);
-            }
-        });
 //        ImageLoader.getInstance().displayImage(url, imageView, ImageUtils.getOptions(), new ImageLoadingListener() {
 //            @Override
 //            public void onLoadingStarted(String s, View view) {
@@ -125,6 +126,8 @@ public class GalleryFragment extends BaseFragment {
 //            public void onLoadingCancelled(String s, View view) {
 //            }
 //        });
+
+
         imageView.setOnPhotoTapListener(new OnPhotoTapListener() {
 
             @Override
@@ -166,6 +169,7 @@ public class GalleryFragment extends BaseFragment {
                 if (faceItem != null && faceItem.size() > 0) {
                     imageView.setCanvasRes(bitmap, faceItem);
                 } else {
+                    imageView.clearCanvasRes();
                     imageView.setCanvasBitmapRes(bitmap);
                 }
 
@@ -186,7 +190,42 @@ public class GalleryFragment extends BaseFragment {
         super.onDestroy();
         System.gc();
     }
+
     public interface OnRectfChangeListener {
         void onRectfChanged(RectF rectF);
     }
+
+
+    private AsyncBitmapLoader asyncBitmapLoader = new AsyncBitmapLoader();
+
+    private void getImage(String imagePath) {
+        AsyncBitmapLoader.BitmapCallback callback = new AsyncBitmapLoader.BitmapCallback() {
+            @Override
+            public void imageLoaded(AsyncBean asyncBean) {
+                if (asyncBean != null) {
+                    if (asyncBean.getBitmap() != null) {
+                        if (asyncBean.getFaces() != null) {
+                            imageView.setCanvasRes(asyncBean.getBitmap(), asyncBean.getFaces());
+                        } else {
+                            imageView.setCanvasBitmapRes(asyncBean.getBitmap());
+                        }
+                    }
+
+                }
+
+            }
+        };
+        AsyncBean asyncBean = asyncBitmapLoader.loadAsyncBean(getActivity(), imagePath, callback);
+            if (asyncBean != null) {
+                if (asyncBean.getBitmap() != null) {
+                    if (asyncBean.getFaces() != null) {
+                        imageView.setCanvasRes(asyncBean.getBitmap(), asyncBean.getFaces());
+                    } else {
+                        imageView.setCanvasBitmapRes(asyncBean.getBitmap());
+                    }
+            }
+        }
+
+    }
+
 }
