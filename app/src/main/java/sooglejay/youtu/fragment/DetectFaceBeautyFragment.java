@@ -3,22 +3,17 @@ package sooglejay.youtu.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.tencent.open.utils.SystemUtils;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +40,6 @@ import sooglejay.youtu.widgets.decoview.decoviewlib.charts.SeriesLabel;
 import sooglejay.youtu.widgets.decoview.decoviewlib.events.DecoEvent;
 import sooglejay.youtu.widgets.imagepicker.MultiImageSelectorActivity;
 import sooglejay.youtu.widgets.imagepicker.bean.Folder;
-import sooglejay.youtu.widgets.imagepicker.utils.FileUtils;
 import sooglejay.youtu.widgets.youtu.sign.Base64Util;
 
 /**
@@ -115,34 +109,6 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
         });
     }
 
-    private void showPictures() {
-        ArrayList<String> urls = new ArrayList<String>();
-        urls.add("http://img4.imgtn.bdimg.com/it/u=3668099963,344011271&fm=21&gp=0.jpg");
-        urls.add("http://img1.imgtn.bdimg.com/it/u=941659139,2318819624&fm=21&gp=0.jpg");
-        urls.add("http://img0.imgtn.bdimg.com/it/u=2278907624,1794819904&fm=21&gp=0.jpg");
-        urls.add("http://img1.imgtn.bdimg.com/it/u=2271334871,1423653824&fm=21&gp=0.jpg");
-        urls.add("http://img0.imgtn.bdimg.com/it/u=3551133733,3837171453&fm=21&gp=0.jpg");
-        urls.add("http://img5.imgtn.bdimg.com/it/u=2699078590,911824813&fm=21&gp=0.jpg");
-        urls.add("http://img3.imgtn.bdimg.com/it/u=3926533420,3434080491&fm=21&gp=0.jpg");
-        urls.add("http://img5.imgtn.bdimg.com/it/u=48598112,4255180885&fm=21&gp=0.jpg");
-        urls.add("http://img4.imgtn.bdimg.com/it/u=3985515607,2668814911&fm=21&gp=0.jpg");
-        urls.add("http://img2.imgtn.bdimg.com/it/u=3966248764,2016989228&fm=21&gp=0.jpg");
-        urls.add("http://img1.imgtn.bdimg.com/it/u=2916976433,2101664520&fm=21&gp=0.jpg");
-        urls.add("http://img3.imgtn.bdimg.com/it/u=3637056205,2636938872&fm=21&gp=0.jpg");
-        urls.add("http://img1.imgtn.bdimg.com/it/u=3928700240,1674800841&fm=21&gp=0.jpg");
-        urls.add("http://img0.imgtn.bdimg.com/it/u=554268179,3206490655&fm=21&gp=0.jpg");
-        urls.add("http://img5.imgtn.bdimg.com/it/u=520938181,3531679252&fm=21&gp=0.jpg");
-        urls.add("http://img3.imgtn.bdimg.com/it/u=29120340,1272607089&fm=21&gp=0.jpg");
-        urls.add("http://img3.imgtn.bdimg.com/it/u=29120340,1272607089&fm=21&gp=0.jpg");
-        urls.add("http://img1.imgtn.bdimg.com/it/u=1346204935,1832095314&fm=21&gp=0.jpg");
-        urls.add("http://img4.imgtn.bdimg.com/it/u=1957294427,3120353955&fm=21&gp=0.jpg");
-        urls.add("http://img4.imgtn.bdimg.com/it/u=1004874572,2884824536&fm=21&gp=0.jpg");
-        Intent intent = new Intent(context, GalleryActivity.class);
-        intent.putExtra(ExtraConstants.EXTRA_POSITION, 0);
-        intent.putExtra(ExtraConstants.EXTRA_URLS, urls);
-        context.startActivity(intent);
-    }
-
     private void faceCompareUrl() {
         final ProgressDialogUtil progressDialogUtil = new ProgressDialogUtil(context);
         progressDialogUtil.show("正在发送请求...");
@@ -161,17 +127,17 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
     }
 
     /**
-     * @param imagePath
+     * @param bitmap
      * @return -1 null; -2 file is bad
      */
-    private void detectface(final String imagePath) {
+    private void detectface(final Bitmap bitmap) {
         final ProgressDialogUtil p = new ProgressDialogUtil(context);
         p.show("正在检测...");
-        DetectFaceUtil.detectFace(context, NetWorkConstant.APP_ID, Base64Util.encode(ImageUtils.getBytes(imagePath)), 1, new NetCallback<DetectFaceResponseBean>(context) {
+        DetectFaceUtil.detectFace(context, NetWorkConstant.APP_ID, Base64Util.encode(ImageUtils.Bitmap2Bytes(bitmap)), 1, new NetCallback<DetectFaceResponseBean>(context) {
             @Override
             public void onFailure(RetrofitError error, String message) {
                 p.hide();
-
+                ivImage.setCanvasBitmapRes(bitmap);
             }
 
             @Override
@@ -179,11 +145,11 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
                 p.hide();
                 tvResult.setText(detectFaceResponseBean.toString());
                 List<FaceItem> faceItem = detectFaceResponseBean.getFace();
-                if (faceItem != null && faceItem.size() > 0) {
-                    FaceItem faceItem1 = faceItem.get(0);
-                    ivImage.setImageBitmap(ImageUtils.getBitmapFromLocalPath(imagePath,1));
-                    ivImage.setFaceItem(faceItem1);
-
+                if(faceItem!=null&&faceItem.size()>0)
+                {
+                    ivImage.setCanvasRes(bitmap, faceItem);
+                }else {
+                    ivImage.setCanvasBitmapRes(bitmap);
                 }
             }
         });
@@ -203,18 +169,10 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
                     if (imageList.size() == 1) {
                         ImageLoader.getInstance().displayImage("file://" + imageList.get(0), ivImage, ImageUtils.getOptions());
                         ImageLoader.getInstance().displayImage("file://" + imageList.get(0), iv_avatar, ImageUtils.getOptions());
-
                         resultPath = imageList.get(0);
-                        Log.e("retrofit",resultPath);
-                        String dstPath = ImageUtils.getImageFolderPath(getActivity()) +  File.separator+ System.currentTimeMillis() + "_sooglejay_.jpg";
-                        Log.e("retrofit", dstPath);
-
-
                         Bitmap bitmap =ImageUtils.getBitmapFromLocalPath(resultPath, 1);
                         Bitmap resizedBitmap =ImageUtils.getResizedBitmap(bitmap, 600, 600);
-//                        Bitmap tempBitmap = ImageUtils.compressImageFromBitmap(bitmapSource,600);
-                        ImageUtils.storeImage(resizedBitmap,dstPath);
-                        detectface(dstPath);
+                        detectface(resizedBitmap);
                     }
                 }
                 break;

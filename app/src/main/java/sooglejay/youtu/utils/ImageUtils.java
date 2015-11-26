@@ -75,9 +75,9 @@ public class ImageUtils {
      * @return
      */
     public static DisplayImageOptions getOptions(int... imgs) {
-        int loadingImg = R.drawable.icon_black_plain;
-        int emptyImg = R.drawable.icon_black_plain;
-        int failImg = R.drawable.icon_black_plain;
+        int loadingImg = R.drawable.default_error;
+        int emptyImg = R.drawable.default_error;
+        int failImg = R.drawable.default_error;
         if (imgs.length == 3) {
             loadingImg = imgs[0];
             emptyImg = imgs[1];
@@ -440,7 +440,21 @@ public class ImageUtils {
         return true;
     }
 
+    public static byte[] Bitmap2Bytes(Bitmap bm){
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        return baos.toByteArray();
+    }
 
+
+    public static Bitmap Bytes2Bimap(byte[] b){
+        if(b.length!=0){
+            return BitmapFactory.decodeByteArray(b, 0, b.length);
+        }
+        else {
+            return null;
+        }
+    }
     public static final int READ_BUFFER_SIZE = 32 * 1024;  //32KB
 
     /**
