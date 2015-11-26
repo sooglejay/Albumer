@@ -10,42 +10,43 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 
 import sooglejay.youtu.api.detectface.FaceItem;
+import uk.co.senab.photoview.PhotoView;
 
 /**
  * Created by sooglejay on 2015/11/21.
  */
-public class FaceImageView extends ImageView {
+public class FaceImageView extends PhotoView {
     FaceItem faceItem;
-
-    public void setFaceItem(FaceItem faceItem) {
-        this.faceItem = faceItem;
-        invalidate();
-    }
 
     public FaceImageView(Context context) {
         super(context);
     }
 
-    public FaceImageView(Context context, AttributeSet attrs) {
-        super(context, attrs);
+    public FaceImageView(Context context, AttributeSet attr) {
+        super(context, attr);
     }
 
-    public FaceImageView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+    public FaceImageView(Context context, AttributeSet attr, int defStyle) {
+        super(context, attr, defStyle);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public FaceImageView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
+    public void setFaceItem(FaceItem faceItem) {
+        this.faceItem = faceItem;
+        invalidate();
     }
-
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if (faceItem != null) {
             Paint paint = new Paint();
-            paint.setColor(Color.RED);
-            canvas.drawRect(faceItem.getX(), faceItem.getY(), faceItem.getX() + faceItem.getWidth(), faceItem.getX() + faceItem.getHeight(), paint);
+            paint.setColor(Color.GREEN);
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setStrokeWidth(3);
+            float centerX = faceItem.getWidth()/2;
+            float centerY = faceItem.getHeight()/2;
+            float radius = centerX>centerY?centerX:centerY;
+            canvas.drawCircle(centerX+faceItem.getX(),centerY+faceItem.getY(),radius, paint);
+            faceItem = null;
         }
     }
 }

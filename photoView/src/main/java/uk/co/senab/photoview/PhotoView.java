@@ -17,6 +17,7 @@ package uk.co.senab.photoview;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
@@ -276,6 +277,12 @@ public class PhotoView extends ImageView implements IPhotoView {
     @Override
     public void setZoomTransitionDuration(int milliseconds) {
         mAttacher.setZoomTransitionDuration(milliseconds);
+    }
+
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
     }
 
     @Override

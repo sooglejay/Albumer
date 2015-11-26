@@ -28,6 +28,7 @@ public class Base64Util {
 	 * @return cryto_str
 	 */
 	public static String encode(byte[] from) {
+		if(from == null)return "";
 		StringBuilder to = new StringBuilder((int) (from.length * 1.34) + 3);
 		int num = 0;
 		char currentByte = 0;

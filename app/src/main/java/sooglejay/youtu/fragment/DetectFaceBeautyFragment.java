@@ -1,24 +1,22 @@
 package sooglejay.youtu.fragment;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.tencent.open.utils.SystemUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -27,7 +25,6 @@ import java.util.List;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import sooglejay.youtu.R;
-import sooglejay.youtu.ui.GalleryActivity;
 import sooglejay.youtu.api.detectface.DetectFaceResponseBean;
 import sooglejay.youtu.api.detectface.DetectFaceUtil;
 import sooglejay.youtu.api.detectface.FaceItem;
@@ -36,21 +33,28 @@ import sooglejay.youtu.api.facecompare.FaceCompareUtil;
 import sooglejay.youtu.constant.ExtraConstants;
 import sooglejay.youtu.constant.NetWorkConstant;
 import sooglejay.youtu.model.NetCallback;
+import sooglejay.youtu.ui.GalleryActivity;
 import sooglejay.youtu.utils.ImageUtils;
 import sooglejay.youtu.utils.ProgressDialogUtil;
 import sooglejay.youtu.widgets.FaceImageView;
+import sooglejay.youtu.widgets.RoundImageView;
 import sooglejay.youtu.widgets.TitleBar;
+import sooglejay.youtu.widgets.decoview.decoviewlib.DecoView;
+import sooglejay.youtu.widgets.decoview.decoviewlib.charts.SeriesItem;
+import sooglejay.youtu.widgets.decoview.decoviewlib.charts.SeriesLabel;
+import sooglejay.youtu.widgets.decoview.decoviewlib.events.DecoEvent;
 import sooglejay.youtu.widgets.imagepicker.MultiImageSelectorActivity;
 import sooglejay.youtu.widgets.imagepicker.bean.Folder;
-import sooglejay.youtu.widgets.imagepicker.bean.Image;
+import sooglejay.youtu.widgets.imagepicker.utils.FileUtils;
 import sooglejay.youtu.widgets.youtu.sign.Base64Util;
 
 /**
  * Created by JammyQtheLab on 2015/11/24.
  */
-public class DetectFaceBeautyFragment extends BaseFragment {
+public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
     // 不同loader定义
     private static final int LOADER_ALL = 0;
+    private static final float seriesMax = 100f;
 
     private ArrayList<String> imageList = new ArrayList<>();
     private String resultPath;//图片最终位置
@@ -62,6 +66,10 @@ public class DetectFaceBeautyFragment extends BaseFragment {
 
     private boolean hasFolderGened = false;//是否已经加载了相册
     private Activity context;
+
+    private RoundImageView iv_avatar;
+    private int mTotalScores;
+    private int mYourScores;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -83,6 +91,7 @@ public class DetectFaceBeautyFragment extends BaseFragment {
     private TextView tvTest;
     private FaceImageView ivImage;
     private TextView tvResult;
+    private DecoView dynamicArcView;
 
     /**
      * Find the Views in the layout<br />
@@ -92,16 +101,16 @@ public class DetectFaceBeautyFragment extends BaseFragment {
      */
     private void findViews(View view) {
         titleBar = (TitleBar) view.findViewById(R.id.title_bar);
-        titleBar.initTitleBarInfo("相册管理", -1, -1, "", "");
-
+        titleBar.initTitleBarInfo("颜值工作室", -1, -1, "", "");
+        dynamicArcView = (DecoView) view.findViewById(R.id.dynamicArcView);
         tvTest = (TextView) view.findViewById(R.id.tv_test);
+        iv_avatar = (RoundImageView) view.findViewById(R.id.iv_avatar);
         ivImage = (FaceImageView) view.findViewById(R.id.iv_image);
         tvResult = (TextView) view.findViewById(R.id.tv_result);
         tvTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ImageUtils.startPickPhoto(getActivity(), DetectFaceBeautyFragment.this, imageList, 10, false);
-
             }
         });
     }
@@ -121,20 +130,18 @@ public class DetectFaceBeautyFragment extends BaseFragment {
         urls.add("http://img1.imgtn.bdimg.com/it/u=2916976433,2101664520&fm=21&gp=0.jpg");
         urls.add("http://img3.imgtn.bdimg.com/it/u=3637056205,2636938872&fm=21&gp=0.jpg");
         urls.add("http://img1.imgtn.bdimg.com/it/u=3928700240,1674800841&fm=21&gp=0.jpg");
-        urls.add("http://img0.imgtn.bdimg.com/it/u=554268179,3326490655&fm=21&gp=0.jpg");
+        urls.add("http://img0.imgtn.bdimg.com/it/u=554268179,3206490655&fm=21&gp=0.jpg");
         urls.add("http://img5.imgtn.bdimg.com/it/u=520938181,3531679252&fm=21&gp=0.jpg");
-        urls.add("http://img3.imgtn.bdimg.com/it/u=29132340,1272607089&fm=21&gp=0.jpg");
-        urls.add("http://img3.imgtn.bdimg.com/it/u=29132340,1272607089&fm=21&gp=0.jpg");
-        urls.add("http://img1.imgtn.bdimg.com/it/u=1346204935,1833295314&fm=21&gp=0.jpg");
-        urls.add("http://img4.imgtn.bdimg.com/it/u=1957294427,3132353955&fm=21&gp=0.jpg");
+        urls.add("http://img3.imgtn.bdimg.com/it/u=29120340,1272607089&fm=21&gp=0.jpg");
+        urls.add("http://img3.imgtn.bdimg.com/it/u=29120340,1272607089&fm=21&gp=0.jpg");
+        urls.add("http://img1.imgtn.bdimg.com/it/u=1346204935,1832095314&fm=21&gp=0.jpg");
+        urls.add("http://img4.imgtn.bdimg.com/it/u=1957294427,3120353955&fm=21&gp=0.jpg");
         urls.add("http://img4.imgtn.bdimg.com/it/u=1004874572,2884824536&fm=21&gp=0.jpg");
         Intent intent = new Intent(context, GalleryActivity.class);
         intent.putExtra(ExtraConstants.EXTRA_POSITION, 0);
         intent.putExtra(ExtraConstants.EXTRA_URLS, urls);
         context.startActivity(intent);
     }
-
-
 
     private void faceCompareUrl() {
         final ProgressDialogUtil progressDialogUtil = new ProgressDialogUtil(context);
@@ -174,13 +181,13 @@ public class DetectFaceBeautyFragment extends BaseFragment {
                 List<FaceItem> faceItem = detectFaceResponseBean.getFace();
                 if (faceItem != null && faceItem.size() > 0) {
                     FaceItem faceItem1 = faceItem.get(0);
+                    ivImage.setImageBitmap(ImageUtils.getBitmapFromLocalPath(imagePath,1));
                     ivImage.setFaceItem(faceItem1);
+
                 }
             }
         });
-
     }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -195,12 +202,19 @@ public class DetectFaceBeautyFragment extends BaseFragment {
                     if (imageList == null) return;
                     if (imageList.size() == 1) {
                         ImageLoader.getInstance().displayImage("file://" + imageList.get(0), ivImage, ImageUtils.getOptions());
-                        resultPath = ImageUtils.getImageFolderPath(context) + File.separator + System.currentTimeMillis() + ".jpg";
-//                        ImageUtils.cropImage(this, Uri.fromFile(new File(imageList.get(0))), resultPath, 1, 1);
-//                        Bitmap tempBitmap = BitmapFactory.decodeFile(imageList.get(0));
-//                        Bitmap bitmap = ImageUtils.compressImage(tempBitmap,600);
-//                        ImageUtils.saveMyBitmap(bitmap,resultPath);
-                        detectface(imageList.get(0));
+                        ImageLoader.getInstance().displayImage("file://" + imageList.get(0), iv_avatar, ImageUtils.getOptions());
+
+                        resultPath = imageList.get(0);
+                        Log.e("retrofit",resultPath);
+                        String dstPath = ImageUtils.getImageFolderPath(getActivity()) +  File.separator+ System.currentTimeMillis() + "_sooglejay_.jpg";
+                        Log.e("retrofit", dstPath);
+
+
+                        Bitmap bitmap =ImageUtils.getBitmapFromLocalPath(resultPath, 1);
+                        Bitmap resizedBitmap =ImageUtils.getResizedBitmap(bitmap, 600, 600);
+//                        Bitmap tempBitmap = ImageUtils.compressImageFromBitmap(bitmapSource,600);
+                        ImageUtils.storeImage(resizedBitmap,dstPath);
+                        detectface(dstPath);
                     }
                 }
                 break;
@@ -210,93 +224,121 @@ public class DetectFaceBeautyFragment extends BaseFragment {
                     //添加图片到list并且显示出来
                     //上传图片
                     if (!TextUtils.isEmpty(resultPath)) {
-                        ImageLoader.getInstance().displayImage("file://" + resultPath, ivImage, ImageUtils.getOptions());
-                        ImageUtils.compressAndSave(context, resultPath, 600);
-                        detectface(resultPath);
+//                        ImageLoader.getInstance().displayImage("file://" + resultPath, ivImage, ImageUtils.getOptions());
+//                        String dstPath = ImageUtils.getImageFolderPath(getActivity()) + System.currentTimeMillis() + File.separator + "jpg";
+//                        ImageUtils.compressAndSave(getActivity(), resultPath, dstPath, 600);
+//                        detectface(dstPath);
                     }
                 }
                 break;
             default:
                 break;
         }
-
         super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        // 首次加载所有图片
-        //new LoadImageTask().execute();
-        getActivity().getSupportLoaderManager().initLoader(LOADER_ALL, null, mLoaderCallback);
+        if (getView() == null) {
+            return;
+        }
+        mInitialized = true;
+        createAnimation();
     }
 
-    private LoaderManager.LoaderCallbacks<Cursor> mLoaderCallback = new LoaderManager.LoaderCallbacks<Cursor>() {
+    @Override
+    protected void createTracks() {
 
-        private final String[] IMAGE_PROJECTION = {
-                MediaStore.Images.Media.DATA,
-                MediaStore.Images.Media.DISPLAY_NAME,
-                MediaStore.Images.Media.DATE_ADDED,
-                MediaStore.Images.Media._ID};
-
-        @Override
-        public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-            if (id == 0) {
-                CursorLoader cursorLoader = new CursorLoader(context,
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, IMAGE_PROJECTION,
-                        null, null, IMAGE_PROJECTION[2] + " DESC");
-                return cursorLoader;
-            }
-
-            return null;
+        final DecoView decoView = getDecoView();
+        final View view = getView();
+        if (decoView == null || view == null) {
+            return;
         }
+        decoView.deleteAll();
+        decoView.configureAngles(280, 0);
 
-        @Override
-        public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-            if (data != null) {
-                List<Image> images = new ArrayList<>();
-                int count = data.getCount();
-                if (count > 0) {
-                    data.moveToFirst();
-                    do {
-                        String path = data.getString(data.getColumnIndexOrThrow(IMAGE_PROJECTION[0]));
-                        String name = data.getString(data.getColumnIndexOrThrow(IMAGE_PROJECTION[1]));
-                        long dateTime = data.getLong(data.getColumnIndexOrThrow(IMAGE_PROJECTION[2]));
-                        Image image = new Image(path, name, dateTime);
-                        images.add(image);
-                        if (!hasFolderGened) {
-                            // 获取文件夹名称
-                            File imageFile = new File(path);
-                            File folderFile = imageFile.getParentFile();
-                            Folder folder = new Folder();
-                            folder.name = folderFile.getName();
-                            folder.path = folderFile.getAbsolutePath();
-                            folder.cover = image;
-                            if (!mResultFolder.contains(folder)) {
-                                List<Image> imageList = new ArrayList<>();
-                                imageList.add(image);
-                                folder.images = imageList;
-                                mResultFolder.add(folder);
-                            } else {
-                                // 更新
-                                Folder f = mResultFolder.get(mResultFolder.indexOf(folder));
-                                f.images.add(image);
-                            }
-                        }
+        decoView.addSeries(new SeriesItem.Builder(Color.argb(255, 218, 218, 218))
+                .setRange(0, seriesMax, seriesMax)
+                .setInitialVisibility(false)
+                .setLineWidth(getDimension(32f))
+                .build());
 
-                    } while (data.moveToNext());
+        SeriesItem seriesItem1 = new SeriesItem.Builder(Color.argb(255, 64, 196, 0))
+                .setRange(0, seriesMax, 0)
+                .setInitialVisibility(false)
+                .setLineWidth(getDimension(32f))
+                .setSeriesLabel(new SeriesLabel.Builder("Percent %.0f%%")
+                        .setColorBack(Color.argb(218, 0, 0, 0))
+                        .setColorText(Color.argb(255, 255, 255, 255))
+                        .build())
+                .build();
 
-                    hasFolderGened = true;
+        mYourScores = decoView.addSeries(seriesItem1);
 
-                }
-            }
+        SeriesItem seriesItem2 = new SeriesItem.Builder(Color.argb(255, 64, 0, 196))
+                .setRange(0, seriesMax, 0)
+                .setInitialVisibility(false)
+                .setLineWidth(getDimension(24f))
+                .setSpinDuration(3000)
+                .setSeriesLabel(new SeriesLabel.Builder("Value %.0f").build())
+                .build();
+
+        mTotalScores = decoView.addSeries(seriesItem2);
+
+
+        mTotalScores = decoView.addSeries(seriesItem2);
+
+        //颜值数值 显示
+        final TextView textPercent = (TextView) view.findViewById(R.id.textPercentage);
+        textPercent.setVisibility(View.INVISIBLE);
+    }
+
+
+    @Override
+    protected void setupEvents() {
+        final DecoView decoView = getDecoView();
+        final View view = getView();
+        if (decoView == null || decoView.isEmpty() || view == null) {
+            throw new IllegalStateException("致命的错误！View cannot be null !");
         }
+        decoView.executeReset();
 
-        @Override
-        public void onLoaderReset(Loader<Cursor> loader) {
+        final TextView textPercent = (TextView) view.findViewById(R.id.textPercentage);
+        final View[] linkedViews = {textPercent};
 
-        }
-    };
+        decoView.addEvent(new DecoEvent.Builder(DecoEvent.EventType.EVENT_SHOW, true)
+                .setDelay(500)
+                .setDuration(2000)
+                .setLinkedViews(linkedViews)
+                .build());
 
+        decoView.addEvent(new DecoEvent.Builder(25).setIndex(mYourScores).setDelay(3300).build());
+        decoView.addEvent(new DecoEvent.Builder(50).setIndex(mYourScores).setDelay(8000).setDuration(1000).build());
+        decoView.addEvent(new DecoEvent.Builder(0).setIndex(mYourScores).setDelay(13000).setDuration(6000).build());
 
+        decoView.addEvent(new DecoEvent.Builder(5).setIndex(mTotalScores).setDelay(4250).setDuration(2000).build());
+        decoView.addEvent(new DecoEvent.Builder(30).setIndex(mTotalScores).setDelay(9000).build());
+        decoView.addEvent(new DecoEvent.Builder(0)
+                .setIndex(mTotalScores)
+                .setDelay(13000)
+                .build());
+
+        decoView.addEvent(new DecoEvent.Builder(DecoEvent.EventType.EVENT_HIDE, false)
+                .setDelay(19500)
+                .setDuration(2000)
+                .setLinkedViews(linkedViews)
+                .setListener(new DecoEvent.ExecuteEventListener() {
+                    @Override
+                    public void onEventStart(DecoEvent event) {
+
+                    }
+
+                    @Override
+                    public void onEventEnd(DecoEvent event) {
+
+                    }
+                })
+                .build());
+    }
 }
