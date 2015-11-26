@@ -42,22 +42,6 @@ public class AsyncBitmapLoader {
      */
     public AsyncBitmapLoader() {
         mBitMapCache = new HashMap<String, SoftReference<AsyncBean>>();
-        handler = new MyHandler(this);
-    }
-
-    private MyHandler handler;
-    private static class MyHandler extends Handler {
-        private final WeakReference<AsyncBitmapLoader> mTarget;
-        MyHandler(AsyncBitmapLoader target) {
-            mTarget = new WeakReference<>(target);
-        }
-        public void handleMessage(Message message) {
-            AsyncBitmapLoader target = mTarget.get();
-            if (target != null) {
-                callback.imageLoaded((AsyncBean) message.obj);
-            }
-        }
-
     }
 
 
@@ -70,59 +54,59 @@ public class AsyncBitmapLoader {
      * @return if return not null, it states there has cache
      */
     public AsyncBean loadAsyncBean(final Context context, final String imagePath, final BitmapCallback callback) {
-         AsyncBitmapLoader.callback = callback;
         if (mBitMapCache.containsKey(imagePath)) {
             SoftReference<AsyncBean> softReference = mBitMapCache.get(imagePath);
             AsyncBean bean = softReference.get();
             if (bean != null) {
                 return bean;
             }
+        } else {
+            final Handler handler = new Handler() {
+                public void handleMessage(Message message) {
+                    callback.imageLoaded((AsyncBean) message.obj);
+                }
+            };
+            final ProgressDialogUtil progressDialogUtil = new ProgressDialogUtil(context);
+            new AsyncTask<String, Bitmap, Bitmap>() {
+                @Override
+                protected void onPreExecute() {
+                    super.onPreExecute();
+                    progressDialogUtil.show("正在检测图片...");
+                }
+                @Override
+                protected Bitmap doInBackground(String... params) {
+                    Bitmap bitmap;
+                    Bitmap tempBitmap = ImageUtils.getBitmapFromLocalPath(params[0], 1);
+                    bitmap = ImageUtils.getResizedBitmap(tempBitmap, 600, 600);
+                    return bitmap;
+                }
+                @Override
+                protected void onPostExecute(final Bitmap bitmap) {
+                    final AsyncBean asyncBean = new AsyncBean();
+                    asyncBean.setBitmap(bitmap);
+                    DetectFaceUtil.detectFace(context, NetWorkConstant.APP_ID, Base64Util.encode(ImageUtils.Bitmap2Bytes(bitmap)), 1, new NetCallback<DetectFaceResponseBean>(context) {
+                        @Override
+                        public void onFailure(RetrofitError error, String message) {
+                            progressDialogUtil.hide();
+                        }
+
+                        @Override
+                        public void success(DetectFaceResponseBean detectFaceResponseBean, Response response) {
+                            progressDialogUtil.hide();
+                            List<FaceItem> faceItem = detectFaceResponseBean.getFace();
+                            asyncBean.setFaces(faceItem);
+                            mBitMapCache.put(imagePath, new SoftReference<>(asyncBean));
+                            Message message = handler.obtainMessage(0, asyncBean);
+                            handler.sendMessage(message);
+                        }
+                    });
+                }
+            }.execute(imagePath);
         }
-        final ProgressDialogUtil progressDialogUtil = new ProgressDialogUtil(context);
-        new AsyncTask<String, Bitmap, Bitmap>() {
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                progressDialogUtil.show("正在检测图片...");
-            }
-
-            @Override
-            protected Bitmap doInBackground(String... params) {
-
-                Bitmap bitmap;
-                Bitmap tempBitmap = ImageUtils.getBitmapFromLocalPath(params[0], 1);
-                bitmap = ImageUtils.getResizedBitmap(tempBitmap, 600, 600);
-                return bitmap;
-
-            }
-
-            @Override
-            protected void onPostExecute(final Bitmap bitmap) {
-                final AsyncBean asyncBean = new AsyncBean();
-                asyncBean.setBitmap(bitmap);
-                DetectFaceUtil.detectFace(context, NetWorkConstant.APP_ID, Base64Util.encode(ImageUtils.Bitmap2Bytes(bitmap)), 1, new NetCallback<DetectFaceResponseBean>(context) {
-                    @Override
-                    public void onFailure(RetrofitError error, String message) {
-                        progressDialogUtil.hide();
-                    }
-
-                    @Override
-                    public void success(DetectFaceResponseBean detectFaceResponseBean, Response response) {
-                        progressDialogUtil.hide();
-
-                        List<FaceItem> faceItem = detectFaceResponseBean.getFace();
-                        asyncBean.setFaces(faceItem);
-                        mBitMapCache.put(imagePath, new SoftReference<>(asyncBean));
-                        Message message = handler.obtainMessage(0, asyncBean);
-                        handler.sendMessage(message);
-                    }
-                });
-            }
-        }.execute(imagePath);
         return null;
     }
 
-    private static BitmapCallback callback;
+    public BitmapCallback callback;
 
     public interface BitmapCallback {
         /**
