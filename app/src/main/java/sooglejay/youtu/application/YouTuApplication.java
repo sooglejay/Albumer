@@ -9,13 +9,20 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
+import java.lang.ref.SoftReference;
+import java.util.HashMap;
 import java.util.List;
 
+import sooglejay.youtu.api.detectface.FaceItem;
 import sooglejay.youtu.utils.CarNetCrashHandler;
 
 
 public class YouTuApplication extends Application {
 
+    /**
+     * Used to save image by soft reference. It make image easy to release.
+     */
+    private HashMap<String, SoftReference<List<FaceItem>>> mBitMapCache = null;
 
     private static String appVersion = "";
 
