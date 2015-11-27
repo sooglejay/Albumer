@@ -5,32 +5,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.PointF;
-import android.hardware.Camera;
+import android.hardware.Camera.Size;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.Map;
-
-
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.hardware.Camera.Size;
 import android.view.View;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -45,6 +29,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.CRC32;
 
 import sooglejay.youtu.R;
@@ -96,6 +81,31 @@ public class ImageUtils {
     }
 
     /**
+     * 是否可写
+     * @return
+     */
+    public static boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 是否可读
+     * @return
+     */
+    public static boolean isExternalStorageReadable() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state) ||
+                Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * 取得图片文件夹位置
      *
      * @param context
@@ -103,13 +113,10 @@ public class ImageUtils {
      */
     public static String getImageFolderPath(Context context) {
         String packPath = "";
-
         try {
             packPath = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES).getAbsolutePath();
-
         } catch (Exception e) {
             packPath = context.getFilesDir() + File.separator + "Pictures";
-
         } finally {
             return packPath;
         }

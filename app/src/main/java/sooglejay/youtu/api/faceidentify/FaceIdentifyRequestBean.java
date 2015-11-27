@@ -7,6 +7,8 @@ import android.os.Parcelable;
  * Created by sooglejay on 2015/11/19.
  */
 public class FaceIdentifyRequestBean implements Parcelable {
+
+    //先检测是否有人脸，然后去人脸识别，默认都是使用group id =1
 //
 //    人脸识别
 //    1)
