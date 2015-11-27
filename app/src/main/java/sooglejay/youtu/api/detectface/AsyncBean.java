@@ -1,6 +1,5 @@
 package sooglejay.youtu.api.detectface;
 
-import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -11,7 +10,6 @@ import java.util.List;
  */
 public class AsyncBean implements Parcelable {
     private List<FaceItem>faces;
-    private Bitmap bitmap;
 
     public List<FaceItem> getFaces() {
         return faces;
@@ -21,12 +19,8 @@ public class AsyncBean implements Parcelable {
         this.faces = faces;
     }
 
-    public Bitmap getBitmap() {
-        return bitmap;
-    }
 
-    public void setBitmap(Bitmap bitmap) {
-        this.bitmap = bitmap;
+    public AsyncBean() {
     }
 
     @Override
@@ -37,18 +31,13 @@ public class AsyncBean implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedList(faces);
-        dest.writeParcelable(this.bitmap, 0);
-    }
-
-    public AsyncBean() {
     }
 
     protected AsyncBean(Parcel in) {
         this.faces = in.createTypedArrayList(FaceItem.CREATOR);
-        this.bitmap = in.readParcelable(Bitmap.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<AsyncBean> CREATOR = new Parcelable.Creator<AsyncBean>() {
+    public static final Creator<AsyncBean> CREATOR = new Creator<AsyncBean>() {
         public AsyncBean createFromParcel(Parcel source) {
             return new AsyncBean(source);
         }

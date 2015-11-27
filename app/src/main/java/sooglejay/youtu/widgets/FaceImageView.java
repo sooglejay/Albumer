@@ -121,6 +121,10 @@ public class FaceImageView extends PhotoView {
         this.bitmap = bm;
         invalidate();
     }
+   public void setCanvasFaceListRes(List<FaceItem>faceListRes) {
+        this.faceItemList = faceListRes;
+        invalidate();
+    }
 
     public void clearCanvasRes() {
         if (bitmap != null) {

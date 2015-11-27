@@ -3,7 +3,9 @@ package sooglejay.youtu.fragment;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 import android.media.FaceDetector;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -12,6 +14,7 @@ import android.widget.FrameLayout;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.lang.ref.SoftReference;
 import java.util.List;
 
 import retrofit.RetrofitError;
@@ -198,36 +201,59 @@ public class GalleryFragment extends BaseFragment {
 
     private AsyncBitmapLoader asyncBitmapLoader = new AsyncBitmapLoader();
 
-    private void getImage(String imagePath) {
-        AsyncBitmapLoader.BitmapCallback callback = new AsyncBitmapLoader.BitmapCallback() {
+    private void getImage(final String imagePath) {
+        final AsyncBitmapLoader.BitmapCallback callback = new AsyncBitmapLoader.BitmapCallback() {
             @Override
-            public void imageLoaded(AsyncBean asyncBean) {
-                if (asyncBean != null) {
-                    if (asyncBean.getBitmap() != null) {
-                        if (asyncBean.getFaces() != null) {
-                            imageView.setCanvasRes(asyncBean.getBitmap(), asyncBean.getFaces());
-                        } else {
-                            imageView.setCanvasBitmapRes(asyncBean.getBitmap());
-                        }
-                    }
-
+            public void facesLoaded(List<FaceItem> faces) {
+                if(faces!=null&&faces.size()>0)
+                {
+                    imageView.setCanvasFaceListRes(faces);
+                    asyncBitmapLoader.addKey(imagePath,faces);
                 }
-
             }
-        };
-        AsyncBean asyncBean = asyncBitmapLoader.loadAsyncBean(getActivity(), imagePath, callback);
-            if (asyncBean != null) {
-                if (asyncBean.getBitmap() != null) {
-                    if (asyncBean.getFaces() != null) {
-                        imageView.setCanvasRes(asyncBean.getBitmap(), asyncBean.getFaces());
-                    } else {
-                        imageView.setCanvasBitmapRes(asyncBean.getBitmap());
-                    }
-            }else {
-                    imageView.setImageResource(R.drawable.default_error);
+
+            @Override
+            public void bitmapLoaded(final Bitmap bitmap) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(bitmap!=null) {
+                                imageView.setCanvasBitmapRes(bitmap);
+                            }else {
+                                imageView.setImageResource(R.drawable.default_error);
+                            }
+                        }
+                    });
                 }
+        };
+        final List<FaceItem>faces = asyncBitmapLoader.loadAsyncBean(getActivity(),imagePath,callback);
+        if(faces!=null&&faces.size()>0)
+        {
+            new AsyncTask<String, Bitmap, Bitmap>() {
+                @Override
+                protected void onPreExecute() {
+                    super.onPreExecute();
+                }
+
+                @Override
+                protected Bitmap doInBackground(String... params) {
+                    Bitmap tempBitmap = ImageUtils.getBitmapFromLocalPath(params[0], 1);
+                    Bitmap bitmap =  ImageUtils.getResizedBitmap(tempBitmap, 600, 600);
+                    return bitmap;
+                }
+
+                @Override
+                protected void onPostExecute(final Bitmap bitmap) {
+                    asyncBitmapLoader.addKey(imagePath,faces);
+                    if (bitmap != null) {
+                        imageView.setCanvasBitmapRes(bitmap);
+                        imageView.setCanvasFaceListRes(faces);
+                    }else {
+                        imageView.setImageResource(R.drawable.default_error);
+                    }
+                }
+            }.execute(imagePath);
         }
-
     }
-
 }
+//123
