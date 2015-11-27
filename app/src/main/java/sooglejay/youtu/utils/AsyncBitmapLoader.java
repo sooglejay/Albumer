@@ -59,10 +59,8 @@ public class AsyncBitmapLoader {
         mBitMapCache = new HashMap<String, SoftReference<List<FaceItem>>>();
     }
 
-
     /**
      * Load image by path
-     *
      * @param context
      * @param imagePath
      * @param callback
@@ -127,7 +125,6 @@ public class AsyncBitmapLoader {
             }
 
         }.execute(imagePath);
-
         return null;
     }
 

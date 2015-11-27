@@ -201,6 +201,10 @@ public class GalleryFragment extends BaseFragment {
 
     private AsyncBitmapLoader asyncBitmapLoader = new AsyncBitmapLoader();
 
+    /**
+     * 带缓存的图片显示器
+     * @param imagePath
+     */
     private void getImage(final String imagePath) {
         final AsyncBitmapLoader.BitmapCallback callback = new AsyncBitmapLoader.BitmapCallback() {
             @Override
@@ -256,4 +260,3 @@ public class GalleryFragment extends BaseFragment {
         }
     }
 }
-//123
