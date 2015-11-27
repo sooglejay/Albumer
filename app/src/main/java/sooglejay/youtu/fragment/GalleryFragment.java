@@ -223,7 +223,9 @@ public class GalleryFragment extends BaseFragment {
                     } else {
                         imageView.setCanvasBitmapRes(asyncBean.getBitmap());
                     }
-            }
+            }else {
+                    imageView.setImageResource(R.drawable.default_error);
+                }
         }
 
     }

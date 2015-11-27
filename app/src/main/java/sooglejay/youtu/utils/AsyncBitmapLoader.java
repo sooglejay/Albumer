@@ -30,10 +30,19 @@ import sooglejay.youtu.widgets.youtu.sign.Base64Util;
  * Thread sued to load image
  */
 public class AsyncBitmapLoader {
+
+    private static final int SUCCESS_DETECT_FACE= 0;
+    private static final int ERROR_DETECT_FACE= 1;//网络请求失败
+    private static final int ERROR_RESIZE_IMAGE= 2;//bad  picture
+
     /**
      * Used to save image by soft reference. It make image easy to release.
      */
     private HashMap<String, SoftReference<AsyncBean>> mBitMapCache = null;
+
+
+
+
 
     /**
      * Constructor method
@@ -45,7 +54,6 @@ public class AsyncBitmapLoader {
 
     /**
      * Load image by path
-     *
      * @param context
      * @param imagePath
      * @param callback
@@ -64,7 +72,18 @@ public class AsyncBitmapLoader {
         {
             public void handleMessage(Message message)
             {
-                callback.imageLoaded((AsyncBean) message.obj);
+                switch (message.what)
+                {
+                    case SUCCESS_DETECT_FACE:
+                        callback.imageLoaded((AsyncBean) message.obj);
+                        break;
+                    case ERROR_DETECT_FACE:
+                        callback.imageLoaded((AsyncBean) message.obj);
+                        break;
+                    case ERROR_RESIZE_IMAGE:
+                        callback.imageLoaded((AsyncBean) message.obj);
+                        break;
+                }
             }
         };
 
@@ -86,23 +105,33 @@ public class AsyncBitmapLoader {
                 }
                 @Override
                 protected void onPostExecute(final AsyncBean asyncBean) {
-                    DetectFaceUtil.detectFace(context, NetWorkConstant.APP_ID, Base64Util.encode(ImageUtils.Bitmap2Bytes(asyncBean.getBitmap())), 1, new NetCallback<DetectFaceResponseBean>(context) {
-                        @Override
-                        public void onFailure(RetrofitError error, String message) {
-                            progressDialogUtil.hide();
-                        }
+                    if(asyncBean.getBitmap()!=null) {
+                        DetectFaceUtil.detectFace(context, NetWorkConstant.APP_ID, Base64Util.encode(ImageUtils.Bitmap2Bytes(asyncBean.getBitmap())), 1, new NetCallback<DetectFaceResponseBean>(context) {
+                            @Override
+                            public void onFailure(RetrofitError error, String message) {
+                                progressDialogUtil.hide();
+                                Message errorMessage = handler.obtainMessage(ERROR_DETECT_FACE, asyncBean);
+                                handler.sendMessage(errorMessage);
+                            }
 
-                        @Override
-                        public void success(DetectFaceResponseBean detectFaceResponseBean, Response response) {
-                            progressDialogUtil.hide();
-                            List<FaceItem> faceItem = detectFaceResponseBean.getFace();
-                            asyncBean.setFaces(faceItem);
-                            mBitMapCache.put(imagePath, new SoftReference<>(asyncBean));
-                            Message message = handler.obtainMessage(0, asyncBean);
-                            handler.sendMessage(message);
-                        }
-                    });
+                            @Override
+                            public void success(DetectFaceResponseBean detectFaceResponseBean, Response response) {
+                                progressDialogUtil.hide();
+                                List<FaceItem> faceItem = detectFaceResponseBean.getFace();
+                                asyncBean.setFaces(faceItem);
+                                mBitMapCache.put(imagePath, new SoftReference<>(asyncBean));
+                                Message successMessage = handler.obtainMessage(SUCCESS_DETECT_FACE, asyncBean);
+                                handler.sendMessage(successMessage);
+                            }
+                        });
+                    }
+                    else {
+                        progressDialogUtil.hide();
+                        Message successMessage = handler.obtainMessage(ERROR_RESIZE_IMAGE, asyncBean);
+                        handler.sendMessage(successMessage);
+                    }
                 }
+
             }.execute(imagePath);
 
         return null;
