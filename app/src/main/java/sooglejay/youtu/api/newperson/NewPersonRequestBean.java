@@ -5,10 +5,12 @@ import android.os.Parcelable;
 
 import java.util.List;
 
+import sooglejay.youtu.model.Model;
+
 /**
  * Created by sooglejay on 2015/11/19.
  */
-public class NewPersonRequestBean implements Parcelable {
+public class NewPersonRequestBean implements Model,Parcelable {
 //    • 个体创建
 //    1)
 //    接口

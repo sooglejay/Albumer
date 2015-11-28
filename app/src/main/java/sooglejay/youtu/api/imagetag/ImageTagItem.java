@@ -3,10 +3,12 @@ package sooglejay.youtu.api.imagetag;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import sooglejay.youtu.model.Model;
+
 /**
  * Created by sooglejay on 2015/11/19.
  */
-public class ImageTagItem implements Parcelable {
+public class ImageTagItem implements Model,Parcelable {
 //    tag_name	String	返回图像标签的名字
 //    tag_confidence	Int	图像标签的置信度,整形范围 0-100,越大置信度越高
 //    tag_confidence_f	Float	图像标签的置信度,浮点数范围 0-1,越大置信度越高

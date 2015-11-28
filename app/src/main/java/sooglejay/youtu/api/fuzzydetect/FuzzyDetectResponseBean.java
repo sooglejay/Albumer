@@ -3,10 +3,12 @@ package sooglejay.youtu.api.fuzzydetect;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import sooglejay.youtu.model.Model;
+
 /**
  * Created by sooglejay on 2015/11/19.
  */
-public class FuzzyDetectResponseBean implements Parcelable {
+public class FuzzyDetectResponseBean implements Model,Parcelable {
 
 //    返回值说明
 //    a. 返回主体包的内容

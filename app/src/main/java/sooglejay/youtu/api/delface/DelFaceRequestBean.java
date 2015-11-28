@@ -5,10 +5,12 @@ import android.os.Parcelable;
 
 import java.util.List;
 
+import sooglejay.youtu.model.Model;
+
 /**
  * Created by sooglejay on 2015/11/19.
  */
-public class DelFaceRequestBean implements Parcelable {
+public class DelFaceRequestBean implements Model,Parcelable {
 
     /**
      * 参数

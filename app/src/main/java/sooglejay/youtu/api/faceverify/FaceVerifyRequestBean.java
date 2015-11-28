@@ -3,10 +3,12 @@ package sooglejay.youtu.api.faceverify;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import sooglejay.youtu.model.Model;
+
 /**
  * Created by sooglejay on 2015/11/19.
  */
-public class FaceVerifyRequestBean implements Parcelable {
+public class FaceVerifyRequestBean implements Model,Parcelable {
 
 //    接口
 //    http://api.youtu.qq.com/youtu/api/faceverify

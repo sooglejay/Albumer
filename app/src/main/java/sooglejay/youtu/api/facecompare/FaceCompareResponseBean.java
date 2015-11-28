@@ -3,6 +3,8 @@ package sooglejay.youtu.api.facecompare;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import sooglejay.youtu.model.Model;
+
 /**
  返回值说明
  字段	类型	说明
@@ -12,7 +14,7 @@ import android.os.Parcelable;
  errorcode	Int	返回状态码
 
  */
-public class FaceCompareResponseBean implements Parcelable {
+public class FaceCompareResponseBean implements Model,Parcelable {
  private float similarity;
  private String errormsg;
  private String session_id;

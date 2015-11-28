@@ -3,13 +3,15 @@ package sooglejay.youtu.api.faceshape;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import sooglejay.youtu.model.Model;
+
 /**
  接口
  http://api.youtu.qq.com/youtu/api/faceshape
  2)
  对请求图片进行五官定位，计算构成人脸轮廓的88个点，包括眉毛（左右各8点）、眼睛（左右各8点）、鼻子（13点）、嘴巴（22点）、脸型轮廓（21点）。各个部分点的顺序如下图所示
  */
-public class FaceShapeRequestBean implements Parcelable {
+public class FaceShapeRequestBean implements Model,Parcelable {
 //    参数
 //    参数名	类型	参数说明
 //    必须	app_id	String	App的 API ID

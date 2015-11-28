@@ -3,10 +3,12 @@ package sooglejay.youtu.api.setinfo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import sooglejay.youtu.model.Model;
+
 /**
  * Created by sooglejay on 2015/11/19.
  */
-public class SetInfoRequestBean implements Parcelable {
+public class SetInfoRequestBean implements Model,Parcelable {
 
 //    参数
 //    参数名	类型	参数说明

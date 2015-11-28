@@ -3,7 +3,10 @@ package sooglejay.youtu.api.detectface;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import sooglejay.youtu.model.Model;
 
 /**
  * 返回值说明
@@ -16,7 +19,7 @@ import java.util.List;
  * errorcode	Int	返回状态值
  * errormsg	String	返回错误消息
  */
-public class DetectFaceResponseBean implements Parcelable {
+public class DetectFaceResponseBean implements Model,Parcelable {
 
 //    Response:
 //    {
@@ -50,7 +53,7 @@ public class DetectFaceResponseBean implements Parcelable {
     private String image_id;
     private int image_height;
     private int image_width;
-    private List<FaceItem> face;
+    private ArrayList<FaceItem> face;
     private int errorcode;
     private String errormsg;
 
@@ -99,11 +102,11 @@ public class DetectFaceResponseBean implements Parcelable {
         this.image_width = image_width;
     }
 
-    public List<FaceItem> getFace() {
+    public ArrayList<FaceItem> getFace() {
         return face;
     }
 
-    public void setFace(List<FaceItem> face) {
+    public void setFace(ArrayList<FaceItem> face) {
         this.face = face;
     }
 

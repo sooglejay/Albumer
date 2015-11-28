@@ -3,6 +3,8 @@ package sooglejay.youtu.api.detectface;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import sooglejay.youtu.model.Model;
+
 /**
  • 人脸对比
  1)
@@ -16,7 +18,7 @@ import android.os.Parcelable;
  可选	url	    String	图片的url, image 和url只提供一个就可以了,如果都提供,只使用url
  可选	mode	Int	检测模式 0/1 正常/大脸模式
  */
-public class DetectFaceRequestBean implements Parcelable {
+public class DetectFaceRequestBean implements Model,Parcelable {
 
     private String app_id;
     private String image;

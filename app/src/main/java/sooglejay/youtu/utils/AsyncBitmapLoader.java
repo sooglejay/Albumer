@@ -13,7 +13,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import java.lang.ref.SoftReference;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -38,41 +38,48 @@ public class AsyncBitmapLoader {
     /**
      * Used to save image by soft reference. It make image easy to release.
      */
-    private HashMap<String, SoftReference<List<FaceItem>>> mBitMapCache = null;
+    private HashMap<String,ArrayList<FaceItem>> mBitMapCache = null;
 
 
-
-    public void addKey(String imagePath,List<FaceItem>faceItems)
-    {
-        if(mBitMapCache!=null)
-        {
-            if(!mBitMapCache.containsKey(imagePath))
-            {
-                mBitMapCache.put(imagePath,new SoftReference<List<FaceItem>>(faceItems));
+    public void addKey(String imagePath, ArrayList<FaceItem> faceItems) {
+        if (mBitMapCache != null) {
+            if (!mBitMapCache.containsKey(imagePath)) {
+                mBitMapCache.put(imagePath, faceItems);
             }
         }
     }
+
     /**
      * Constructor method
      */
     public AsyncBitmapLoader() {
-        mBitMapCache = new HashMap<String, SoftReference<List<FaceItem>>>();
+    }
+
+    public void setmBitMapCache(HashMap<String,ArrayList<FaceItem>> cache) {
+        if (cache == null) {
+            mBitMapCache = new HashMap<String,ArrayList<FaceItem>>();
+        } else {
+            mBitMapCache = cache;
+        }
+    }
+
+    public HashMap<String, ArrayList<FaceItem>> getmBitMapCache() {
+        return mBitMapCache;
     }
 
     /**
      * Load image by path
+     *
      * @param context
      * @param imagePath
      * @param callback
      * @return if return not null, it states there has cache
      */
-    public List<FaceItem> loadAsyncBean(final Context context, final String imagePath, final BitmapCallback callback) {
+    public ArrayList<FaceItem> loadAsyncBean(final Context context, final String imagePath, final BitmapCallback callback) {
         Log.e("jwjw", 123 + "loadAsyncBean");
         if (mBitMapCache.containsKey(imagePath)) {
             Log.e("jwjw", 456 + "  containsKey");
-
-            SoftReference<List<FaceItem>> softReference = mBitMapCache.get(imagePath);
-            List<FaceItem> faces = softReference.get();
+            ArrayList<FaceItem> faces = mBitMapCache.get(imagePath);
             if (faces != null) {
                 return faces;
             }
@@ -80,7 +87,7 @@ public class AsyncBitmapLoader {
         Log.e("jwjw", 123 + "  没有  containsKey");
         final Handler handler = new Handler() {
             public void handleMessage(Message message) {
-                List<FaceItem> faces = (List<FaceItem>) message.obj;
+                ArrayList<FaceItem> faces = (ArrayList<FaceItem>) message.obj;
                 callback.facesLoaded(faces);
             }
         };
@@ -96,7 +103,7 @@ public class AsyncBitmapLoader {
             @Override
             protected Bitmap doInBackground(String... params) {
                 Bitmap tempBitmap = ImageUtils.getBitmapFromLocalPath(params[0], 1);
-                Bitmap bitmap =  ImageUtils.getResizedBitmap(tempBitmap, 600, 600);
+                Bitmap bitmap = ImageUtils.getResizedBitmap(tempBitmap, 600, 600);
                 callback.bitmapLoaded(bitmap);
                 return bitmap;
             }
@@ -113,8 +120,8 @@ public class AsyncBitmapLoader {
                         @Override
                         public void success(DetectFaceResponseBean detectFaceResponseBean, Response response) {
                             progressDialogUtil.hide();
-                            List<FaceItem> faceItem = detectFaceResponseBean.getFace();
-                            mBitMapCache.put(imagePath, new SoftReference<List<FaceItem>>(faceItem));
+                            ArrayList<FaceItem> faceItem = detectFaceResponseBean.getFace();
+                            mBitMapCache.put(imagePath,faceItem);
                             Message successMessage = handler.obtainMessage(SUCCESS_DETECT_FACE, faceItem);
                             handler.sendMessage(successMessage);
                         }
@@ -134,7 +141,8 @@ public class AsyncBitmapLoader {
         /**
          * @param faces
          */
-        public void facesLoaded(List<FaceItem> faces);
+        public void facesLoaded(ArrayList<FaceItem> faces);
+
         public void bitmapLoaded(Bitmap bitmap);
     }
 }

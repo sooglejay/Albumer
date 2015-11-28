@@ -3,10 +3,12 @@ package sooglejay.youtu.api.fooddetct;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import sooglejay.youtu.model.Model;
+
 /**
  * Created by sooglejay on 2015/11/19.
  */
-public class FoodDetectResponseBean implements Parcelable {
+public class FoodDetectResponseBean implements Model,Parcelable {
 
 //    errorcode	Int32	返回状态码,非0值为出错
 //    errormsg	String	返回错误描述

@@ -3,10 +3,12 @@ package sooglejay.youtu.api.getgroupids;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import sooglejay.youtu.model.Model;
+
 /**
  * Created by sooglejay on 2015/11/19.
  */
-public class GetGroupIdsRequestBean implements Parcelable {
+public class GetGroupIdsRequestBean implements Model,Parcelable {
 //    * 参数
 //    * 参数名	类型	参数说明
 //    * 必须	app_id	String	App的 API ID

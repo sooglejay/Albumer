@@ -3,10 +3,12 @@ package sooglejay.youtu.api.faceidentify;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import sooglejay.youtu.model.Model;
+
 /**
  * Created by sooglejay on 2015/11/19.
  */
-public class IdentifyItem implements Parcelable {
+public class IdentifyItem implements Model,Parcelable {
 
 //    {
 //        "person_id":"person3",

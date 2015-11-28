@@ -6,10 +6,12 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 import java.util.List;
 
+import sooglejay.youtu.model.Model;
+
 /**
  * Created by sooglejay on 2015/11/19.
  */
-public class AddFaceResponseBean implements Parcelable {
+public class AddFaceResponseBean implements Model,Parcelable {
 
     //    4)
 //    返回值说明

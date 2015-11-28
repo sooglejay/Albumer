@@ -5,10 +5,12 @@ import android.os.Parcelable;
 
 import java.util.List;
 
+import sooglejay.youtu.model.Model;
+
 /**
  * Created by JammyQtheLab on 2015/11/26.
  */
-public class AsyncBean implements Parcelable {
+public class AsyncBean implements Model,Parcelable {
     private List<FaceItem>faces;
 
     public List<FaceItem> getFaces() {

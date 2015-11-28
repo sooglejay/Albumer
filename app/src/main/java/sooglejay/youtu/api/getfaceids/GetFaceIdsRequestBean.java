@@ -3,10 +3,12 @@ package sooglejay.youtu.api.getfaceids;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import sooglejay.youtu.model.Model;
+
 /**
  * Created by sooglejay on 2015/11/19.
  */
-public class GetFaceIdsRequestBean implements Parcelable {
+public class GetFaceIdsRequestBean implements Model,Parcelable {
 
 //    参数
 //    参数名	类型	参数说明

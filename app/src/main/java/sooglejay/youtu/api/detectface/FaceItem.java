@@ -3,10 +3,12 @@ package sooglejay.youtu.api.detectface;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import sooglejay.youtu.model.Model;
+
 /**
  * Created by sooglejay on 2015/11/19.
  */
-public class FaceItem implements Parcelable {
+public class FaceItem   implements Model, Parcelable {
     //说明
 
 //    face_id	String	人脸标识

@@ -3,10 +3,12 @@ package sooglejay.youtu.api.fooddetct;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import sooglejay.youtu.model.Model;
+
 /**
  * Created by sooglejay on 2015/11/19.
  */
-public class FoodDetectRequestBean implements Parcelable {
+public class FoodDetectRequestBean implements Model,Parcelable {
 
 //    必须	app_id	String	App的 API ID
 //    可选	image	String	需要检测的图像base64编码，图像需要是JPG PNG BMP 其中之一的格式

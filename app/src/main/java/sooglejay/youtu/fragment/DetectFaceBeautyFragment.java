@@ -144,7 +144,7 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
             public void success(DetectFaceResponseBean detectFaceResponseBean, Response response) {
                 p.hide();
                 tvResult.setText(detectFaceResponseBean.toString());
-                List<FaceItem> faceItem = detectFaceResponseBean.getFace();
+                ArrayList<FaceItem> faceItem = detectFaceResponseBean.getFace();
                 if(faceItem!=null&&faceItem.size()>0)
                 {
                     ivImage.setCanvasRes(bitmap, faceItem);

@@ -5,10 +5,12 @@ import android.os.Parcelable;
 
 import java.util.List;
 
+import sooglejay.youtu.model.Model;
+
 /**
  * Created by sooglejay on 2015/11/19.
  */
-public class GetGroupIdsResponseBean implements Parcelable {
+public class GetGroupIdsResponseBean implements Model,Parcelable {
 
 //    * group_ids	Array(String)	相应app_id的group_id列表
 //    * errorcode	Int	返回状态码

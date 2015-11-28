@@ -3,10 +3,12 @@ package sooglejay.youtu.api.imagetag;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import sooglejay.youtu.model.Model;
+
 /**
  * Created by sooglejay on 2015/11/19.
  */
-public class ImageTagRequestBean implements Parcelable {
+public class ImageTagRequestBean implements Model,Parcelable {
 //    必须	app_id	String	App的 API ID
 //    可选	image	String	需要检测的图像base64编码，图像需要是JPG PNG BMP 其中之一的格式
 //    可选	url	String	图片可以下载的url, 如果url 和image 都提供, 仅使用ur

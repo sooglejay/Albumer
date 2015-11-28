@@ -3,6 +3,8 @@ package sooglejay.youtu.api.facecompare;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import sooglejay.youtu.model.Model;
+
 /**
  • 人脸对比
  1)
@@ -20,7 +22,7 @@ import android.os.Parcelable;
  可选	urlA	String	A图片的url, image 和url只提供一个就可以了,如果都提供,只使用url
  可选	urlB	String	B图片的url, image 和url只提供一个就可以了,如果都提供,只使用url
  */
-public class FaceCompareRequestBean implements Parcelable {
+public class FaceCompareRequestBean implements Model,Parcelable {
 
     private String app_id;
     private String imageA;

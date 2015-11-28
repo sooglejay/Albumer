@@ -6,6 +6,7 @@ import android.media.FaceDetector;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -15,6 +16,7 @@ import android.widget.FrameLayout;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.lang.ref.SoftReference;
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit.RetrofitError;
@@ -26,7 +28,9 @@ import sooglejay.youtu.api.detectface.DetectFaceUtil;
 import sooglejay.youtu.api.detectface.FaceItem;
 import sooglejay.youtu.constant.NetWorkConstant;
 import sooglejay.youtu.model.NetCallback;
+import sooglejay.youtu.ui.GalleryActivity;
 import sooglejay.youtu.utils.AsyncBitmapLoader;
+import sooglejay.youtu.utils.CacheUtil;
 import sooglejay.youtu.utils.ImageUtils;
 import sooglejay.youtu.widgets.FaceImageView;
 import sooglejay.youtu.widgets.youtu.sign.Base64Util;
@@ -43,7 +47,10 @@ public class GalleryFragment extends BaseFragment {
     private String url;
 
     private OnRectfChangeListener onRectfChangeListener;
+    private CacheUtil cacheUtil;
+    private AsyncBitmapLoader asyncBitmapLoader;
 
+    private GalleryActivity activity;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_gallery, container, false);
@@ -58,8 +65,18 @@ public class GalleryFragment extends BaseFragment {
         url = getArguments().getString("url", "");
         imageView = (FaceImageView) view.findViewById(R.id.iv_photo);
         progressContainer = (FrameLayout) view.findViewById(R.id.progress_container);
+        activity = (GalleryActivity) getActivity();
+        cacheUtil = activity.cacheUtil;
+        asyncBitmapLoader =activity.asyncBitmapLoader;
+
 //        setPhotoView();
         getImage(url.substring(7, url.length()));
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Log.e("jwjw","yea");
     }
 
     private void setPhotoView() {
@@ -168,7 +185,7 @@ public class GalleryFragment extends BaseFragment {
             @Override
             public void success(DetectFaceResponseBean detectFaceResponseBean, Response response) {
                 progressContainer.setVisibility(View.GONE);
-                List<FaceItem> faceItem = detectFaceResponseBean.getFace();
+                ArrayList<FaceItem> faceItem = detectFaceResponseBean.getFace();
                 if (faceItem != null && faceItem.size() > 0) {
                     imageView.setCanvasRes(bitmap, faceItem);
                 } else {
@@ -181,10 +198,8 @@ public class GalleryFragment extends BaseFragment {
     }
 
     @Override
-    public void onPause() {
-        // TODO Auto-generated method stub
-        super.onPause();
-        ImageLoader.getInstance().clearMemoryCache();
+    public void onResume() {
+        super.onResume();
     }
 
     @Override
@@ -198,41 +213,37 @@ public class GalleryFragment extends BaseFragment {
         void onRectfChanged(RectF rectF);
     }
 
-
-    private AsyncBitmapLoader asyncBitmapLoader = new AsyncBitmapLoader();
-
     /**
      * 带缓存的图片显示器
+     *
      * @param imagePath
      */
     private void getImage(final String imagePath) {
         final AsyncBitmapLoader.BitmapCallback callback = new AsyncBitmapLoader.BitmapCallback() {
             @Override
-            public void facesLoaded(List<FaceItem> faces) {
-                if(faces!=null&&faces.size()>0)
-                {
+            public void facesLoaded(ArrayList<FaceItem> faces) {
+                if (faces != null && faces.size() > 0) {
                     imageView.setCanvasFaceListRes(faces);
-                    asyncBitmapLoader.addKey(imagePath,faces);
+                    asyncBitmapLoader.addKey(imagePath, faces);
                 }
             }
 
             @Override
             public void bitmapLoaded(final Bitmap bitmap) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(bitmap!=null) {
-                                imageView.setCanvasBitmapRes(bitmap);
-                            }else {
-                                imageView.setImageResource(R.drawable.default_error);
-                            }
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (bitmap != null) {
+                            imageView.setCanvasBitmapRes(bitmap);
+                        } else {
+                            imageView.setImageResource(R.drawable.default_error);
                         }
-                    });
-                }
+                    }
+                });
+            }
         };
-        final List<FaceItem>faces = asyncBitmapLoader.loadAsyncBean(getActivity(),imagePath,callback);
-        if(faces!=null&&faces.size()>0)
-        {
+        final ArrayList<FaceItem> faces = asyncBitmapLoader.loadAsyncBean(getActivity(), imagePath, callback);
+        if (faces != null && faces.size() > 0) {
             new AsyncTask<String, Bitmap, Bitmap>() {
                 @Override
                 protected void onPreExecute() {
@@ -242,17 +253,17 @@ public class GalleryFragment extends BaseFragment {
                 @Override
                 protected Bitmap doInBackground(String... params) {
                     Bitmap tempBitmap = ImageUtils.getBitmapFromLocalPath(params[0], 1);
-                    Bitmap bitmap =  ImageUtils.getResizedBitmap(tempBitmap, 600, 600);
+                    Bitmap bitmap = ImageUtils.getResizedBitmap(tempBitmap, 600, 600);
                     return bitmap;
                 }
 
                 @Override
                 protected void onPostExecute(final Bitmap bitmap) {
-                    asyncBitmapLoader.addKey(imagePath,faces);
+                    asyncBitmapLoader.addKey(imagePath, faces);
                     if (bitmap != null) {
                         imageView.setCanvasBitmapRes(bitmap);
                         imageView.setCanvasFaceListRes(faces);
-                    }else {
+                    } else {
                         imageView.setImageResource(R.drawable.default_error);
                     }
                 }

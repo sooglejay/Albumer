@@ -22,7 +22,7 @@ import uk.co.senab.photoview.PhotoView;
  * Created by sooglejay on 2015/11/21.
  */
 public class FaceImageView extends PhotoView {
-    List<FaceItem> faceItemList = new ArrayList<>();
+    ArrayList<FaceItem> faceItemList = new ArrayList<>();
     Bitmap bitmap, operationBitmap;
     private int mWidth;
     private int mHeight;
@@ -111,7 +111,7 @@ public class FaceImageView extends PhotoView {
 
     }
 
-    public void setCanvasRes(Bitmap bitmap, List<FaceItem> faceList) {
+    public void setCanvasRes(Bitmap bitmap, ArrayList<FaceItem> faceList) {
         this.bitmap = bitmap;
         this.faceItemList = faceList;
         invalidate();
@@ -121,7 +121,7 @@ public class FaceImageView extends PhotoView {
         this.bitmap = bm;
         invalidate();
     }
-   public void setCanvasFaceListRes(List<FaceItem>faceListRes) {
+   public void setCanvasFaceListRes(ArrayList<FaceItem>faceListRes) {
         this.faceItemList = faceListRes;
         invalidate();
     }
