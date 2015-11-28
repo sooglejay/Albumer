@@ -86,13 +86,6 @@ public class FaceImageView extends PhotoView {
                     canvas.rotate(mAngle, mWidth >> 1, mHeight >> 1);
                 }
                 canvas.drawCircle(centerX + faceItem.getX() + cx, centerY + faceItem.getY() + cy, radius, paint);
-//                int left = (int)(centerX + faceItem.getX() + cx);
-//                int top = (int)(centerY + faceItem.getY() + cy+faceItem.getHeight());
-//                int right = (int)(centerX + faceItem.getX() + cx+faceItem.getWidth());
-//                int bottom = (int)(centerY + faceItem.getY() + cy+faceItem.getHeight());
-//                Rect rect = new Rect(left,top,right,bottom);
-//                canvas.drawRect(rect,paint);
-//                canvas.drawBitmap(operationBitmap, centerX + faceItem.getX() + cx, centerY + faceItem.getY() + cy + radius, paint)
                 canvas.save();
             }
         }

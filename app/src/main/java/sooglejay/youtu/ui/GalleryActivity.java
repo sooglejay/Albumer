@@ -63,7 +63,7 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.OnR
         // TODO Auto-generated method stub
 
         titleBar = (TitleBar) findViewById(R.id.title_bar);
-        folderName = TextUtils.isEmpty(folderName) ? "lalala" : folderName;
+        folderName = TextUtils.isEmpty(folderName) ? "sooglejay" : folderName;
         titleBar.initTitleBarInfo((position + 1) + "/" + originUrls.size(), R.drawable.arrow_left, -1, folderName, "");
         titleBar.setOnTitleBarClickListener(new TitleBar.OnTitleBarClickListener() {
             @Override
@@ -80,32 +80,6 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.OnR
         galleryViewPager = (ViewPager) findViewById(R.id.gallery_pager);
         final GalleryAdapter galleryAdapter = new GalleryAdapter(getSupportFragmentManager());
 
-        galleryViewPager.setOffscreenPageLimit(1);
-        galleryViewPager.setCurrentItem(position);
-        galleryViewPager.addOnPageChangeListener(new OnPageChangeListener() {
-
-            @Override
-            public void onPageSelected(int position) {
-                // TODO Auto-generated method stub
-                if (originUrls != null) {
-                    titleBar.updateTitle((position + 1) + "/" + originUrls.size());
-                }
-            }
-
-            @Override
-            public void onPageScrolled(int position, float arg1, int arg2) {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int position) {
-                // TODO Auto-generated method stub
-
-            }
-        });
-
-
         //读取文件结束才设置适配器
         new AsyncTask<Void, Void, Void>() {
             @Override
@@ -119,6 +93,30 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.OnR
                 super.onPostExecute(aVoid);
                 Log.e("jwjw","文件加载完毕");
                 galleryViewPager.setAdapter(galleryAdapter);
+                galleryViewPager.setOffscreenPageLimit(1);
+                galleryViewPager.setCurrentItem(position);
+                galleryViewPager.addOnPageChangeListener(new OnPageChangeListener() {
+
+                    @Override
+                    public void onPageSelected(int position) {
+                        // TODO Auto-generated method stub
+                        if (originUrls != null) {
+                            titleBar.updateTitle((position + 1) + "/" + originUrls.size());
+                        }
+                    }
+
+                    @Override
+                    public void onPageScrolled(int position, float arg1, int arg2) {
+                        // TODO Auto-generated method stub
+
+                    }
+
+                    @Override
+                    public void onPageScrollStateChanged(int position) {
+                        // TODO Auto-generated method stub
+
+                    }
+                });
             }
         }.execute();
 
