@@ -16,6 +16,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
@@ -429,6 +430,11 @@ public class ImageUtils {
         }catch (OutOfMemoryError oom)
         {
             Log.e("jwjw","oom");
+            Context context = view.getContext();
+            if(context!=null)
+            {
+                Toast.makeText(context,"内存不足！请稍后重试！",Toast.LENGTH_SHORT).show();
+            }
         } catch (Exception e) {
             //Logger.e(e.toString());
         }

@@ -14,6 +14,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +31,8 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.OnR
     private List<String> originUrls = new ArrayList<>();
     private String folderName;
     private int position;
+
+
     private ViewPager galleryViewPager;
     private float width;
     private TitleBar titleBar;
@@ -166,6 +170,6 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.OnR
         if (cacheUtil != null && asyncBitmapLoader != null) {
             cacheUtil.saveObjectToFile(this, asyncBitmapLoader.getmBitMapCache());
         }
-//        ImageLoader.getInstance().clearMemoryCache();
+        ImageLoader.getInstance().clearMemoryCache();
     }
 }

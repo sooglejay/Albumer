@@ -8,10 +8,12 @@ import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -69,8 +71,8 @@ public class GalleryFragment extends BaseFragment {
         cacheUtil = activity.cacheUtil;
         asyncBitmapLoader =activity.asyncBitmapLoader;
 
-//        setPhotoView();
         getImage(url.substring(7, url.length()));
+
     }
 
     @Override
@@ -79,91 +81,6 @@ public class GalleryFragment extends BaseFragment {
         Log.e("jwjw","yea");
     }
 
-    private void setPhotoView() {
-        imageView.setOnMatrixChangeListener(new OnMatrixChangedListener() {
-
-            @Override
-            public void onMatrixChanged(RectF rectF) {
-                // TODO Auto-generated method stub
-                onRectfChangeListener.onRectfChanged(rectF);
-            }
-        });
-//        ImageLoader.getInstance().displayImage(url, imageView, ImageUtils.getOptions(), new ImageLoadingListener() {
-//            @Override
-//            public void onLoadingStarted(String imageUri, View view) {
-//                Log.e("Retrofit", "onLoadingStarted url:: " + url);
-//                progressContainer.setVisibility(View.VISIBLE);
-//            }
-//
-//            @Override
-//            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-//                progressContainer.setVisibility(View.GONE);
-//            }
-//
-//            @Override
-//            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-//                Log.e("Retrofit", "_onLoadingComplete_" + imageUri);
-//                try {
-//                    Bitmap resizedBitmap = ImageUtils.getResizedBitmap(loadedImage, 800, 800);
-//                    imageView.setCanvasBitmapRes(resizedBitmap);
-//                    detectface(resizedBitmap);
-//                } catch (OutOfMemoryError oom) {
-//                    Toast.makeText(getActivity(), " >_< ! 内存不足 ", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//
-//            @Override
-//            public void onLoadingCancelled(String imageUri, View view) {
-//                Log.e("Retrofit", "onLoadingCancelled" + imageUri);
-//                progressContainer.setVisibility(View.GONE);
-//            }
-//        });
-//
-
-//        ImageLoader.getInstance().displayImage(url, imageView, ImageUtils.getOptions(), new ImageLoadingListener() {
-//            @Override
-//            public void onLoadingStarted(String s, View view) {
-//                progressContainer.setVisibility(View.VISIBLE);
-//            }
-//
-//            @Override
-//            public void onLoadingFailed(String s, View view, FailReason failReason) {
-//                progressContainer.setVisibility(View.GONE);
-//
-//            }
-//
-//            @Override
-//            public void onLoadingComplete(String s, View view, Bitmap bitmap) {
-//                if (bitmap.getWidth() >= 1020 || bitmap.getHeight() >= 1920) {
-//                    imageView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-//                }
-//                progressContainer.setVisibility(View.GONE);
-//                Bitmap resizedBitmap =ImageUtils.getResizedBitmap(bitmap, 800, 800);
-//                detectface(resizedBitmap);
-//            }
-//
-//            @Override
-//            public void onLoadingCancelled(String s, View view) {
-//            }
-//        });
-
-
-        imageView.setOnPhotoTapListener(new OnPhotoTapListener() {
-
-            @Override
-            public void onPhotoTap(View arg0, float arg1, float arg2) {
-                // TODO Auto-generated method stub
-
-            }
-        });
-        imageView.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-            }
-        });
-    }
 
     private void closeFullScreen() {
         getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
