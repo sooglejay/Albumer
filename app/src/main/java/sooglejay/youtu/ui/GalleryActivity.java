@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -116,6 +117,7 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.OnR
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
+                Log.e("jwjw","文件加载完毕");
                 galleryViewPager.setAdapter(galleryAdapter);
             }
         }.execute();
