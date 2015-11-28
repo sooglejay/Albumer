@@ -115,6 +115,9 @@ public class ImageUtils {
         String packPath = "";
         try {
             packPath = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES).getAbsolutePath();
+        }catch (OutOfMemoryError oom)
+        {
+            Log.e("jwjw","oom");
         } catch (Exception e) {
             packPath = context.getFilesDir() + File.separator + "Pictures";
         } finally {
@@ -442,6 +445,9 @@ public class ImageUtils {
         } catch (IOException e) {
             Log.w("jwjw", "Error saving image file: " + e.getMessage());
             return false;
+        }catch (OutOfMemoryError oom)
+        {
+            Log.e("jwjw","oom");
         }
 
         return true;
@@ -474,7 +480,10 @@ public class ImageUtils {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inSampleSize = sampleSize;
             return BitmapFactory.decodeFile(path, options);
-        } catch (Exception e) {
+        } catch (OutOfMemoryError oom)
+        {
+            Log.e("jwjw","oom");
+        }catch (Exception e) {
             //  Logger.e(e.toString());
         }
 
@@ -488,7 +497,10 @@ public class ImageUtils {
     public static Bitmap getBitmapFromBytes(byte[] bytes) {
         try {
             return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-        } catch (Exception e) {
+        } catch (OutOfMemoryError oom)
+        {
+            Log.e("jwjw","oom");
+        }catch (Exception e) {
             //  Logger.e(e.toString());
         }
 
@@ -506,6 +518,9 @@ public class ImageUtils {
             bitmap.compress(Bitmap.CompressFormat.PNG, quality, baos);
 
             return baos.toByteArray();
+        }catch (OutOfMemoryError oom)
+        {
+            Log.e("jwjw","oom");
         } catch (Exception e) {
             //  Logger.e(e.toString());
         }
@@ -538,6 +553,9 @@ public class ImageUtils {
             return Bitmap.createScaledBitmap(srcBitmap, newWidth, newHeight, true);
         } catch (Exception e) {
             //  Logger.e(e.toString());
+        }catch (OutOfMemoryError oom)
+        {
+            Log.e("jwjw","outofmemeoty");
         }
         return null;
     }
@@ -554,6 +572,9 @@ public class ImageUtils {
         try {
             result = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.RGB_565);
             view.draw(new Canvas(result));
+        }catch (OutOfMemoryError oom)
+        {
+            Log.e("jwjw","oom");
         } catch (Exception e) {
             //Logger.e(e.toString());
         }
@@ -574,7 +595,10 @@ public class ImageUtils {
 
         try {
             return original.compress(format, quality, new FileOutputStream(outputLocation));
-        } catch (Exception e) {
+        } catch (OutOfMemoryError oom)
+        {
+            Log.e("jwjw","oom");
+        }catch (Exception e) {
             //  Logger.e(e.toString());
         }
 
@@ -619,12 +643,18 @@ public class ImageUtils {
             return bitmapImage;
         } catch (Exception e) {
             //  Logger.e(e.toString());
-        } finally {
+        } catch (OutOfMemoryError oom)
+        {
+            Log.e("jwjw","oom");
+        }finally {
             if (input != null) {
                 try {
                     input.close();
                 } catch (IOException e) {
                     //  Logger.e(e.toString());
+                }catch (OutOfMemoryError oom)
+                {
+                    Log.e("jwjw","oom");
                 }
             }
         }
