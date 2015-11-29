@@ -1,5 +1,6 @@
 package sooglejay.youtu.widgets;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import sooglejay.youtu.api.detectface.FaceItem;
+import sooglejay.youtu.fragment.DialogFragmentCreater;
 import uk.co.senab.photoview.PhotoView;
 
 /**
@@ -37,12 +39,10 @@ public class FaceImageView extends PhotoView {
     float centerX;
     float centerY;
     float radius;
-
-
-    float eventX, eventY;
-    boolean clickFlag = false;//点击的次数是偶数
     Long clickTime;//点击时的时间戳
 
+
+    private DialogFragmentCreater dialogFragmentCreater;
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         mWidth = View.MeasureSpec.getSize(widthMeasureSpec);
@@ -53,7 +53,6 @@ public class FaceImageView extends PhotoView {
     public FaceImageView(Context context) {
         super(context);
         initView(context);
-
     }
 
     public FaceImageView(Context context, AttributeSet attr) {
@@ -65,7 +64,6 @@ public class FaceImageView extends PhotoView {
     public FaceImageView(Context context, AttributeSet attr, int defStyle) {
         super(context, attr, defStyle);
         initView(context);
-
     }
 
     private void initView(Context context) {
@@ -113,6 +111,11 @@ public class FaceImageView extends PhotoView {
         if (centerX + outerFaceItem.getX() + cx - radius <= x && x <= centerX + outerFaceItem.getX() + cx + radius) {
             if (centerY + outerFaceItem.getY() + cy - radius <= y && y <= centerY + outerFaceItem.getY() + cy + radius) {
                 Toast.makeText(context, "点自己", Toast.LENGTH_SHORT).show();
+                if(dialogFragmentCreater!=null)
+                {
+                    dialogFragmentCreater.showDialog(context,DialogFragmentCreater.DIALOG_FACE_OPERATION);
+                }
+
             } else {
                 Toast.makeText(context, "X 符合，Y不符合", Toast.LENGTH_SHORT).show();
             }
@@ -121,12 +124,27 @@ public class FaceImageView extends PhotoView {
         }
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                clickTime = System.currentTimeMillis();
+                break;
+            case MotionEvent.ACTION_UP:
+                if (Math.abs(clickTime - System.currentTimeMillis()) < MAX_CLICK_DURATION) {
+                    whichCircle(event.getX(), event.getY());
+                    return true;
+                }
+                break;
+        }
+        return super.onTouchEvent(event);
+    }
+
     public void setCanvasRes(Bitmap bitmap, ArrayList<FaceItem> faceList) {
         this.bitmap = bitmap;
         this.faceItemList = faceList;
         invalidate();
     }
-
 
     public void setCanvasBitmapRes(Bitmap bm) {
         this.bitmap = bm;
@@ -150,33 +168,8 @@ public class FaceImageView extends PhotoView {
         }
     }
 
-
-    @Override
-    public void setOnTouchListener(OnTouchListener l) {
-        MyOnTouchListener onTouchListener = new MyOnTouchListener();
-        super.setOnTouchListener(onTouchListener);
-    }
-
-    private class MyOnTouchListener implements OnTouchListener
+    public void setDialogFragmentCreater(DialogFragmentCreater dialogFragmentCreater)
     {
-
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-
-//        whichCircle(x, y);
-            Log.e("test", "motionEvent.getAction()：" + motionEvent.getAction() + "");
-            Log.e("test","motionEvent.getActionIndex()："+motionEvent.getActionIndex()+"");
-            switch (motionEvent.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    Toast.makeText(context, "按下：", Toast.LENGTH_SHORT).show();
-                    break;
-                case MotionEvent.ACTION_UP:
-                    Toast.makeText(context, "抬起：", Toast.LENGTH_SHORT).show();
-                    break;
-            }
-
-            return false;
-        }
+        this.dialogFragmentCreater = dialogFragmentCreater;
     }
-
 }

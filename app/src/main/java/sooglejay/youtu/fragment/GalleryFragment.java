@@ -53,6 +53,8 @@ public class GalleryFragment extends BaseFragment {
     private AsyncBitmapLoader asyncBitmapLoader;
 
     private GalleryActivity activity;
+
+    private DialogFragmentCreater dialogFragmentCreater;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_gallery, container, false);
@@ -66,10 +68,13 @@ public class GalleryFragment extends BaseFragment {
         position = getArguments().getInt("position", 0);
         url = getArguments().getString("url", "");
         imageView = (FaceImageView) view.findViewById(R.id.iv_photo);
+        dialogFragmentCreater = new DialogFragmentCreater();
+        dialogFragmentCreater.setDialogContext(getActivity(),getActivity().getSupportFragmentManager());
+        imageView.setDialogFragmentCreater(dialogFragmentCreater);
         progressContainer = (FrameLayout) view.findViewById(R.id.progress_container);
         activity = (GalleryActivity) getActivity();
         cacheUtil = activity.cacheUtil;
-        asyncBitmapLoader =activity.asyncBitmapLoader;
+        asyncBitmapLoader = activity.asyncBitmapLoader;
 
         getImage(url.substring(7, url.length()));
 
@@ -78,7 +83,7 @@ public class GalleryFragment extends BaseFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.e("jwjw","yea");
+        Log.e("jwjw", "yea");
     }
 
 
@@ -106,10 +111,8 @@ public class GalleryFragment extends BaseFragment {
                 if (faceItem != null && faceItem.size() > 0) {
                     imageView.setCanvasRes(bitmap, faceItem);
                 } else {
-                    imageView.clearCanvasRes();
                     imageView.setCanvasBitmapRes(bitmap);
                 }
-
             }
         });
     }
@@ -123,6 +126,9 @@ public class GalleryFragment extends BaseFragment {
     public void onDestroy() {
         // TODO Auto-generated method stub
         super.onDestroy();
+        if (imageView != null) {
+            imageView.clearCanvasRes();
+        }
         System.gc();
     }
 

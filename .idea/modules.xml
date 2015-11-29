@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/MyYouTuTest.iml" filepath="$PROJECT_DIR$/MyYouTuTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/photoView/photoView.iml" filepath="$PROJECT_DIR$/photoView/photoView.iml" />
       <module fileurl="file://$PROJECT_DIR$/umengshare/umengshare.iml" filepath="$PROJECT_DIR$/umengshare/umengshare.iml" />
     </modules>

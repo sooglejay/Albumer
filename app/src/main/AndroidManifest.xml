@@ -58,6 +58,9 @@
         <activity
             android:name=".ui.GalleryActivity"
             android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".ui.EditFaceUserInfoActivity"
+            android:configChanges="orientation|screenSize" />
         <service android:name="com.amap.api.location.APSService"></service>
 
 

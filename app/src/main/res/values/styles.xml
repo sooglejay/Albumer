@@ -54,4 +54,10 @@
     </style>
 
 
+    <!--<style name="CustomDialog" parent="android:style/Theme.Dialog">-->
+    <style name="CustomDialog" parent= "Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/shape_4_white_color</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
 </resources>
