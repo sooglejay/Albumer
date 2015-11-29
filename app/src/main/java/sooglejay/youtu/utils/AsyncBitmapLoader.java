@@ -126,6 +126,7 @@ public class AsyncBitmapLoader {
                 }
             }
 
+
         }.execute(imagePath);
         return null;
     }
