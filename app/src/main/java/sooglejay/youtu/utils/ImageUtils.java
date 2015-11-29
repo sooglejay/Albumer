@@ -317,11 +317,17 @@ public class ImageUtils {
 
     public static Bitmap Bytes2Bimap(byte[] b){
         if(b.length!=0){
-            return BitmapFactory.decodeByteArray(b, 0, b.length);
+            try {
+                return BitmapFactory.decodeByteArray(b, 0, b.length);
+            } catch (OutOfMemoryError oom)
+            {
+                Log.e("jwjw","oom");
+            }catch (Exception e) {
+                //  Logger.e(e.toString());
+                Log.e("jwjw", e.toString());
+            }
         }
-        else {
-            return null;
-        }
+        return null;
     }
     public static final int READ_BUFFER_SIZE = 32 * 1024;  //32KB
 

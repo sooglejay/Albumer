@@ -32,7 +32,6 @@ public class FaceIdentifyRequestBean implements Model,Parcelable {
     private String app_id;
     private String group_id;
     private String image;
-    private String url;
 
     @Override
     public String toString() {
@@ -40,7 +39,6 @@ public class FaceIdentifyRequestBean implements Model,Parcelable {
                 "app_id='" + app_id + '\'' +
                 ", group_id='" + group_id + '\'' +
                 ", image='" + image + '\'' +
-                ", url='" + url + '\'' +
                 '}';
     }
 
@@ -68,13 +66,6 @@ public class FaceIdentifyRequestBean implements Model,Parcelable {
         this.image = image;
     }
 
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
 
     @Override
     public int describeContents() {
@@ -86,7 +77,6 @@ public class FaceIdentifyRequestBean implements Model,Parcelable {
         dest.writeString(this.app_id);
         dest.writeString(this.group_id);
         dest.writeString(this.image);
-        dest.writeString(this.url);
     }
 
     public FaceIdentifyRequestBean() {
@@ -96,7 +86,6 @@ public class FaceIdentifyRequestBean implements Model,Parcelable {
         this.app_id = in.readString();
         this.group_id = in.readString();
         this.image = in.readString();
-        this.url = in.readString();
     }
 
     public static final Creator<FaceIdentifyRequestBean> CREATOR = new Creator<FaceIdentifyRequestBean>() {

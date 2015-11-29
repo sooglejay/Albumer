@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -12,6 +13,7 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,11 +23,13 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
 import sooglejay.youtu.R;
 import sooglejay.youtu.ui.EditFaceUserInfoActivity;
+import sooglejay.youtu.utils.ImageUtils;
 
 
 /**
@@ -34,12 +38,19 @@ import sooglejay.youtu.ui.EditFaceUserInfoActivity;
 public class DialogFragmentCreater extends DialogFragment {
     public static final int DIALOG_FACE_OPERATION = 1000;//after detect and recognize face , do some operation
 
-  public final static String dialog_fragment_key = "fragment_id";
+    public final static String dialog_fragment_key = "fragment_id";
     public final static String dialog_fragment_tag = "dialog";
 
     private Context mContext;
 
     private FragmentManager fragmentManager;
+
+
+    public void setFaceBitmap(Bitmap faceBitmap) {
+        this.faceBitmap = faceBitmap;
+    }
+
+    private Bitmap faceBitmap;//人脸部位的bitmap
 
     public void setDialogContext(Context mContext, FragmentManager fragmentManager) {
         this.mContext = mContext;
@@ -109,11 +120,19 @@ public class DialogFragmentCreater extends DialogFragment {
      */
     private Dialog showFaceOperationDialog(final Context mContext) {
         View convertView = LayoutInflater.from(mContext).inflate(R.layout.dialog_face_operation, null);
-        TextView tv_edit_info = (TextView)convertView.findViewById(R.id.tv_edit_info);
+        TextView tv_edit_info = (TextView) convertView.findViewById(R.id.tv_edit_info);
         tv_edit_info.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    mContext.startActivity(new Intent(mContext, EditFaceUserInfoActivity.class));
+                if (faceBitmap != null) {
+                    try {
+                        byte[] faceByteArray = ImageUtils.Bitmap2Bytes(faceBitmap);
+                        EditFaceUserInfoActivity.startActivity(mContext, faceByteArray);
+                    } catch (NullPointerException npe) {
+                        Log.e("jwjw", "图片转换失败" + npe.toString());
+                        Toast.makeText(mContext,"图片转换失败,无法跳转到编辑页面",Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         });
         final Dialog dialog = new Dialog(mContext, R.style.CustomDialog);

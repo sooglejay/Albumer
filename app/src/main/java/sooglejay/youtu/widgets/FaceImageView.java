@@ -6,6 +6,10 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -42,7 +46,9 @@ public class FaceImageView extends PhotoView {
     Long clickTime;//点击时的时间戳
 
 
-    private DialogFragmentCreater dialogFragmentCreater;
+    private DialogFragmentCreater dialogFragmentCreater;//生成对话框，显示人脸的操作选项
+
+    private Bitmap faceBitmap;//人脸部位的bitmap
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         mWidth = View.MeasureSpec.getSize(widthMeasureSpec);
@@ -103,24 +109,32 @@ public class FaceImageView extends PhotoView {
                 }
                 canvas.drawCircle(centerX + faceItem.getX() + cx, centerY + faceItem.getY() + cy, radius, paint);
                 canvas.save();
+
+                canvas.clipRect(faceItem.getX(), faceItem.getY(), faceItem.getX() + faceItem.getX() + faceItem.getWidth(), faceItem.getY() + faceItem.getHeight());
+                canvas.save();
+
+                faceBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+                canvas.restore();
             }
         }
     }
 
     private void whichCircle(float x, float y) {
-        if (centerX + outerFaceItem.getX() + cx - radius <= x && x <= centerX + outerFaceItem.getX() + cx + radius) {
-            if (centerY + outerFaceItem.getY() + cy - radius <= y && y <= centerY + outerFaceItem.getY() + cy + radius) {
-                Toast.makeText(context, "点自己", Toast.LENGTH_SHORT).show();
-                if(dialogFragmentCreater!=null)
-                {
-                    dialogFragmentCreater.showDialog(context,DialogFragmentCreater.DIALOG_FACE_OPERATION);
-                }
+        if(outerFaceItem!=null) {
+            if (centerX + outerFaceItem.getX() + cx - radius <= x && x <= centerX + outerFaceItem.getX() + cx + radius) {
+                if (centerY + outerFaceItem.getY() + cy - radius <= y && y <= centerY + outerFaceItem.getY() + cy + radius) {
+                    Toast.makeText(context, "点自己", Toast.LENGTH_SHORT).show();
+                    if (dialogFragmentCreater != null) {
+                        dialogFragmentCreater.setFaceBitmap(faceBitmap);
+                        dialogFragmentCreater.showDialog(context, DialogFragmentCreater.DIALOG_FACE_OPERATION);
+                    }
 
+                } else {
+                    Toast.makeText(context, "X 符合，Y不符合", Toast.LENGTH_SHORT).show();
+                }
             } else {
-                Toast.makeText(context, "X 符合，Y不符合", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "X不符合", Toast.LENGTH_SHORT).show();
             }
-        } else {
-            Toast.makeText(context, "X不符合", Toast.LENGTH_SHORT).show();
         }
     }
 

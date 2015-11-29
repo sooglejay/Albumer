@@ -33,7 +33,6 @@ public class FaceIdentifyUtil extends RetrofitUtil {
                                     String app_id,
                                     String group_id,
                                     String image,
-                                    String url,
                                     NetCallback<FaceIdentifyResponseBean> callback) {
         String sign = GetSignUtil.getInstance().getSignStr();
         RestAdapter restAdapter = getRestAdapter(mContext, sign);
@@ -41,7 +40,6 @@ public class FaceIdentifyUtil extends RetrofitUtil {
         FaceIdentifyRequestBean bean = new FaceIdentifyRequestBean();
         bean.setApp_id(app_id);
         bean.setImage(image);
-        bean.setUrl(url);
         bean.setGroup_id(group_id);
         git.faceidentify(bean, callback);
     }
