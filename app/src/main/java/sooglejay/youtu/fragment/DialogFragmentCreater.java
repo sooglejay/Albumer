@@ -33,7 +33,9 @@ import java.util.List;
 import sooglejay.youtu.R;
 import sooglejay.youtu.api.faceidentify.IdentifyItem;
 import sooglejay.youtu.ui.EditFaceUserInfoActivity;
+import sooglejay.youtu.utils.GetTagUtil;
 import sooglejay.youtu.utils.ImageUtils;
+import sooglejay.youtu.utils.UIUtil;
 
 
 /**
@@ -127,6 +129,8 @@ public class DialogFragmentCreater extends DialogFragment {
     private Dialog showFaceOperationDialog(final Context mContext) {
         View convertView = LayoutInflater.from(mContext).inflate(R.layout.dialog_face_operation, null);
         TextView tv_edit_info = (TextView) convertView.findViewById(R.id.tv_edit_info);
+        TextView tv_call = (TextView) convertView.findViewById(R.id.tv_call);
+        TextView tv_send_message = (TextView) convertView.findViewById(R.id.tv_send_message);
         tv_edit_info.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -139,6 +143,28 @@ public class DialogFragmentCreater extends DialogFragment {
                         Toast.makeText(mContext, "图片转换失败,无法跳转到编辑页面", Toast.LENGTH_SHORT).show();
                     }
                 }
+            }
+        });
+
+        tv_call.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(identifyItems!=null && identifyItems.size()>0) {
+                    String phoneStr = GetTagUtil.getPhoneNumber(identifyItems.get(0).getTag());
+                    UIUtil.takePhoneCall(getActivity(), phoneStr,0);
+                }
+            }
+        });
+
+        tv_send_message.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(identifyItems!=null && identifyItems.size()>0)
+                {
+                    String phoneStr = GetTagUtil.getPhoneNumber(identifyItems.get(0).getTag());
+                    UIUtil.sendMessage(getActivity(),phoneStr,null,0);
+                }
+
             }
         });
         final Dialog dialog = new Dialog(mContext, R.style.CustomDialog);

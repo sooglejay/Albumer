@@ -26,5 +26,24 @@
         android:layout_margin="@dimen/middle_padding"
         android:padding="@dimen/middle_padding"
         android:text="编辑信息" />
+    <TextView
+        android:id="@+id/tv_call"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/btn_select_white"
+        android:layout_margin="@dimen/middle_padding"
+        android:padding="@dimen/middle_padding"
+        android:text="打电话" />
+
+    <TextView
+        android:id="@+id/tv_send_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/btn_select_white"
+        android:layout_margin="@dimen/middle_padding"
+        android:padding="@dimen/middle_padding"
+        android:text="发短信" />
 
 </LinearLayout>
