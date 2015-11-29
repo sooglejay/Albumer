@@ -78,7 +78,7 @@ public class AsyncBitmapLoader {
      */
     public ArrayList<FaceItem> loadAsyncBean(final Context context, final String imagePath, final BitmapCallback callback) {
         Log.e("jwjw", 123 + "loadAsyncBean");
-        if (mBitMapCache.containsKey(imagePath)) {
+        if (mBitMapCache!=null&& mBitMapCache.containsKey(imagePath)) {
             Log.e("jwjw", 456 + "  containsKey");
             ArrayList<FaceItem> faces = mBitMapCache.get(imagePath);
             if (faces != null) {

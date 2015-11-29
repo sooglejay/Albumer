@@ -333,18 +333,32 @@ public class AlbumFragment extends BaseFragment {
     private void selectImageFromGrid(Image image, int position) {
         if(outIndex == 0 )//如果是全部的文件
         {
+            String folderNameStr="";
+            int index = 0 ;
+            if(image!=null)
+            {
+                folderNameStr = new File(image.path).getParentFile().getName();
+            }
             if(mResultFolder!=null)
             {
                 ArrayList<String> urls = new ArrayList<>();
                 for (Folder folder :mResultFolder)
                 {
-                    for (Image image1 : folder.images) {
-                        urls.add("file://" + image1.path);
+                    if(folder.name.equals(folderNameStr))
+                    {
+                        int j = 0;
+                        for (Image image1 : folder.images) {
+                            if(image1.equals(image))
+                            {
+                                index = j;
+                            }
+                            j++;
+                            urls.add("file://" + image1.path);
+                        }
+                        break;
                     }
                 }
-                Log.e("Retrofit","urls:"+urls);
-                Log.e("Retrofit","position:"+position);
-                GalleryActivity.startActivity(getActivity(),"所有文件", position, urls);
+                GalleryActivity.startActivity(getActivity(),folderNameStr, index, urls);
             }
         }
         else if (image != null && outerFolder != null) {
