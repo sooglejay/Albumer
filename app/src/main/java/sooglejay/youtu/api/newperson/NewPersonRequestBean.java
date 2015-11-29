@@ -33,7 +33,6 @@ public class NewPersonRequestBean implements Model,Parcelable {
     private List<String> group_ids;
     private String person_id;
     private String image;
-    private String url;
     private String person_name;
     private String tag;
 
@@ -44,7 +43,6 @@ public class NewPersonRequestBean implements Model,Parcelable {
                 ", group_ids=" + group_ids +
                 ", person_id='" + person_id + '\'' +
                 ", image='" + image + '\'' +
-                ", url='" + url + '\'' +
                 ", person_name='" + person_name + '\'' +
                 ", tag='" + tag + '\'' +
                 '}';
@@ -82,13 +80,7 @@ public class NewPersonRequestBean implements Model,Parcelable {
         this.image = image;
     }
 
-    public String getUrl() {
-        return url;
-    }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
 
     public String getPerson_name() {
         return person_name;
@@ -117,7 +109,6 @@ public class NewPersonRequestBean implements Model,Parcelable {
         dest.writeStringList(this.group_ids);
         dest.writeString(this.person_id);
         dest.writeString(this.image);
-        dest.writeString(this.url);
         dest.writeString(this.person_name);
         dest.writeString(this.tag);
     }
@@ -130,7 +121,6 @@ public class NewPersonRequestBean implements Model,Parcelable {
         this.group_ids = in.createStringArrayList();
         this.person_id = in.readString();
         this.image = in.readString();
-        this.url = in.readString();
         this.person_name = in.readString();
         this.tag = in.readString();
     }

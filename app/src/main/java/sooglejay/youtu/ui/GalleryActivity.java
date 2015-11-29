@@ -88,7 +88,8 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.OnR
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
-                asyncBitmapLoader.setmBitMapCache(cacheUtil.getObjectFromFile());
+                asyncBitmapLoader.setmDetectedFaceBitMapCache(cacheUtil.getDetectedObjectFromFile());
+                asyncBitmapLoader.setmIdentifiedFaceBitMapCache(cacheUtil.getIdentifiedObjectFromFile());
                 return null;
             }
 
@@ -168,7 +169,8 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.OnR
         // TODO Auto-generated method stub
         super.onPause();
         if (cacheUtil != null && asyncBitmapLoader != null) {
-            cacheUtil.saveObjectToFile(this, asyncBitmapLoader.getmBitMapCache());
+            cacheUtil.saveDetectedObjectToFile(this, asyncBitmapLoader.getmDetectedFaceBitMapCache());
+            cacheUtil.saveIdentifiedObjectToFile(this, asyncBitmapLoader.getmIdentifiedFaceBitMapCache());
         }
         ImageLoader.getInstance().clearMemoryCache();
     }

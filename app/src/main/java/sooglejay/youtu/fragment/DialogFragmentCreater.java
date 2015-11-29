@@ -27,7 +27,11 @@ import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import sooglejay.youtu.R;
+import sooglejay.youtu.api.faceidentify.IdentifyItem;
 import sooglejay.youtu.ui.EditFaceUserInfoActivity;
 import sooglejay.youtu.utils.ImageUtils;
 
@@ -46,11 +50,13 @@ public class DialogFragmentCreater extends DialogFragment {
     private FragmentManager fragmentManager;
 
 
-    public void setFaceBitmap(Bitmap faceBitmap) {
+    public void setFaceDatas(Bitmap faceBitmap,ArrayList<IdentifyItem> identifyItems) {
         this.faceBitmap = faceBitmap;
+        this.identifyItems = identifyItems;
     }
 
     private Bitmap faceBitmap;//人脸部位的bitmap
+    private ArrayList<IdentifyItem> identifyItems;//人脸识别 置信度 top5列表
 
     public void setDialogContext(Context mContext, FragmentManager fragmentManager) {
         this.mContext = mContext;
@@ -127,10 +133,10 @@ public class DialogFragmentCreater extends DialogFragment {
                 if (faceBitmap != null) {
                     try {
                         byte[] faceByteArray = ImageUtils.Bitmap2Bytes(faceBitmap);
-                        EditFaceUserInfoActivity.startActivity(mContext, faceByteArray);
+                        EditFaceUserInfoActivity.startActivity(mContext, faceByteArray,identifyItems);
                     } catch (NullPointerException npe) {
                         Log.e("jwjw", "图片转换失败" + npe.toString());
-                        Toast.makeText(mContext,"图片转换失败,无法跳转到编辑页面",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, "图片转换失败,无法跳转到编辑页面", Toast.LENGTH_SHORT).show();
                     }
                 }
             }

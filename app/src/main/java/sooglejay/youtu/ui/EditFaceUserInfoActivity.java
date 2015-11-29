@@ -10,22 +10,40 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import sooglejay.youtu.R;
+import sooglejay.youtu.api.faceidentify.IdentifyItem;
+import sooglejay.youtu.api.newperson.NewPersonResponseBean;
+import sooglejay.youtu.api.newperson.NewPersonUtil;
+import sooglejay.youtu.constant.IntConstant;
+import sooglejay.youtu.constant.NetWorkConstant;
+import sooglejay.youtu.model.NetCallback;
+import sooglejay.youtu.utils.GetTagUtil;
 import sooglejay.youtu.utils.ImageUtils;
 import sooglejay.youtu.widgets.RoundImageView;
 import sooglejay.youtu.widgets.TitleBar;
+import sooglejay.youtu.widgets.imagepicker.bean.Image;
+import sooglejay.youtu.widgets.youtu.sign.Base64Util;
 
 /**
  * Created by JammyQtheLab on 2015/11/28.
  */
 public class EditFaceUserInfoActivity extends BaseActivity {
     private static final String EXTRA_FACE_BITMAP= "face_bitmap";
+    private static final String EXTRA_FACE_IDENTIFY_DATAS= "identifyItems";
     private Activity activity;
     private Bitmap faceBitmap;
-    public static void startActivity(Context context,byte[]faceByte)
+    private  byte[]faceByteArray;
+    private ArrayList<IdentifyItem> identifyItems;//人脸识别 置信度 top5列表
+
+    public static void startActivity(Context context,byte[]faceByte,ArrayList<IdentifyItem> identifyItems)
     {
         Intent intent = new Intent(context,EditFaceUserInfoActivity.class);
         intent.putExtra(EXTRA_FACE_BITMAP,faceByte);
+        intent.putParcelableArrayListExtra(EXTRA_FACE_IDENTIFY_DATAS,identifyItems);
         context.startActivity(intent);
     }
 
@@ -36,7 +54,6 @@ public class EditFaceUserInfoActivity extends BaseActivity {
     private EditText etPhoneNumber;
     private EditText etQq;
     private EditText etWeixin;
-    private TextView tvSave;
 
     /**
      * Find the Views in the layout<br />
@@ -51,7 +68,6 @@ public class EditFaceUserInfoActivity extends BaseActivity {
         etPhoneNumber = (EditText)findViewById( R.id.et_phone_number );
         etQq = (EditText)findViewById( R.id.et_qq );
         etWeixin = (EditText)findViewById( R.id.et_weixin );
-        tvSave = (TextView)findViewById( R.id.tv_save );
     }
 
 
@@ -65,7 +81,7 @@ public class EditFaceUserInfoActivity extends BaseActivity {
         findViews();
 
         titleBar = (TitleBar)findViewById(R.id.title_bar);
-        titleBar.initTitleBarInfo("编辑", R.drawable.arrow_left, -1, "", "");
+        titleBar.initTitleBarInfo("编辑", R.drawable.arrow_left, -1, "", "确定");
         titleBar.setOnTitleBarClickListener(new TitleBar.OnTitleBarClickListener() {
             @Override
             public void onLeftButtonClick(View v) {
@@ -74,28 +90,43 @@ public class EditFaceUserInfoActivity extends BaseActivity {
 
             @Override
             public void onRightButtonClick(View v) {
+                String qqStr = etQq.getText().toString();
+                String weixinStr = etWeixin.getText().toString();
+                String phoneStr = etPhoneNumber.getText().toString();
+                String nameStr = etName.getText().toString();
+                ArrayList<String>groupids = new ArrayList<String>();
+                groupids.add(IntConstant.GROUP_ID+"");
 
+                NewPersonUtil.newPerson(activity, NetWorkConstant.APP_ID, groupids, "1", Base64Util.encode(faceByteArray), nameStr, GetTagUtil.getTag(nameStr, qqStr, weixinStr, phoneStr), new NetCallback<NewPersonResponseBean>(activity) {
+                    @Override
+                    public void onFailure(RetrofitError error, String message) {
+
+                    }
+
+                    @Override
+                    public void success(NewPersonResponseBean newPersonResponseBean, Response response) {
+
+                    }
+                });
             }
         });
 
-        byte[]faceByteArray = getIntent().getByteArrayExtra(EXTRA_FACE_BITMAP);
+        faceByteArray = getIntent().getByteArrayExtra(EXTRA_FACE_BITMAP);
+        identifyItems = getIntent().getParcelableArrayListExtra(EXTRA_FACE_IDENTIFY_DATAS);
+
         faceBitmap = ImageUtils.Bytes2Bimap(faceByteArray);
         ivAvatar = (RoundImageView)findViewById(R.id.iv_avatar);
         ivAvatar.setImageBitmap(faceBitmap);
 
 
-        tvSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String qqStr = etQq.getText().toString();
-                String weixinStr = etWeixin.getText().toString();
-                String phoneStr = etPhoneNumber.getText().toString();
-                String nameStr = etName.getText().toString();
-
-
-
-            }
-        });
+        if(identifyItems!=null && identifyItems.size()>0)
+        {
+            String tag = identifyItems.get(0).getTag();
+            etName.setText(GetTagUtil.getName(tag));
+            etQq.setText(GetTagUtil.getQq(tag));
+            etWeixin.setText(GetTagUtil.getWeixin(tag));
+            etPhoneNumber.setText(GetTagUtil.getPhoneNumber(tag));
+        }
 
     }
 }

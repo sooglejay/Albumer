@@ -5,29 +5,23 @@ import android.graphics.RectF;
 import android.media.FaceDetector;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-
-import java.lang.ref.SoftReference;
 import java.util.ArrayList;
-import java.util.List;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import sooglejay.youtu.R;
-import sooglejay.youtu.api.detectface.AsyncBean;
 import sooglejay.youtu.api.detectface.DetectFaceResponseBean;
 import sooglejay.youtu.api.detectface.DetectFaceUtil;
 import sooglejay.youtu.api.detectface.FaceItem;
+import sooglejay.youtu.api.faceidentify.FaceIdentifyResponseBean;
+import sooglejay.youtu.api.faceidentify.FaceIdentifyUtil;
+import sooglejay.youtu.api.faceidentify.IdentifyItem;
 import sooglejay.youtu.constant.IntConstant;
 import sooglejay.youtu.constant.NetWorkConstant;
 import sooglejay.youtu.model.NetCallback;
@@ -35,10 +29,9 @@ import sooglejay.youtu.ui.GalleryActivity;
 import sooglejay.youtu.utils.AsyncBitmapLoader;
 import sooglejay.youtu.utils.CacheUtil;
 import sooglejay.youtu.utils.ImageUtils;
+import sooglejay.youtu.utils.ProgressDialogUtil;
 import sooglejay.youtu.widgets.FaceImageView;
 import sooglejay.youtu.widgets.youtu.sign.Base64Util;
-import uk.co.senab.photoview.PhotoViewAttacher.OnMatrixChangedListener;
-import uk.co.senab.photoview.PhotoViewAttacher.OnPhotoTapListener;
 
 public class GalleryFragment extends BaseFragment {
 
@@ -148,7 +141,7 @@ public class GalleryFragment extends BaseFragment {
             public void facesLoaded(ArrayList<FaceItem> faces) {
                 if (faces != null && faces.size() > 0) {
                     imageView.setCanvasFaceListRes(faces);
-                    asyncBitmapLoader.addKey(imagePath, faces);
+                    asyncBitmapLoader.addNewDetectedFaceToCache(imagePath, faces);
                 }
             }
 
@@ -164,6 +157,38 @@ public class GalleryFragment extends BaseFragment {
                         }
                     }
                 });
+            }
+
+            @Override
+            public void faceidentify(Bitmap bitmap) {
+
+                //如果已经做过人脸识别，并且成功了的，就不再做了
+                if (asyncBitmapLoader.getmIdentifiedFaceBitMapCache() !=null&& asyncBitmapLoader.getmIdentifiedFaceBitMapCache().containsKey(imagePath)) {
+                    Log.e("jwjw", 456 + "  containsKey");
+                    ArrayList<IdentifyItem> identifyItems = asyncBitmapLoader.getmIdentifiedFaceBitMapCache().get(imagePath);
+                    if (identifyItems != null) {
+                        imageView.setIdentifyItems(identifyItems);
+                    }
+                }else {
+                    final ProgressDialogUtil progressDialogUtil = new ProgressDialogUtil(activity);
+                    progressDialogUtil.show("正在进行人脸识别...");
+                    FaceIdentifyUtil.faceIdentify(activity, NetWorkConstant.APP_ID, IntConstant.GROUP_ID + "", Base64Util.encode(ImageUtils.Bitmap2Bytes(bitmap)), new NetCallback<FaceIdentifyResponseBean>(activity) {
+                        @Override
+                        public void onFailure(RetrofitError error, String message) {
+                            progressDialogUtil.hide();
+                        }
+
+                        @Override
+                        public void success(FaceIdentifyResponseBean faceIdentifyResponseBean, Response response) {
+                            progressDialogUtil.hide();
+                            if (faceIdentifyResponseBean.getCandidates() != null) {
+                                imageView.setIdentifyItems(faceIdentifyResponseBean.getCandidates());
+                                //新识别的人脸添加进缓存
+                                asyncBitmapLoader.addNewIdentifiedFaceToCache(imagePath,faceIdentifyResponseBean.getCandidates());
+                            }
+                        }
+                    });
+                }
             }
         };
         final ArrayList<FaceItem> faces = asyncBitmapLoader.loadAsyncBean(getActivity(), imagePath, callback);
@@ -183,10 +208,38 @@ public class GalleryFragment extends BaseFragment {
 
                 @Override
                 protected void onPostExecute(final Bitmap bitmap) {
-                    asyncBitmapLoader.addKey(imagePath, faces);
+                    asyncBitmapLoader.addNewDetectedFaceToCache(imagePath, faces);
                     if (bitmap != null) {
                         imageView.setCanvasBitmapRes(bitmap);
                         imageView.setCanvasFaceListRes(faces);
+
+                        //如果已经做过人脸识别，并且成功了的，就不再做了
+                        if (asyncBitmapLoader.getmIdentifiedFaceBitMapCache() !=null&& asyncBitmapLoader.getmIdentifiedFaceBitMapCache().containsKey(imagePath)) {
+                            Log.e("jwjw", 456 + "  containsKey");
+                            ArrayList<IdentifyItem> identifyItems = asyncBitmapLoader.getmIdentifiedFaceBitMapCache().get(imagePath);
+                            if (identifyItems != null) {
+                                imageView.setIdentifyItems(identifyItems);
+                            }
+                        }else {
+                            final ProgressDialogUtil progressDialogUtil = new ProgressDialogUtil(activity);
+                            progressDialogUtil.show("正在进行人脸识别...");
+                            FaceIdentifyUtil.faceIdentify(activity, NetWorkConstant.APP_ID, IntConstant.GROUP_ID + "", Base64Util.encode(ImageUtils.Bitmap2Bytes(bitmap)), new NetCallback<FaceIdentifyResponseBean>(activity) {
+                                @Override
+                                public void onFailure(RetrofitError error, String message) {
+                                    progressDialogUtil.hide();
+                                }
+                                @Override
+                                public void success(FaceIdentifyResponseBean faceIdentifyResponseBean, Response response) {
+                                    progressDialogUtil.hide();
+                                    if (faceIdentifyResponseBean.getCandidates() != null) {
+                                        imageView.setIdentifyItems(faceIdentifyResponseBean.getCandidates());
+                                        //新识别的人脸添加进缓存
+                                        asyncBitmapLoader.addNewIdentifiedFaceToCache(imagePath,faceIdentifyResponseBean.getCandidates());
+                                    }
+                                }
+                            });
+                        }
+
                     } else {
                         imageView.setImageResource(R.drawable.default_error);
                     }

@@ -47,7 +47,6 @@ public class NewPersonUtil extends RetrofitUtil {
      * @param group_ids
      * @param person_id
      * @param image
-     * @param url
      * @param person_name
      * @param tag
      * @param callback
@@ -57,7 +56,6 @@ public class NewPersonUtil extends RetrofitUtil {
                                  List<String> group_ids,
                                  String person_id,
                                  String image,
-                                 String url,
                                  String person_name,
                                  String tag,
                                  NetCallback<NewPersonResponseBean> callback) {
@@ -67,7 +65,6 @@ public class NewPersonUtil extends RetrofitUtil {
         NewPersonRequestBean bean = new NewPersonRequestBean();
         bean.setApp_id(app_id);
         bean.setImage(image);
-        bean.setUrl(url);
         bean.setPerson_id(person_id);
         bean.setGroup_ids(group_ids);
         bean.setPerson_name(person_name);

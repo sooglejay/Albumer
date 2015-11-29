@@ -9,22 +9,21 @@ package sooglejay.youtu.utils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import sooglejay.youtu.api.detectface.DetectFaceResponseBean;
 import sooglejay.youtu.api.detectface.DetectFaceUtil;
 import sooglejay.youtu.api.detectface.FaceItem;
+import sooglejay.youtu.api.faceidentify.IdentifyItem;
 import sooglejay.youtu.constant.IntConstant;
 import sooglejay.youtu.constant.NetWorkConstant;
 import sooglejay.youtu.model.NetCallback;
+import sooglejay.youtu.widgets.imagepicker.bean.Image;
 import sooglejay.youtu.widgets.youtu.sign.Base64Util;
 
 /**
@@ -39,13 +38,24 @@ public class AsyncBitmapLoader {
     /**
      * Used to save image by soft reference. It make image easy to release.
      */
-    private HashMap<String,ArrayList<FaceItem>> mBitMapCache = null;
+    private HashMap<String,ArrayList<FaceItem>> mDetectedFaceBitMapCache = null;
 
 
-    public void addKey(String imagePath, ArrayList<FaceItem> faceItems) {
-        if (mBitMapCache != null) {
-            if (!mBitMapCache.containsKey(imagePath)) {
-                mBitMapCache.put(imagePath, faceItems);
+    private HashMap<String,ArrayList<IdentifyItem>> mIdentifiedFaceBitMapCache = null;
+
+
+    public void addNewDetectedFaceToCache(String imagePath, ArrayList<FaceItem> faceItems) {
+        if (mDetectedFaceBitMapCache != null) {
+            if (!mDetectedFaceBitMapCache.containsKey(imagePath)) {
+                mDetectedFaceBitMapCache.put(imagePath, faceItems);
+            }
+        }
+    }
+
+    public void addNewIdentifiedFaceToCache(String imagePath, ArrayList<IdentifyItem> faceItems) {
+        if (mIdentifiedFaceBitMapCache != null) {
+            if (!mIdentifiedFaceBitMapCache.containsKey(imagePath)) {
+                mIdentifiedFaceBitMapCache.put(imagePath, faceItems);
             }
         }
     }
@@ -56,16 +66,29 @@ public class AsyncBitmapLoader {
     public AsyncBitmapLoader() {
     }
 
-    public void setmBitMapCache(HashMap<String,ArrayList<FaceItem>> cache) {
+    public void setmDetectedFaceBitMapCache(HashMap<String, ArrayList<FaceItem>> cache) {
         if (cache == null) {
-            mBitMapCache = new HashMap<String,ArrayList<FaceItem>>();
+            mDetectedFaceBitMapCache = new HashMap<String,ArrayList<FaceItem>>();
         } else {
-            mBitMapCache = cache;
+            mDetectedFaceBitMapCache = cache;
         }
     }
 
-    public HashMap<String, ArrayList<FaceItem>> getmBitMapCache() {
-        return mBitMapCache;
+    public void setmIdentifiedFaceBitMapCache(HashMap<String, ArrayList<IdentifyItem>> cache) {
+        if (cache == null) {
+            mIdentifiedFaceBitMapCache = new HashMap<String,ArrayList<IdentifyItem>>();
+        } else {
+            mIdentifiedFaceBitMapCache = cache;
+        }
+
+    }
+
+    public HashMap<String, ArrayList<IdentifyItem>> getmIdentifiedFaceBitMapCache() {
+        return mIdentifiedFaceBitMapCache;
+    }
+
+    public HashMap<String, ArrayList<FaceItem>> getmDetectedFaceBitMapCache() {
+        return mDetectedFaceBitMapCache;
     }
 
     /**
@@ -78,9 +101,9 @@ public class AsyncBitmapLoader {
      */
     public ArrayList<FaceItem> loadAsyncBean(final Context context, final String imagePath, final BitmapCallback callback) {
         Log.e("jwjw", 123 + "loadAsyncBean");
-        if (mBitMapCache!=null&& mBitMapCache.containsKey(imagePath)) {
+        if (mDetectedFaceBitMapCache !=null&& mDetectedFaceBitMapCache.containsKey(imagePath)) {
             Log.e("jwjw", 456 + "  containsKey");
-            ArrayList<FaceItem> faces = mBitMapCache.get(imagePath);
+            ArrayList<FaceItem> faces = mDetectedFaceBitMapCache.get(imagePath);
             if (faces != null) {
                 return faces;
             }
@@ -117,16 +140,15 @@ public class AsyncBitmapLoader {
                         public void success(DetectFaceResponseBean detectFaceResponseBean, Response response) {
                             progressDialogUtil.hide();
                             ArrayList<FaceItem> faceItem = detectFaceResponseBean.getFace();
-                            mBitMapCache.put(imagePath,faceItem);
+                            mDetectedFaceBitMapCache.put(imagePath, faceItem);
                             callback.facesLoaded(faceItem);
+                            callback.faceidentify(bitmap);
                         }
                     });
                 } else {
                     progressDialogUtil.hide();
                 }
             }
-
-
         }.execute(imagePath);
         return null;
     }
@@ -138,7 +160,7 @@ public class AsyncBitmapLoader {
          * @param faces
          */
         public void facesLoaded(ArrayList<FaceItem> faces);
-
         public void bitmapLoaded(Bitmap bitmap);
+        public void faceidentify(Bitmap bitmap);
     }
 }

@@ -1,17 +1,11 @@
 package sooglejay.youtu.widgets;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
@@ -19,6 +13,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import sooglejay.youtu.api.detectface.FaceItem;
+import sooglejay.youtu.api.faceidentify.IdentifyItem;
 import sooglejay.youtu.fragment.DialogFragmentCreater;
 import uk.co.senab.photoview.PhotoView;
 
@@ -30,6 +25,14 @@ public class FaceImageView extends PhotoView {
 
     private Context context;
     ArrayList<FaceItem> faceItemList = new ArrayList<>();
+
+    public void setIdentifyItems(ArrayList<IdentifyItem> identifyItems) {
+        this.identifyItems = identifyItems;
+        invalidate();
+
+    }
+
+    ArrayList<IdentifyItem> identifyItems = new ArrayList<>();
     Bitmap bitmap, operationBitmap;
 
     int cx = 0;//将图像移到中间的偏移量
@@ -125,7 +128,7 @@ public class FaceImageView extends PhotoView {
                 if (centerY + outerFaceItem.getY() + cy - radius <= y && y <= centerY + outerFaceItem.getY() + cy + radius) {
                     Toast.makeText(context, "点自己", Toast.LENGTH_SHORT).show();
                     if (dialogFragmentCreater != null) {
-                        dialogFragmentCreater.setFaceBitmap(faceBitmap);
+                        dialogFragmentCreater.setFaceDatas(faceBitmap,identifyItems);
                         dialogFragmentCreater.showDialog(context, DialogFragmentCreater.DIALOG_FACE_OPERATION);
                     }
 

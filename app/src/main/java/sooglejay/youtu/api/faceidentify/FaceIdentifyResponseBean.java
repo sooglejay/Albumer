@@ -2,9 +2,7 @@ package sooglejay.youtu.api.faceidentify;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
 import java.util.ArrayList;
-import java.util.List;
 
 import sooglejay.youtu.model.Model;
 
@@ -23,7 +21,7 @@ public class FaceIdentifyResponseBean implements Model,Parcelable {
     private String session_id;
     private String errormsg;
     private int errorcode;
-    private List<IdentifyItem> candidates;
+    private ArrayList<IdentifyItem> candidates;
 
     @Override
     public String toString() {
@@ -59,12 +57,15 @@ public class FaceIdentifyResponseBean implements Model,Parcelable {
         this.errorcode = errorcode;
     }
 
-    public List<IdentifyItem> getCandidates() {
+    public ArrayList<IdentifyItem> getCandidates() {
         return candidates;
     }
 
-    public void setCandidates(List<IdentifyItem> candidates) {
+    public void setCandidates(ArrayList<IdentifyItem> candidates) {
         this.candidates = candidates;
+    }
+
+    public FaceIdentifyResponseBean() {
     }
 
     @Override
@@ -77,18 +78,14 @@ public class FaceIdentifyResponseBean implements Model,Parcelable {
         dest.writeString(this.session_id);
         dest.writeString(this.errormsg);
         dest.writeInt(this.errorcode);
-        dest.writeList(this.candidates);
-    }
-
-    public FaceIdentifyResponseBean() {
+        dest.writeTypedList(candidates);
     }
 
     protected FaceIdentifyResponseBean(Parcel in) {
         this.session_id = in.readString();
         this.errormsg = in.readString();
         this.errorcode = in.readInt();
-        this.candidates = new ArrayList<IdentifyItem>();
-        in.readList(this.candidates, List.class.getClassLoader());
+        this.candidates = in.createTypedArrayList(IdentifyItem.CREATOR);
     }
 
     public static final Creator<FaceIdentifyResponseBean> CREATOR = new Creator<FaceIdentifyResponseBean>() {

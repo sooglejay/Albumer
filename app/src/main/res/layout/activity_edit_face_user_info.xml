@@ -10,66 +10,179 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <LinearLayout
-
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#f8f8f8"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-        <sooglejay.youtu.widgets.RoundImageView
-            android:id="@+id/iv_avatar"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginTop="22dp" />
+        <LinearLayout
 
-        <EditText
-            android:id="@+id/et_name"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginLeft="48dp"
-            android:layout_marginRight="48dp"
-            android:layout_marginTop="@dimen/middle_padding"
-            android:hint="姓名" />
-
-        <EditText
-            android:id="@+id/et_phone_number"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginLeft="48dp"
-            android:layout_marginRight="48dp"
-            android:layout_marginTop="@dimen/middle_padding"
-            android:hint="电话" />
-
-        <EditText
-            android:id="@+id/et_qq"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginLeft="48dp"
-            android:layout_marginRight="48dp"
-            android:layout_marginTop="@dimen/middle_padding"
-            android:hint="QQ号码" />
-
-        <EditText
-            android:id="@+id/et_weixin"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginLeft="48dp"
-            android:layout_marginRight="48dp"
-            android:layout_marginTop="@dimen/middle_padding"
-            android:hint="微信号码" />
-
-        <TextView
-            android:id="@+id/tv_save"
-            android:text="保存"
-            android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="48dp"
-            android:layout_marginRight="48dp"
-            android:layout_marginTop="@dimen/middle_padding"
-            android:background="@drawable/btn_select_base" />
-    </LinearLayout>
+            android:background="#f8f8f8"
+            android:gravity="center"
+            android:orientation="vertical">
 
+            <sooglejay.youtu.widgets.RoundImageView
+                android:id="@+id/iv_avatar"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="@dimen/middle_padding" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/middle_padding"
+                android:background="#d2d2d2" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white_color"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/middle_padding"
+                    android:layout_marginLeft="@dimen/middle_padding"
+                    android:layout_marginTop="@dimen/middle_padding"
+                    android:text="姓名"
+                    android:textColor="@color/dark_gray_color"
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/et_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/middle_padding"
+                    android:layout_marginLeft="@dimen/middle_padding"
+                    android:layout_marginTop="@dimen/middle_padding"
+                    android:background="@null"
+                    android:hint="请输入姓名"
+                    android:inputType="text"
+                    android:maxLength="11"
+                    android:maxLines="1"
+                    android:textColorHint="#d1d1d2"
+                    android:textSize="20sp" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#d2d2d2" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white_color"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/middle_padding"
+                    android:layout_marginLeft="@dimen/middle_padding"
+                    android:layout_marginTop="@dimen/middle_padding"
+                    android:text="电话"
+                    android:textColor="@color/dark_gray_color"
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/et_phone_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/middle_padding"
+                    android:layout_marginLeft="@dimen/middle_padding"
+                    android:layout_marginTop="@dimen/middle_padding"
+                    android:background="@null"
+                    android:hint="请输入电话"
+                    android:inputType="phone"
+                    android:maxLength="11"
+                    android:maxLines="1"
+                    android:textColorHint="#d1d1d2"
+                    android:textSize="20sp" />
+
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#d2d2d2" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white_color"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/middle_padding"
+                    android:layout_marginLeft="@dimen/middle_padding"
+                    android:layout_marginTop="@dimen/middle_padding"
+                    android:text="QQ "
+                    android:textColor="@color/dark_gray_color"
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/et_qq"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/middle_padding"
+                    android:layout_marginLeft="@dimen/middle_padding"
+                    android:layout_marginTop="@dimen/middle_padding"
+                    android:background="@null"
+                    android:hint="请输入QQ号码"
+                    android:inputType="phone"
+                    android:maxLength="11"
+                    android:maxLines="1"
+                    android:textColorHint="#d1d1d2"
+                    android:textSize="20sp" />
+
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#d2d2d2" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white_color"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/middle_padding"
+                    android:layout_marginLeft="@dimen/middle_padding"
+                    android:layout_marginTop="@dimen/middle_padding"
+                    android:text="微信"
+                    android:textColor="@color/dark_gray_color"
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/et_weixin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/middle_padding"
+                    android:layout_marginLeft="@dimen/middle_padding"
+                    android:layout_marginTop="@dimen/middle_padding"
+                    android:background="@null"
+                    android:hint="请输入微信号码"
+                    android:inputType="phone"
+                    android:maxLength="11"
+                    android:maxLines="1"
+                    android:textColorHint="#d1d1d2"
+                    android:textSize="20sp" />
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#d2d2d2" />
+
+        </LinearLayout>
+    </ScrollView>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#f5f5f5"/>
 </LinearLayout>
