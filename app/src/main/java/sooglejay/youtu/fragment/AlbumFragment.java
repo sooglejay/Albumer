@@ -62,6 +62,9 @@ public class AlbumFragment extends BaseFragment {
     // 文件夹数据
     private ArrayList<Folder> mResultFolder = new ArrayList<>();
 
+
+//    ArrayList<String> urls = new ArrayList<>();//用户点击一个图片文件的时候，需要知道该图片所在的目录
+
     // 图片Grid
     private GridView mGridView;
 
@@ -202,6 +205,8 @@ public class AlbumFragment extends BaseFragment {
         }
     }
 
+
+    private int outIndex = 0;
     /**
      * 创建弹出的ListView
      */
@@ -219,6 +224,7 @@ public class AlbumFragment extends BaseFragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
                 mFolderAdapter.setSelectIndex(i);
+                outIndex = i;//传递索引
 
                 final int index = i;
                 final AdapterView v = adapterView;
@@ -325,7 +331,23 @@ public class AlbumFragment extends BaseFragment {
      * @param image
      */
     private void selectImageFromGrid(Image image, int position) {
-        if (image != null && outerFolder != null) {
+        if(outIndex == 0 )//如果是全部的文件
+        {
+            if(mResultFolder!=null)
+            {
+                ArrayList<String> urls = new ArrayList<>();
+                for (Folder folder :mResultFolder)
+                {
+                    for (Image image1 : folder.images) {
+                        urls.add("file://" + image1.path);
+                    }
+                }
+                Log.e("Retrofit","urls:"+urls);
+                Log.e("Retrofit","position:"+position);
+                GalleryActivity.startActivity(getActivity(),"所有文件", position, urls);
+            }
+        }
+        else if (image != null && outerFolder != null) {
             ArrayList<String> urls = new ArrayList<>();
             for (Image image1 : outerFolder.images) {
                 urls.add("file://" + image1.path);
@@ -397,6 +419,15 @@ public class AlbumFragment extends BaseFragment {
                     mImageAdapter.setData(images);
                     if (mResultFolder != null && mResultFolder.size() > 0) {
                         outerFolder = mResultFolder.get(0);
+
+
+//                        //先获取所有文件的文件名，这个操作在 用户选择所有文件，并点击一个图片文件时有效
+//                        for (Folder folder :mResultFolder)
+//                        {
+//                            for (Image image1 : folder.images) {
+//                                urls.add("file://" + image1.path);
+//                            }
+//                        }
                     }
                     hasFolderGened = true;
                 }

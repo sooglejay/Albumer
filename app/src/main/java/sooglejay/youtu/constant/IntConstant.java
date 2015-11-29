@@ -5,4 +5,5 @@ package sooglejay.youtu.constant;
  */
 public class IntConstant {
     public static final int GROUP_ID = 1;
+    public static final int IMAGE_SIZE = 500;//picture size
 }

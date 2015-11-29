@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.zip.CRC32;
 
 import sooglejay.youtu.R;
+import sooglejay.youtu.constant.IntConstant;
 import sooglejay.youtu.widgets.imagepicker.MultiImageSelectorActivity;
 
 
@@ -163,8 +164,8 @@ public class ImageUtils {
         intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
         intent.putExtra("noFaceDetection", true); // no face detection
         // outputX outputY 是裁剪图片宽高
-        intent.putExtra("outputX", 600);
-        intent.putExtra("outputY", 600);
+        intent.putExtra("outputX", IntConstant.IMAGE_SIZE);
+        intent.putExtra("outputY", IntConstant.IMAGE_SIZE);
         intent.putExtra("return-data", false);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(resultFile));
         return intent;
@@ -180,8 +181,8 @@ public class ImageUtils {
         int w = newOpts.outWidth;
         int h = newOpts.outHeight;
         //现在主流手机比较多是800*480分辨率，所以高和宽我们设置为
-        float hh = 600f;//这里设置高度为600f
-        float ww = 600f;//这里设置宽度为600f
+        float hh = IntConstant.IMAGE_SIZE;//这里设置高度为600f
+        float ww = IntConstant.IMAGE_SIZE;//这里设置宽度为600f
         //缩放比。由于是固定比例缩放，只用高或者宽其中一个数据进行计算即可
         float be = 1f;//be=1表示不缩放
         if (w >= h && w > ww) {//如果宽度大的话根据宽度固定大小缩放

@@ -16,7 +16,10 @@
 #   public *;
 #}
 
-
+-dontwarn retrofit.**
+-keep class retrofit.** { *; }
+-keepattributes Signature
+-keepattributes Exceptions
 
 -keep class com.amap.api.location.**{*;}
 -keep class com.amap.api.fence.**{*;}

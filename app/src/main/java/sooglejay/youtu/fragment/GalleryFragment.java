@@ -28,6 +28,7 @@ import sooglejay.youtu.api.detectface.AsyncBean;
 import sooglejay.youtu.api.detectface.DetectFaceResponseBean;
 import sooglejay.youtu.api.detectface.DetectFaceUtil;
 import sooglejay.youtu.api.detectface.FaceItem;
+import sooglejay.youtu.constant.IntConstant;
 import sooglejay.youtu.constant.NetWorkConstant;
 import sooglejay.youtu.model.NetCallback;
 import sooglejay.youtu.ui.GalleryActivity;
@@ -176,7 +177,7 @@ public class GalleryFragment extends BaseFragment {
                 @Override
                 protected Bitmap doInBackground(String... params) {
                     Bitmap tempBitmap = ImageUtils.getBitmapFromLocalPath(params[0], 1);
-                    Bitmap bitmap = ImageUtils.getResizedBitmap(tempBitmap, 600, 600);
+                    Bitmap bitmap = ImageUtils.getResizedBitmap(tempBitmap, IntConstant.IMAGE_SIZE,  IntConstant.IMAGE_SIZE);
                     return bitmap;
                 }
 

@@ -22,6 +22,7 @@ import retrofit.client.Response;
 import sooglejay.youtu.api.detectface.DetectFaceResponseBean;
 import sooglejay.youtu.api.detectface.DetectFaceUtil;
 import sooglejay.youtu.api.detectface.FaceItem;
+import sooglejay.youtu.constant.IntConstant;
 import sooglejay.youtu.constant.NetWorkConstant;
 import sooglejay.youtu.model.NetCallback;
 import sooglejay.youtu.widgets.youtu.sign.Base64Util;
@@ -85,12 +86,6 @@ public class AsyncBitmapLoader {
             }
         }
         Log.e("jwjw", 123 + "  没有  containsKey");
-        final Handler handler = new Handler() {
-            public void handleMessage(Message message) {
-                ArrayList<FaceItem> faces = (ArrayList<FaceItem>) message.obj;
-                callback.facesLoaded(faces);
-            }
-        };
 
         final ProgressDialogUtil progressDialogUtil = new ProgressDialogUtil(context);
         new AsyncTask<String, Bitmap, Bitmap>() {
@@ -101,9 +96,10 @@ public class AsyncBitmapLoader {
             }
 
             @Override
-            protected Bitmap doInBackground(String... params) {
+            protected Bitmap doInBackground(String... params)
+            {
                 Bitmap tempBitmap = ImageUtils.getBitmapFromLocalPath(params[0], 1);
-                Bitmap bitmap = ImageUtils.getResizedBitmap(tempBitmap, 600, 600);
+                Bitmap bitmap = ImageUtils.getResizedBitmap(tempBitmap, IntConstant.IMAGE_SIZE, IntConstant.IMAGE_SIZE);
                 callback.bitmapLoaded(bitmap);
                 return bitmap;
             }
@@ -122,8 +118,7 @@ public class AsyncBitmapLoader {
                             progressDialogUtil.hide();
                             ArrayList<FaceItem> faceItem = detectFaceResponseBean.getFace();
                             mBitMapCache.put(imagePath,faceItem);
-                            Message successMessage = handler.obtainMessage(SUCCESS_DETECT_FACE, faceItem);
-                            handler.sendMessage(successMessage);
+                            callback.facesLoaded(faceItem);
                         }
                     });
                 } else {

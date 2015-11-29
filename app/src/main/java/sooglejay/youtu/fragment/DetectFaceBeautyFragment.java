@@ -26,6 +26,7 @@ import sooglejay.youtu.api.detectface.FaceItem;
 import sooglejay.youtu.api.facecompare.FaceCompareResponseBean;
 import sooglejay.youtu.api.facecompare.FaceCompareUtil;
 import sooglejay.youtu.constant.ExtraConstants;
+import sooglejay.youtu.constant.IntConstant;
 import sooglejay.youtu.constant.NetWorkConstant;
 import sooglejay.youtu.model.NetCallback;
 import sooglejay.youtu.ui.GalleryActivity;
@@ -171,7 +172,7 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
                         ImageLoader.getInstance().displayImage("file://" + imageList.get(0), iv_avatar, ImageUtils.getOptions());
                         resultPath = imageList.get(0);
                         Bitmap bitmap =ImageUtils.getBitmapFromLocalPath(resultPath, 1);
-                        Bitmap resizedBitmap =ImageUtils.getResizedBitmap(bitmap, 600, 600);
+                        Bitmap resizedBitmap =ImageUtils.getResizedBitmap(bitmap, IntConstant.IMAGE_SIZE, IntConstant.IMAGE_SIZE);
                         ivImage.setImageBitmap(resizedBitmap);
                         detectface(resizedBitmap);
                     }

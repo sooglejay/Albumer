@@ -1,1 +1,1 @@
-include ':app',':umengshare',':photoView'
+include ":app",":photoView",":umengshare"
