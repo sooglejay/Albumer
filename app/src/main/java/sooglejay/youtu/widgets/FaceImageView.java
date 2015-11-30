@@ -6,9 +6,11 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.AsyncTask;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -133,32 +135,61 @@ public class FaceImageView extends PhotoView {
             if (centerX + outerFaceItem.getX() + cx - radius <= x && x <= centerX + outerFaceItem.getX() + cx + radius) {
                 if (centerY + outerFaceItem.getY() + cy - radius <= y && y <= centerY + outerFaceItem.getY() + cy + radius) {
                     Toast.makeText(context, "点自己", Toast.LENGTH_SHORT).show();
-                    if (dialogFragmentCreater != null) {
-                        dialogFragmentCreater.setOnCallBack(new DialogFragmentCreater.OnClickCallBack() {
+                    if (dialogFragmentCreater != null&&identifyItems!=null&&identifyItems.size()>0) {
+
+                        dialogFragmentCreater.setIdentifyItems(identifyItems);
+                        dialogFragmentCreater.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
-                            public void onClick(View view) {
-                                switch (view.getId()) {
-                                    case R.id.tv_call:
-                                        if (identifyItems != null && identifyItems.size() > 0) {
-                                            String phoneStr = GetTagUtil.getPhoneNumber(identifyItems.get(0).getTag());
-                                            UIUtil.takePhoneCall(context, phoneStr, 0);
+                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                                dialogFragmentCreater.dismiss();
+                                new AsyncTask<Void, Void, Void>() {
+                                    @Override
+                                    protected void onPostExecute(Void aVoid) {
+                                        super.onPostExecute(aVoid);
+                                        dialogFragmentCreater.setOnCallBack(new DialogFragmentCreater.OnClickCallBack() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                switch (view.getId()) {
+                                                    case R.id.tv_call:
+                                                        if (identifyItems != null && identifyItems.size() > 0) {
+                                                            String phoneStr = GetTagUtil.getPhoneNumber(identifyItems.get(0).getTag());
+                                                            UIUtil.takePhoneCall(context, phoneStr, 0);
+                                                        }
+                                                        break;
+                                                    case R.id.tv_edit_info:
+                                                        EditFaceUserInfoActivity.startActivity(context, ImageUtils.Bitmap2Bytes(bitmap), identifyItems);
+                                                        break;
+                                                    case R.id.tv_send_message:
+                                                        if (identifyItems != null && identifyItems.size() > 0) {
+                                                            String phoneStr = GetTagUtil.getPhoneNumber(identifyItems.get(0).getTag());
+                                                            UIUtil.sendMessage(context, phoneStr, null, 0);
+                                                        }
+                                                        break;
+                                                    default:
+                                                        break;
+                                                }
+                                            }
+                                        });
+                                        dialogFragmentCreater.showDialog(context, DialogFragmentCreater.DIALOG_FACE_OPERATION);
+
+                                    }
+
+                                    @Override
+                                    protected Void doInBackground(Void... voids) {
+
+                                        try {
+                                            Thread.sleep(100);
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
                                         }
-                                        break;
-                                    case R.id.tv_edit_info:
-                                        EditFaceUserInfoActivity.startActivity(context, ImageUtils.Bitmap2Bytes(bitmap), identifyItems);
-                                        break;
-                                    case R.id.tv_send_message:
-                                        if (identifyItems != null && identifyItems.size() > 0) {
-                                            String phoneStr = GetTagUtil.getPhoneNumber(identifyItems.get(0).getTag());
-                                            UIUtil.sendMessage(context, phoneStr, null, 0);
-                                        }
-                                        break;
-                                    default:
-                                        break;
-                                }
+                                        return null;
+                                    }
+                                }.execute();
+
                             }
                         });
-                        dialogFragmentCreater.showDialog(context, DialogFragmentCreater.DIALOG_FACE_OPERATION);
+                        dialogFragmentCreater.showDialog(context,DialogFragmentCreater.DIALOG_CHOOSE_FACE);
                     }
 
                 } else {

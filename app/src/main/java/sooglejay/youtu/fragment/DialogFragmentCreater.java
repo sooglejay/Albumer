@@ -10,12 +10,18 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.lang.reflect.AccessibleObject;
 import java.util.ArrayList;
+import java.util.List;
 
 import sooglejay.youtu.R;
+import sooglejay.youtu.adapter.ChooseFaceAdapter;
 import sooglejay.youtu.api.faceidentify.IdentifyItem;
 import sooglejay.youtu.utils.GetTagUtil;
 import sooglejay.youtu.utils.UIUtil;
@@ -26,6 +32,7 @@ import sooglejay.youtu.utils.UIUtil;
  */
 public class DialogFragmentCreater extends DialogFragment {
     public static final int DIALOG_FACE_OPERATION = 1000;//after detect and recognize face , do some operation
+    public static final int DIALOG_CHOOSE_FACE = 1001;//top 5 faces available to choose
 
     public final static String dialog_fragment_key = "fragment_id";
     public final static String dialog_fragment_tag = "dialog";
@@ -89,17 +96,16 @@ public class DialogFragmentCreater extends DialogFragment {
             switch (fragment_id) {
                 case DIALOG_FACE_OPERATION:
                     return showFaceOperationDialog(mContext);
+                case DIALOG_CHOOSE_FACE:
+                    return showChooseFaceDialog(mContext);
             }
         }
         return super.onCreateDialog(savedInstanceState);
     }
 
-    /**
-     * 自定义Dialog
-     *
-     * @param mContext
-     * @return
-     */
+
+
+
     private Dialog showFaceOperationDialog(final Context mContext) {
         View convertView = LayoutInflater.from(mContext).inflate(R.layout.dialog_face_operation, null);
         TextView tv_edit_info = (TextView) convertView.findViewById(R.id.tv_edit_info);
@@ -120,6 +126,43 @@ public class DialogFragmentCreater extends DialogFragment {
 
 
 
+        final Dialog dialog = new Dialog(mContext, R.style.CustomDialog);
+//        dialog.setCanceledOnTouchOutside(false);//要求触碰到外面能够消失
+        dialog.setContentView(convertView);
+
+        dialog.getWindow().setWindowAnimations(R.style.dialog_right_control_style);
+        //当dialog 显示的时候，弹出键盘
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(final DialogInterface dialog) {
+            }
+        });
+
+        outerDialog = dialog;
+        return dialog;
+    }
+
+
+
+
+
+    public void setIdentifyItems(ArrayList<IdentifyItem> identifyItems) {
+        this.identifyItems = identifyItems;
+    }
+    private ArrayList<IdentifyItem>identifyItems = new ArrayList<>();
+
+    private AdapterView.OnItemClickListener onItemClickListener;
+
+    public void setOnItemClickListener(AdapterView.OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
+    private Dialog showChooseFaceDialog(final Context mContext) {
+        View convertView = LayoutInflater.from(mContext).inflate(R.layout.dialog_choose_face, null);
+        ListView listView = (ListView)convertView.findViewById(R.id.list_view);
+        LinearLayout layout_header = (LinearLayout)convertView.findViewById(R.id.layout_header);
+        ChooseFaceAdapter adapter = new ChooseFaceAdapter(mContext,identifyItems);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(onItemClickListener);
         final Dialog dialog = new Dialog(mContext, R.style.CustomDialog);
 //        dialog.setCanceledOnTouchOutside(false);//要求触碰到外面能够消失
         dialog.setContentView(convertView);
