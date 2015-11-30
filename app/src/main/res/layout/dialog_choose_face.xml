@@ -15,7 +15,7 @@
         android:layout_gravity="center"
         android:layout_margin="@dimen/middle_padding"
         android:gravity="center"
-        android:text="按置信度排序"
+        android:text="告诉我他是谁？"
         android:textColor="@color/black_color"
         android:textIsSelectable="true"
         android:textSize="22sp" />
@@ -28,25 +28,26 @@
         <LinearLayout
             android:id="@+id/layout_header"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="@dimen/middle_padding"
-            android:gravity="center"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <TextView
                 android:layout_width="0dp"
+                android:gravity="center"
+                android:layout_gravity="center"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Confidence"
+                android:text="置信度"
                 android:textColor="@color/dark_black_color"
                 android:textSize="@dimen/big_textsize" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:text="用户名"
+                android:layout_width="0dp"
+                android:gravity="center"
+                android:layout_gravity="center"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="UserName"
                 android:textColor="@color/dark_black_color"
                 android:textSize="@dimen/big_textsize" />
         </LinearLayout>
@@ -54,8 +55,28 @@
         <ListView
             android:id="@+id/list_view"
             android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/middle_padding"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/middle_padding" />
+
+        <LinearLayout
+            android:id="@+id/layout_footer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:layout_marginBottom="@dimen/middle_padding"
+                android:layout_marginTop="@dimen/small_padding"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:background="@drawable/btn_select_base"
+                android:text="都不是"
+                android:textColor="@color/white_color"
+                android:textSize="@dimen/big_textsize" />
+        </LinearLayout>
     </LinearLayout>
 
 

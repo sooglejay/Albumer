@@ -1,6 +1,5 @@
 package sooglejay.youtu.widgets;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -130,6 +129,11 @@ public class FaceImageView extends PhotoView {
         }
     }
 
+    /**
+     * 点击用户的脸部
+     * @param x
+     * @param y
+     */
     private void whichCircle(float x, float y) {
         if(outerFaceItem!=null) {
             if (centerX + outerFaceItem.getX() + cx - radius <= x && x <= centerX + outerFaceItem.getX() + cx + radius) {
@@ -138,16 +142,15 @@ public class FaceImageView extends PhotoView {
                     if (dialogFragmentCreater != null&&identifyItems!=null&&identifyItems.size()>0) {
 
                         dialogFragmentCreater.setIdentifyItems(identifyItems);
-                        dialogFragmentCreater.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        dialogFragmentCreater.setOnChooseFaceCallBack(new DialogFragmentCreater.OnChooseFaceCallBack() {
                             @Override
-                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
+                            public void onItemClickListener(AdapterView<?> adapterView, View view, int i, long l) {
                                 dialogFragmentCreater.dismiss();
                                 new AsyncTask<Void, Void, Void>() {
                                     @Override
                                     protected void onPostExecute(Void aVoid) {
                                         super.onPostExecute(aVoid);
-                                        dialogFragmentCreater.setOnCallBack(new DialogFragmentCreater.OnClickCallBack() {
+                                        dialogFragmentCreater.setOnFaceOperationCallBack(new DialogFragmentCreater.OnFaceOperationCallBack() {
                                             @Override
                                             public void onClick(View view) {
                                                 switch (view.getId()) {
@@ -186,10 +189,18 @@ public class FaceImageView extends PhotoView {
                                         return null;
                                     }
                                 }.execute();
+                            }
+
+                            @Override
+                            public void onClick(View view) {
+                                Toast.makeText(context,"都不是",Toast.LENGTH_SHORT).show();
 
                             }
                         });
+
                         dialogFragmentCreater.showDialog(context,DialogFragmentCreater.DIALOG_CHOOSE_FACE);
+                    }else {
+                        Toast.makeText(context,"没有可匹配的脸部信息",Toast.LENGTH_SHORT).show();
                     }
 
                 } else {

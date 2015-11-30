@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
@@ -14,17 +13,12 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.lang.reflect.AccessibleObject;
 import java.util.ArrayList;
-import java.util.List;
 
 import sooglejay.youtu.R;
 import sooglejay.youtu.adapter.ChooseFaceAdapter;
 import sooglejay.youtu.api.faceidentify.IdentifyItem;
-import sooglejay.youtu.utils.GetTagUtil;
-import sooglejay.youtu.utils.UIUtil;
 
 
 /**
@@ -104,8 +98,6 @@ public class DialogFragmentCreater extends DialogFragment {
     }
 
 
-
-
     private Dialog showFaceOperationDialog(final Context mContext) {
         View convertView = LayoutInflater.from(mContext).inflate(R.layout.dialog_face_operation, null);
         TextView tv_edit_info = (TextView) convertView.findViewById(R.id.tv_edit_info);
@@ -115,7 +107,7 @@ public class DialogFragmentCreater extends DialogFragment {
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onCallBack.onClick(view);
+                onFaceOperationCallBack.onClick(view);
                 dismiss();
             }
         };
@@ -125,7 +117,6 @@ public class DialogFragmentCreater extends DialogFragment {
         tv_send_message.setOnClickListener(listener);
 
 
-
         final Dialog dialog = new Dialog(mContext, R.style.CustomDialog);
 //        dialog.setCanceledOnTouchOutside(false);//要求触碰到外面能够消失
         dialog.setContentView(convertView);
@@ -141,28 +132,30 @@ public class DialogFragmentCreater extends DialogFragment {
         outerDialog = dialog;
         return dialog;
     }
-
-
-
 
 
     public void setIdentifyItems(ArrayList<IdentifyItem> identifyItems) {
         this.identifyItems = identifyItems;
     }
-    private ArrayList<IdentifyItem>identifyItems = new ArrayList<>();
-
-    private AdapterView.OnItemClickListener onItemClickListener;
-
-    public void setOnItemClickListener(AdapterView.OnItemClickListener onItemClickListener) {
-        this.onItemClickListener = onItemClickListener;
-    }
+    private ArrayList<IdentifyItem> identifyItems = new ArrayList<>();
     private Dialog showChooseFaceDialog(final Context mContext) {
         View convertView = LayoutInflater.from(mContext).inflate(R.layout.dialog_choose_face, null);
-        ListView listView = (ListView)convertView.findViewById(R.id.list_view);
-        LinearLayout layout_header = (LinearLayout)convertView.findViewById(R.id.layout_header);
-        ChooseFaceAdapter adapter = new ChooseFaceAdapter(mContext,identifyItems);
+        ListView listView = (ListView) convertView.findViewById(R.id.list_view);
+        LinearLayout layout_footer = (LinearLayout) convertView.findViewById(R.id.layout_footer);
+        ChooseFaceAdapter adapter = new ChooseFaceAdapter(mContext, identifyItems);
         listView.setAdapter(adapter);
-        listView.setOnItemClickListener(onItemClickListener);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                onChooseFaceCallBack.onItemClickListener(adapterView, view, i, l);
+            }
+        });
+        layout_footer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onChooseFaceCallBack.onClick(view);
+            }
+        });
         final Dialog dialog = new Dialog(mContext, R.style.CustomDialog);
 //        dialog.setCanceledOnTouchOutside(false);//要求触碰到外面能够消失
         dialog.setContentView(convertView);
@@ -180,13 +173,30 @@ public class DialogFragmentCreater extends DialogFragment {
     }
 
 
-    public void setOnCallBack(OnClickCallBack onCallBack) {
-        this.onCallBack = onCallBack;
+    public void setOnFaceOperationCallBack(OnFaceOperationCallBack onFaceOperationCallBack) {
+        this.onFaceOperationCallBack = onFaceOperationCallBack;
     }
 
-    private OnClickCallBack onCallBack;
+    private OnFaceOperationCallBack onFaceOperationCallBack;
 
-    public interface OnClickCallBack {
-       public void onClick(View view);
+    public interface OnFaceOperationCallBack {
+        public void onClick(View view);
     }
+
+
+    public void setOnChooseFaceCallBack(OnChooseFaceCallBack onChooseFaceCallBack) {
+        this.onChooseFaceCallBack = onChooseFaceCallBack;
+    }
+
+    private OnChooseFaceCallBack onChooseFaceCallBack;
+
+    public interface OnChooseFaceCallBack {
+        public void onItemClickListener(AdapterView<?> adapterView, View view, int i, long l);
+
+        public void onClick(View view);
+
+
+    }
+
+
 }
