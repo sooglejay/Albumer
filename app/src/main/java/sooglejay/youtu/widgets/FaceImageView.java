@@ -18,6 +18,7 @@ import sooglejay.youtu.R;
 import sooglejay.youtu.api.detectface.FaceItem;
 import sooglejay.youtu.api.faceidentify.IdentifyItem;
 import sooglejay.youtu.fragment.DialogFragmentCreater;
+import sooglejay.youtu.ui.AddNewPersonActivity;
 import sooglejay.youtu.ui.EditFaceUserInfoActivity;
 import sooglejay.youtu.utils.GetTagUtil;
 import sooglejay.youtu.utils.ImageUtils;
@@ -40,7 +41,8 @@ public class FaceImageView extends PhotoView {
     }
 
     ArrayList<IdentifyItem> identifyItems = new ArrayList<>();
-    Bitmap bitmap, operationBitmap;
+    Bitmap bitmap;
+    String imageFilePath;//图片文件的源地址
 
     int cx = 0;//将图像移到中间的偏移量
     int cy = 0;
@@ -190,11 +192,9 @@ public class FaceImageView extends PhotoView {
                                     }
                                 }.execute();
                             }
-
                             @Override
                             public void onClick(View view) {
-                                Toast.makeText(context,"都不是",Toast.LENGTH_SHORT).show();
-
+                                AddNewPersonActivity.startActivity(context,imageFilePath, identifyItems);
                             }
                         });
 
@@ -228,10 +228,15 @@ public class FaceImageView extends PhotoView {
         return super.onTouchEvent(event);
     }
 
-    public void setCanvasRes(Bitmap bitmap, ArrayList<FaceItem> faceList) {
+    public void setCanvasRes(Bitmap bitmap, ArrayList<FaceItem> faceList,String imageFilePath) {
         this.bitmap = bitmap;
         this.faceItemList = faceList;
+        this.imageFilePath = imageFilePath;
         invalidate();
+    }
+
+    public void setImageFilePath(String imageFilePath) {
+        this.imageFilePath = imageFilePath;
     }
 
     public void setCanvasBitmapRes(Bitmap bm) {

@@ -49,6 +49,8 @@ public class GalleryFragment extends BaseFragment {
     private GalleryActivity activity;
 
     private DialogFragmentCreater dialogFragmentCreater;
+    private AsyncBitmapLoader.BitmapCallback callback;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_gallery, container, false);
@@ -103,7 +105,7 @@ public class GalleryFragment extends BaseFragment {
                 progressContainer.setVisibility(View.GONE);
                 ArrayList<FaceItem> faceItem = detectFaceResponseBean.getFace();
                 if (faceItem != null && faceItem.size() > 0) {
-                    imageView.setCanvasRes(bitmap, faceItem);
+                    imageView.setCanvasRes(bitmap, faceItem, "");
                 } else {
                     imageView.setCanvasBitmapRes(bitmap);
                 }
@@ -141,6 +143,7 @@ public class GalleryFragment extends BaseFragment {
             public void facesLoaded(ArrayList<FaceItem> faces) {
                 if (faces != null && faces.size() > 0) {
                     imageView.setCanvasFaceListRes(faces);
+                    imageView.setImageFilePath(imagePath);
                     asyncBitmapLoader.addNewDetectedFaceToCache(imagePath, faces);
                 }
             }
@@ -212,6 +215,7 @@ public class GalleryFragment extends BaseFragment {
                     if (bitmap != null) {
                         imageView.setCanvasBitmapRes(bitmap);
                         imageView.setCanvasFaceListRes(faces);
+                        imageView.setImageFilePath(imagePath);
 
                         //如果已经做过人脸识别，并且成功了的，就不再做了
                         if (asyncBitmapLoader.getmIdentifiedFaceBitMapCache() !=null&& asyncBitmapLoader.getmIdentifiedFaceBitMapCache().containsKey(imagePath)) {

@@ -21,18 +21,18 @@ import sooglejay.youtu.api.faceidentify.IdentifyItem;
 public class CacheUtil {
     private static final String CACHE_DETECT_FILE_NAME = "object_detect.log";
     private static final String CACHE_IDENTIFY_FILE_NAME = "object_identify.log";
-    private String detectFilePath;
-    private String identifyFilePath;
+    private static final String CACHE_GROUP_IDS_FILE_NAME = "group_ids.log";//可选的用户组id 列表
+    private String cacheFilePath;
     public CacheUtil(Context context)
     {
-        detectFilePath = ImageUtils.getImageFolderPath(context);
+        cacheFilePath = ImageUtils.getImageFolderPath(context);
     }
 
 
     public  void saveDetectedObjectToFile(Context context, HashMap<String, ArrayList<FaceItem>> mBitMapCache) {
         FileOutputStream fileOutputStream = null;
         ObjectOutputStream objectOutputStream = null;
-        File dir = new File(detectFilePath);
+        File dir = new File(cacheFilePath);
         if(!dir.exists())
         {
             dir.mkdirs();
@@ -41,11 +41,11 @@ public class CacheUtil {
             fileOutputStream = new FileOutputStream(dir.toString() + File.separator+ CACHE_DETECT_FILE_NAME);
             objectOutputStream = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(mBitMapCache);
-            Log.e("jwjw", "写入文件成功："+mBitMapCache.toString());
+            Log.e("jwjw", "DetectedObject 写入文件成功："+mBitMapCache.toString());
 
         } catch (IOException e) {
             e.printStackTrace();
-            Log.e("jwjw","写入文件失败："+ e.toString());
+            Log.e("jwjw","DetectedObject 写入文件失败："+ e.toString());
 
         } finally {
             if (fileOutputStream != null && objectOutputStream != null)
@@ -62,7 +62,7 @@ public class CacheUtil {
         FileInputStream fileInputStream = null;
         ObjectInputStream objectInputStream = null;
         HashMap<String, ArrayList<FaceItem>> object = null;
-        File dir = new File(detectFilePath);
+        File dir = new File(cacheFilePath);
         if(!dir.exists())
         {
             dir.mkdirs();
@@ -71,10 +71,10 @@ public class CacheUtil {
             fileInputStream = new FileInputStream(dir.toString() + File.separator+ CACHE_DETECT_FILE_NAME);
             objectInputStream = new ObjectInputStream(fileInputStream);
             object = (HashMap<String, ArrayList<FaceItem>>) objectInputStream.readObject();
-            Log.e("jwjw", "读取文件成功："+object.toString());
+            Log.e("jwjw", "DetectedObject 读取文件成功："+object.toString());
             return object;
         } catch (IOException | ClassNotFoundException e) {
-            Log.e("jwjw", "读取文件失败："+ e.toString());
+            Log.e("jwjw", "DetectedObject 读取文件失败："+ e.toString());
             e.printStackTrace();
         } finally {
             if (fileInputStream != null && objectInputStream != null)
@@ -92,7 +92,7 @@ public class CacheUtil {
     public  void saveIdentifiedObjectToFile(Context context, HashMap<String, ArrayList<IdentifyItem>> mBitMapCache) {
         FileOutputStream fileOutputStream = null;
         ObjectOutputStream objectOutputStream = null;
-        File dir = new File(detectFilePath);
+        File dir = new File(cacheFilePath);
         if(!dir.exists())
         {
             dir.mkdirs();
@@ -101,11 +101,11 @@ public class CacheUtil {
             fileOutputStream = new FileOutputStream(dir.toString() + File.separator+ CACHE_IDENTIFY_FILE_NAME);
             objectOutputStream = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(mBitMapCache);
-            Log.e("jwjw", "写入文件成功："+mBitMapCache.toString());
+            Log.e("jwjw", "IdentifiedObject 写入文件成功："+mBitMapCache.toString());
 
         } catch (IOException e) {
             e.printStackTrace();
-            Log.e("jwjw","写入文件失败："+ e.toString());
+            Log.e("jwjw","IdentifiedObject 写入文件失败："+ e.toString());
 
         } finally {
             if (fileOutputStream != null && objectOutputStream != null)
@@ -122,7 +122,7 @@ public class CacheUtil {
         FileInputStream fileInputStream = null;
         ObjectInputStream objectInputStream = null;
         HashMap<String, ArrayList<IdentifyItem>> object = null;
-        File dir = new File(detectFilePath);
+        File dir = new File(cacheFilePath);
         if(!dir.exists())
         {
             dir.mkdirs();
@@ -131,10 +131,70 @@ public class CacheUtil {
             fileInputStream = new FileInputStream(dir.toString() + File.separator+ CACHE_IDENTIFY_FILE_NAME);
             objectInputStream = new ObjectInputStream(fileInputStream);
             object = (HashMap<String, ArrayList<IdentifyItem>>) objectInputStream.readObject();
-            Log.e("jwjw", "读取文件成功："+object.toString());
+            Log.e("jwjw", "IdentifiedObject 读取文件成功："+object.toString());
             return object;
         } catch (IOException | ClassNotFoundException e) {
-            Log.e("jwjw", "读取文件失败："+ e.toString());
+            Log.e("jwjw", "IdentifiedObject 读取文件失败："+ e.toString());
+            e.printStackTrace();
+        } finally {
+            if (fileInputStream != null && objectInputStream != null)
+                try {
+                    fileInputStream.close();
+                    objectInputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            return object;
+        }
+    }
+
+
+    public  void saveGroupIdsToFile(Context context, HashMap<String, ArrayList<String>> mBitMapCache) {
+        FileOutputStream fileOutputStream = null;
+        ObjectOutputStream objectOutputStream = null;
+        File dir = new File(cacheFilePath);
+        if(!dir.exists())
+        {
+            dir.mkdirs();
+        }
+        try {
+            fileOutputStream = new FileOutputStream(dir.toString() + File.separator+ CACHE_GROUP_IDS_FILE_NAME);
+            objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(mBitMapCache);
+            Log.e("jwjw", "group ids 写入文件成功："+mBitMapCache.toString());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("jwjw","group ids 写入文件失败："+ e.toString());
+
+        } finally {
+            if (fileOutputStream != null && objectOutputStream != null)
+                try {
+                    fileOutputStream.close();
+                    objectOutputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+        }
+    }
+
+    public  HashMap<String,ArrayList<String>> getAvailableGroupIdsFromFile() {
+        FileInputStream fileInputStream = null;
+        ObjectInputStream objectInputStream = null;
+        HashMap<String, ArrayList<String>> object = null;
+        File dir = new File(cacheFilePath);
+        if(!dir.exists())
+        {
+            dir.mkdirs();
+        }
+        try {
+            fileInputStream = new FileInputStream(dir.toString() + File.separator+ CACHE_GROUP_IDS_FILE_NAME);
+            objectInputStream = new ObjectInputStream(fileInputStream);
+            object = (HashMap<String, ArrayList<String>>) objectInputStream.readObject();
+            Log.e("jwjw", "group ids 读取文件成功："+object.toString());
+            return object;
+        } catch (IOException | ClassNotFoundException e) {
+            Log.e("jwjw", "group ids 读取文件失败："+ e.toString());
             e.printStackTrace();
         } finally {
             if (fileInputStream != null && objectInputStream != null)

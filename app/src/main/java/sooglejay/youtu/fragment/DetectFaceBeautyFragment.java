@@ -131,7 +131,7 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
      * @param bitmap
      * @return -1 null; -2 file is bad
      */
-    private void detectface(final Bitmap bitmap) {
+    private void detectface(final Bitmap bitmap,final String imageFilePath) {
         final ProgressDialogUtil p = new ProgressDialogUtil(context);
         p.show("正在检测...");
         DetectFaceUtil.detectFace(context, NetWorkConstant.APP_ID, Base64Util.encode(ImageUtils.Bitmap2Bytes(bitmap)), 1, new NetCallback<DetectFaceResponseBean>(context) {
@@ -148,7 +148,7 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
                 ArrayList<FaceItem> faceItem = detectFaceResponseBean.getFace();
                 if(faceItem!=null&&faceItem.size()>0)
                 {
-                    ivImage.setCanvasRes(bitmap, faceItem);
+                    ivImage.setCanvasRes(bitmap, faceItem,imageFilePath);
                 }else {
                     ivImage.setCanvasBitmapRes(bitmap);
                 }
@@ -174,7 +174,7 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
                         Bitmap bitmap =ImageUtils.getBitmapFromLocalPath(resultPath, 1);
                         Bitmap resizedBitmap =ImageUtils.getResizedBitmap(bitmap, IntConstant.IMAGE_SIZE, IntConstant.IMAGE_SIZE);
                         ivImage.setImageBitmap(resizedBitmap);
-                        detectface(resizedBitmap);
+                        detectface(resizedBitmap,resultPath);
                     }
                 }
                 break;
@@ -187,7 +187,7 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
 //                        ImageLoader.getInstance().displayImage("file://" + resultPath, ivImage, ImageUtils.getOptions());
 //                        String dstPath = ImageUtils.getImageFolderPath(getActivity()) + System.currentTimeMillis() + File.separator + "jpg";
 //                        ImageUtils.compressAndSave(getActivity(), resultPath, dstPath, 600);
-//                        detectface(dstPath);
+//                        detectface(dstPath,dstPath);
                     }
                 }
                 break;
