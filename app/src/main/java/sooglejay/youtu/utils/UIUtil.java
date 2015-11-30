@@ -1,6 +1,7 @@
 package sooglejay.youtu.utils;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
@@ -16,17 +17,17 @@ public class UIUtil {
      * @param phoneNumberString
      * @param requestCode onActivityResult 需要的code
      */
-    public static void takePhoneCall(Activity context,String phoneNumberString,int requestCode)
+    public static void takePhoneCall(Context context,String phoneNumberString,int requestCode)
     {
         if(!TextUtils.isEmpty(phoneNumberString))
         {
             Intent phoneIntent = new Intent("android.intent.action.CALL", Uri.parse("tel:" + phoneNumberString));
-            context.startActivityForResult(phoneIntent, requestCode);
+            context.startActivity(phoneIntent);
         }
     }
 
 
-    public static void sendMessage(Activity context,String phoneNumberString,String messageStr,int requestCode)
+    public static void sendMessage(Context context,String phoneNumberString,String messageStr,int requestCode)
     {
 
         if(TextUtils.isEmpty(phoneNumberString))
@@ -36,7 +37,7 @@ public class UIUtil {
             Uri uri = Uri.parse("smsto:" + phoneNumberString);
             Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
             intent.putExtra("sms_body", messageStr);
-            context.startActivityForResult(intent, requestCode);
+            context.startActivity(intent);
         }
 
     }

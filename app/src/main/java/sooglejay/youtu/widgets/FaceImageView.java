@@ -1,5 +1,6 @@
 package sooglejay.youtu.widgets;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -12,9 +13,14 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import sooglejay.youtu.R;
 import sooglejay.youtu.api.detectface.FaceItem;
 import sooglejay.youtu.api.faceidentify.IdentifyItem;
 import sooglejay.youtu.fragment.DialogFragmentCreater;
+import sooglejay.youtu.ui.EditFaceUserInfoActivity;
+import sooglejay.youtu.utils.GetTagUtil;
+import sooglejay.youtu.utils.ImageUtils;
+import sooglejay.youtu.utils.UIUtil;
 import uk.co.senab.photoview.PhotoView;
 
 /**
@@ -128,7 +134,30 @@ public class FaceImageView extends PhotoView {
                 if (centerY + outerFaceItem.getY() + cy - radius <= y && y <= centerY + outerFaceItem.getY() + cy + radius) {
                     Toast.makeText(context, "点自己", Toast.LENGTH_SHORT).show();
                     if (dialogFragmentCreater != null) {
-                        dialogFragmentCreater.setFaceDatas(faceBitmap,identifyItems);
+                        dialogFragmentCreater.setOnCallBack(new DialogFragmentCreater.OnClickCallBack() {
+                            @Override
+                            public void onClick(View view) {
+                                switch (view.getId()) {
+                                    case R.id.tv_call:
+                                        if (identifyItems != null && identifyItems.size() > 0) {
+                                            String phoneStr = GetTagUtil.getPhoneNumber(identifyItems.get(0).getTag());
+                                            UIUtil.takePhoneCall(context, phoneStr, 0);
+                                        }
+                                        break;
+                                    case R.id.tv_edit_info:
+                                        EditFaceUserInfoActivity.startActivity(context, ImageUtils.Bitmap2Bytes(bitmap), identifyItems);
+                                        break;
+                                    case R.id.tv_send_message:
+                                        if (identifyItems != null && identifyItems.size() > 0) {
+                                            String phoneStr = GetTagUtil.getPhoneNumber(identifyItems.get(0).getTag());
+                                            UIUtil.sendMessage(context, phoneStr, null, 0);
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                        });
                         dialogFragmentCreater.showDialog(context, DialogFragmentCreater.DIALOG_FACE_OPERATION);
                     }
 
