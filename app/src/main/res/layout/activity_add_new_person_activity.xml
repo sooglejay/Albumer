@@ -32,8 +32,9 @@
             <View
                 android:layout_width="1dp"
                 android:layout_marginLeft="16dp"
-                android:background="@color/gray_color"
+                android:background="@color/very_light_gray_color"
                 android:layout_height="match_parent"/>
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -43,7 +44,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/gray_color" />
+                    android:background="@color/very_light_gray_color" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -60,7 +61,7 @@
                         android:layout_marginTop="@dimen/middle_padding"
                         android:text="姓名"
                         android:textColor="@color/dark_gray_color"
-                        android:textSize="20sp" />
+                        android:textSize="@dimen/middle_textsize" />
 
                     <EditText
                         android:id="@+id/et_name"
@@ -75,14 +76,14 @@
                         android:maxLength="11"
                         android:maxLines="1"
                         android:textColorHint="#d1d1d2"
-                        android:textSize="20sp" />
+                        android:textSize="@dimen/middle_textsize" />
 
                 </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/gray_color" />
+                    android:background="@color/very_light_gray_color" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -98,7 +99,7 @@
                         android:layout_marginTop="@dimen/middle_padding"
                         android:text="电话"
                         android:textColor="@color/dark_gray_color"
-                        android:textSize="20sp" />
+                        android:textSize="@dimen/middle_textsize" />
 
                     <EditText
                         android:id="@+id/et_phone_number"
@@ -113,20 +114,95 @@
                         android:maxLength="11"
                         android:maxLines="1"
                         android:textColorHint="#d1d1d2"
-                        android:textSize="20sp" />
+                        android:textSize="@dimen/middle_textsize" />
 
                 </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#d2d2d2" />
+                    android:background="@color/very_light_gray_color" />
             </LinearLayout>
             <View
                 android:layout_width="1dp"
                 android:layout_marginRight="24dp"
-                android:background="@color/gray_color"
+                android:background="@color/very_light_gray_color"
                 android:layout_height="match_parent"/>
+
+
+
         </LinearLayout>
+
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginRight="24dp"
+            android:layout_marginLeft="24dp"
+            android:background="@color/very_light_gray_color" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content">
+            <View
+                android:layout_width="1dp"
+                android:layout_marginLeft="24dp"
+                android:layout_height="match_parent"
+                android:background="@color/very_light_gray_color" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:background="@color/white_color"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:paddingBottom="@dimen/middle_padding"
+                    android:paddingLeft="@dimen/middle_padding"
+                    android:paddingTop="@dimen/middle_padding"
+                    android:paddingRight="@dimen/middle_padding"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="群组"
+                    android:textColor="@color/dark_gray_color"
+                    android:textSize="@dimen/middle_textsize" />
+
+                <TextView
+                    android:id="@+id/tv_group_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:clickable="true"
+                    android:gravity="center|left"
+                    android:paddingLeft="@dimen/middle_padding"
+                     android:background="@drawable/btn_select_white"
+                    android:maxLines="1"
+                    android:text="天煞孤星"
+                    android:textColorHint="#d1d1d2"
+                    android:textSize="@dimen/big_textsize" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_marginRight="24dp"
+                android:layout_height="match_parent"
+                android:background="@color/very_light_gray_color" />
+
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginRight="24dp"
+            android:layout_marginLeft="24dp"
+            android:background="@color/very_light_gray_color" />
+
+
     </LinearLayout>
 </LinearLayout>
