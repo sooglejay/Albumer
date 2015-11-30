@@ -50,7 +50,6 @@ public class FaceImageView extends PhotoView {
     private int mHeight;
     private float mAngle;
 
-
     private FaceItem outerFaceItem;
     float centerX;
     float centerY;
