@@ -145,7 +145,7 @@ public class FaceImageView extends PhotoView {
                         dialogFragmentCreater.setIdentifyItems(identifyItems);
                         dialogFragmentCreater.setOnChooseFaceCallBack(new DialogFragmentCreater.OnChooseFaceCallBack() {
                             @Override
-                            public void onItemClickListener(AdapterView<?> adapterView, View view, int i, long l) {
+                            public void onItemClickListener(AdapterView<?> adapterView, View view, final int i, long l) {
                                 dialogFragmentCreater.dismiss();
                                 new AsyncTask<Void, Void, Void>() {
                                     @Override
@@ -162,7 +162,7 @@ public class FaceImageView extends PhotoView {
                                                         }
                                                         break;
                                                     case R.id.tv_edit_info:
-                                                        EditFaceUserInfoActivity.startActivity(context, ImageUtils.Bitmap2Bytes(bitmap), identifyItems);
+                                                        EditFaceUserInfoActivity.startActivity(context,imageFilePath, identifyItems,i);
                                                         break;
                                                     case R.id.tv_send_message:
                                                         if (identifyItems != null && identifyItems.size() > 0) {

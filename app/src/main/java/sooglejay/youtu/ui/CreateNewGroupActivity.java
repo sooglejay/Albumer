@@ -171,7 +171,7 @@ public class CreateNewGroupActivity extends BaseActivity {
                         }
                     }
                     groupBeanArrayListForReturn.addAll(groupBeans);
-                } else {
+                } else if(groupidsList!=null){
                     for (String groupid : groupidsList) {
                         GroupBean bean = new GroupBean();
                         bean.setName(groupid);

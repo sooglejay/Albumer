@@ -96,7 +96,7 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.OnR
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                Log.e("jwjw","文件加载完毕");
+                Log.e("jwjw", "文件加载完毕");
                 galleryViewPager.setAdapter(galleryAdapter);
                 galleryViewPager.setOffscreenPageLimit(1);
                 galleryViewPager.setCurrentItem(position);
@@ -158,6 +158,14 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.OnR
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (asyncBitmapLoader != null && cacheUtil != null) {
+            asyncBitmapLoader.setmDetectedFaceBitMapCache(cacheUtil.getDetectedObjectFromFile());
+            asyncBitmapLoader.setmIdentifiedFaceBitMapCache(cacheUtil.getIdentifiedObjectFromFile());
+        }
+    }
 
     @Override
     public void onRectfChanged(RectF rectF) {
