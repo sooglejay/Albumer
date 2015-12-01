@@ -5,6 +5,7 @@
     android:animateLayoutChanges="true"
     android:orientation="vertical">
 
+
     <sooglejay.youtu.widgets.TitleBar
         android:id="@+id/title_bar"
         android:layout_width="match_parent"
