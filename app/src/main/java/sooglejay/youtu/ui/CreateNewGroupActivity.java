@@ -20,6 +20,7 @@ import sooglejay.youtu.constant.ExtraConstants;
 import sooglejay.youtu.fragment.DialogFragmentCreater;
 import sooglejay.youtu.utils.CacheUtil;
 import sooglejay.youtu.utils.GetGroupIdsUtil;
+import sooglejay.youtu.utils.ProgressDialogUtil;
 import sooglejay.youtu.widgets.TitleBar;
 
 /**
@@ -42,6 +43,7 @@ public class CreateNewGroupActivity extends BaseActivity {
 
     private DialogFragmentCreater dialogFragmentCreater;
 
+    private ProgressDialogUtil progressDialogUtil;
     public static void startActivity(Activity activity, String groupListStrFromIntent, int requestCode) {
         Intent intent = new Intent(activity, CreateNewGroupActivity.class);
         intent.putExtra(GROUP_IDS_STR, groupListStrFromIntent);
@@ -53,7 +55,8 @@ public class CreateNewGroupActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_new_group);
         activity = this;
-        dialogFragmentCreater  = new DialogFragmentCreater();
+        dialogFragmentCreater = new DialogFragmentCreater();
+        progressDialogUtil = new ProgressDialogUtil(this);
         setUpView();
         setUpListener();
         doSomething();
@@ -136,40 +139,52 @@ public class CreateNewGroupActivity extends BaseActivity {
         cacheUtil = new CacheUtil(this);
         new AsyncTask<Void, ArrayList<GroupBean>, ArrayList<GroupBean>>() {
             @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                progressDialogUtil.show("正在获取群组信息...");
+            }
+
+            @Override
             protected ArrayList<GroupBean> doInBackground(Void... voids) {
 
                 ArrayList<String> groupidsList = new ArrayList<>();
                 groupidsList = GetGroupIdsUtil.getGroupIdArrayList(groupListStrFromIntent);
-                for (String groupid : groupidsList) {
-                    GroupBean bean = new GroupBean();
-                    bean.setName(groupid);
-                    bean.setIsSelected(true);
-                    datas.add(bean);
-                }
-
+                ArrayList<GroupBean> groupBeans = new ArrayList<GroupBean>();
+                ArrayList<GroupBean> groupBeanArrayListForReturn = new ArrayList<GroupBean>();
                 if (cacheUtil.getAvailableGroupIdsFromFile() != null) {
-                    return cacheUtil.getAvailableGroupIdsFromFile();
+                    groupBeans = cacheUtil.getAvailableGroupIdsFromFile();
+                    groupBeanArrayListForReturn.addAll(groupBeans);
+                    for (GroupBean bean : groupBeans) {
+                        for (String groupStr : groupidsList) {
+                            if (bean.getName().equals(groupStr)) {
+                                continue;
+                            } else {
+                                GroupBean b = new GroupBean();
+                                b.setName(groupStr);
+                                b.setIsSelected(false);
+                                groupBeanArrayListForReturn.add(b);
+                            }
+                        }
+                    }
+                } else {
+                    for (String groupid : groupidsList) {
+                        GroupBean bean = new GroupBean();
+                        bean.setName(groupid);
+                        bean.setIsSelected(true);
+                        groupBeanArrayListForReturn.add(bean);
+                    }
                 }
-                return null;
+                return groupBeanArrayListForReturn;
             }
 
             @Override
             protected void onPostExecute(ArrayList<GroupBean> groupBeans) {
                 if (groupBeans != null) {
-                    for (GroupBean bean : groupBeans)
-                    {
-                        for (GroupBean b:datas)
-                        {
-                            if(b.getName().equals(bean.getName()))
-                            {
-                                continue;
-                            }else {
-                                datas.add(bean);
-                            }
-                        }
-                    }
+                    datas.clear();
+                    datas.addAll(groupBeans);
                     adapter.notifyDataSetChanged();
                 }
+                progressDialogUtil.hide();
                 super.onPostExecute(groupBeans);
             }
         }.execute();
