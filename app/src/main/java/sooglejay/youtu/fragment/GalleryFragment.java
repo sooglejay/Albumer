@@ -65,7 +65,7 @@ public class GalleryFragment extends BaseFragment {
         url = getArguments().getString("url", "");
         imageView = (FaceImageView) view.findViewById(R.id.iv_photo);
         dialogFragmentCreater = new DialogFragmentCreater();
-        dialogFragmentCreater.setDialogContext(getActivity(),getActivity().getSupportFragmentManager());
+        dialogFragmentCreater.initDialogFragment(getActivity(), getActivity().getSupportFragmentManager());
         imageView.setDialogFragmentCreater(dialogFragmentCreater);
         progressContainer = (FrameLayout) view.findViewById(R.id.progress_container);
         activity = (GalleryActivity) getActivity();
@@ -249,6 +249,15 @@ public class GalleryFragment extends BaseFragment {
                     }
                 }
             }.execute(imagePath);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(dialogFragmentCreater!=null)
+        {
+            dialogFragmentCreater = null;
         }
     }
 }

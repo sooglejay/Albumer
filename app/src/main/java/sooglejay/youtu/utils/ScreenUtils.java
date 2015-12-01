@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import sooglejay.youtu.R;
+
 /**
  * 获得屏幕相关的辅助类
  */
@@ -137,6 +139,6 @@ public class ScreenUtils
 		}
 		SystemStatusManager tintManager = new SystemStatusManager(activity);
 		tintManager.setStatusBarTintEnabled(true);
-		tintManager.setStatusBarTintResource(0);//状态栏无背景
+		tintManager.setStatusBarTintResource(R.color.base_color);//状态栏无背景
 	}
 }

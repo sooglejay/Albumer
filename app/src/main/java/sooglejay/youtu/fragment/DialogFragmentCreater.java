@@ -4,12 +4,16 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -19,6 +23,7 @@ import java.util.ArrayList;
 import sooglejay.youtu.R;
 import sooglejay.youtu.adapter.ChooseFaceAdapter;
 import sooglejay.youtu.api.faceidentify.IdentifyItem;
+import sooglejay.youtu.utils.ScreenUtils;
 
 
 /**
@@ -27,6 +32,7 @@ import sooglejay.youtu.api.faceidentify.IdentifyItem;
 public class DialogFragmentCreater extends DialogFragment {
     public static final int DIALOG_FACE_OPERATION = 1000;//after detect and recognize face , do some operation
     public static final int DIALOG_CHOOSE_FACE = 1001;//top 5 faces available to choose
+    public static final int DIALOG_showCreateNewGroupDialog = 1002;//create new group
 
     public final static String dialog_fragment_key = "fragment_id";
     public final static String dialog_fragment_tag = "dialog";
@@ -35,7 +41,7 @@ public class DialogFragmentCreater extends DialogFragment {
 
     private FragmentManager fragmentManager;
 
-    public void setDialogContext(Activity mContext, FragmentManager fragmentManager) {
+    public void initDialogFragment(Activity mContext, FragmentManager fragmentManager) {
         this.mContext = mContext;
         this.fragmentManager = fragmentManager;
     }
@@ -92,6 +98,8 @@ public class DialogFragmentCreater extends DialogFragment {
                     return showFaceOperationDialog(mContext);
                 case DIALOG_CHOOSE_FACE:
                     return showChooseFaceDialog(mContext);
+                case DIALOG_showCreateNewGroupDialog:
+                    return showCreateNewGroupDialog(mContext);
             }
         }
         return super.onCreateDialog(savedInstanceState);
@@ -133,11 +141,75 @@ public class DialogFragmentCreater extends DialogFragment {
         return dialog;
     }
 
+    private Dialog showCreateNewGroupDialog(final Context mContext) {
+        View convertView = LayoutInflater.from(mContext).inflate(R.layout.dialog_create_new_group, null);
+        final EditText etName = (EditText) convertView.findViewById(R.id.et_name);
+        TextView tvCancel = (TextView) convertView.findViewById(R.id.tv_cancel);
+        TextView tvConfirm = (TextView) convertView.findViewById(R.id.tv_confirm);
+        View.OnClickListener listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onCreateNewGroupCallBack.onClick(view,etName);
+                dismiss();
+            }
+        };
+
+        tvCancel.setOnClickListener(listener);
+        tvConfirm.setOnClickListener(listener);
+
+
+        final Dialog dialog = new Dialog(mContext,R.style.CreateNewGroupDialog);
+//        dialog.setCanceledOnTouchOutside(false);//要求触碰到外面能够消失
+        dialog.setContentView(convertView);
+
+        dialog.getWindow().setWindowAnimations(R.style.create_new_group_style);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = ScreenUtils.getScreenWidth(mContext);
+        lp.height = ScreenUtils.getScreenHeight(mContext);
+        dialog.getWindow().setAttributes(lp);
+
+
+        //当dialog 显示的时候，弹出键盘
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(final DialogInterface dialog) {
+                new AsyncTask<Integer, Void, Void>() {
+                    @Override
+                    protected Void doInBackground(Integer... params) {
+                        try {
+                            Thread.sleep(params[0]);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        return null;
+                    }
+
+                    @Override
+                    protected void onPostExecute(Void value) {
+                        super.onPostExecute(value);
+                        if (outerDialog.isShowing())
+                            if (etName != null) {
+                                etName.requestFocus();
+                                InputMethodManager imm = (InputMethodManager) etName.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.toggleSoftInput(0, InputMethodManager.SHOW_FORCED);
+                            }
+                    }
+                }.execute(500);
+            }
+        });
+
+        outerDialog = dialog;
+        return dialog;
+    }
+
 
     public void setIdentifyItems(ArrayList<IdentifyItem> identifyItems) {
         this.identifyItems = identifyItems;
     }
+
     private ArrayList<IdentifyItem> identifyItems = new ArrayList<>();
+
     private Dialog showChooseFaceDialog(final Context mContext) {
         View convertView = LayoutInflater.from(mContext).inflate(R.layout.dialog_choose_face, null);
         ListView listView = (ListView) convertView.findViewById(R.id.list_view);
@@ -173,29 +245,34 @@ public class DialogFragmentCreater extends DialogFragment {
     }
 
 
+    //用户选择完最相似的一个人脸后，弹出操作对话框
     public void setOnFaceOperationCallBack(OnFaceOperationCallBack onFaceOperationCallBack) {
         this.onFaceOperationCallBack = onFaceOperationCallBack;
     }
-
     private OnFaceOperationCallBack onFaceOperationCallBack;
-
     public interface OnFaceOperationCallBack {
         public void onClick(View view);
     }
 
 
+    //人脸识别后，由用户自己选择top5中最相似的一个
     public void setOnChooseFaceCallBack(OnChooseFaceCallBack onChooseFaceCallBack) {
         this.onChooseFaceCallBack = onChooseFaceCallBack;
     }
-
     private OnChooseFaceCallBack onChooseFaceCallBack;
-
     public interface OnChooseFaceCallBack {
         public void onItemClickListener(AdapterView<?> adapterView, View view, int i, long l);
-
         public void onClick(View view);
+    }
 
 
+    //创建新群组
+    public void setOnCreateNewGroupCallBack(OnCreateNewGroupCallBack onCreateNewGroupCallBack) {
+        this.onCreateNewGroupCallBack = onCreateNewGroupCallBack;
+    }
+    private OnCreateNewGroupCallBack onCreateNewGroupCallBack;
+    public interface OnCreateNewGroupCallBack {
+        public void onClick(View view,EditText editText);
     }
 
 

@@ -14,6 +14,7 @@ import java.util.HashMap;
 
 import sooglejay.youtu.api.detectface.FaceItem;
 import sooglejay.youtu.api.faceidentify.IdentifyItem;
+import sooglejay.youtu.bean.GroupBean;
 
 /**
  * Created by JammyQtheLab on 2015/11/27.
@@ -149,7 +150,7 @@ public class CacheUtil {
     }
 
 
-    public  void saveGroupIdsToFile(Context context, HashMap<String, ArrayList<String>> mBitMapCache) {
+    public  void saveGroupIdsToFile(Context context,  ArrayList<GroupBean> mBitMapCache) {
         FileOutputStream fileOutputStream = null;
         ObjectOutputStream objectOutputStream = null;
         File dir = new File(cacheFilePath);
@@ -178,10 +179,10 @@ public class CacheUtil {
         }
     }
 
-    public  HashMap<String,ArrayList<String>> getAvailableGroupIdsFromFile() {
+    public ArrayList<GroupBean> getAvailableGroupIdsFromFile() {
         FileInputStream fileInputStream = null;
         ObjectInputStream objectInputStream = null;
-        HashMap<String, ArrayList<String>> object = null;
+        ArrayList<GroupBean> object = null;
         File dir = new File(cacheFilePath);
         if(!dir.exists())
         {
@@ -190,7 +191,7 @@ public class CacheUtil {
         try {
             fileInputStream = new FileInputStream(dir.toString() + File.separator+ CACHE_GROUP_IDS_FILE_NAME);
             objectInputStream = new ObjectInputStream(fileInputStream);
-            object = (HashMap<String, ArrayList<String>>) objectInputStream.readObject();
+            object = (ArrayList<GroupBean>) objectInputStream.readObject();
             Log.e("jwjw", "group ids 读取文件成功："+object.toString());
             return object;
         } catch (IOException | ClassNotFoundException e) {

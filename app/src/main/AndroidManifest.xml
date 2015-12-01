@@ -67,6 +67,9 @@
          <activity
             android:name=".ui.AddNewPersonActivity"
             android:configChanges="orientation|screenSize" />
+         <activity
+            android:name=".ui.CreateNewGroupActivity"
+            android:configChanges="orientation|screenSize" />
         <service android:name="com.amap.api.location.APSService"></service>
 
 

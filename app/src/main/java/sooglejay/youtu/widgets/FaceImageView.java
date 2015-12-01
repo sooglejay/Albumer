@@ -196,7 +196,6 @@ public class FaceImageView extends PhotoView {
                                 AddNewPersonActivity.startActivity(context,imageFilePath, identifyItems);
                             }
                         });
-
                         dialogFragmentCreater.showDialog(context,DialogFragmentCreater.DIALOG_CHOOSE_FACE);
                     }else {
                         Toast.makeText(context,"没有可匹配的脸部信息",Toast.LENGTH_SHORT).show();
@@ -264,4 +263,5 @@ public class FaceImageView extends PhotoView {
     {
         this.dialogFragmentCreater = dialogFragmentCreater;
     }
+
 }

@@ -52,11 +52,21 @@
         <item name="android:windowEnterAnimation">@anim/enter_from_top</item>
         <item name="android:windowExitAnimation">@anim/exit_to_bottom</item>
     </style>
+    <style name="create_new_group_style">
+        <item name="android:windowEnterAnimation">@anim/enter_from_bottom</item>
+        <item name="android:windowExitAnimation">@anim/exit_to_bottom_from_half_y</item>
+    </style>
 
 
     <!--<style name="CustomDialog" parent="android:style/Theme.Dialog">-->
     <style name="CustomDialog" parent= "Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:windowBackground">@drawable/shape_4_white_color</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <!--<style name="CustomDialog" parent="android:style/Theme.Dialog">-->
+    <style name="CreateNewGroupDialog" parent= "Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowBackground">@color/white_color</item>
         <item name="android:windowNoTitle">true</item>
     </style>
 

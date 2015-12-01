@@ -6,8 +6,8 @@ package sooglejay.youtu.utils;
 public class GetTagUtil {
     public static final String reg = "_sooglejay_";
 
-    public static String getTag(String nameStr, String QQStr, String weixinStr, String phoneStr) {
-        return nameStr + reg + QQStr + reg + weixinStr + reg + phoneStr;
+    public static String getTag(String nameStr, String phoneStr, String groupids) {
+        return nameStr + reg + phoneStr + reg + groupids;
     }
 
     public static String getName(String tagStr) {
@@ -20,7 +20,7 @@ public class GetTagUtil {
     }
 
 
-    public static String getQq(String tagStr) {
+    public static String getPhoneNumber(String tagStr) {
         String[] array = tagStr.split(reg);
         if (array != null && array.length > 1) {
             return array[1];
@@ -29,19 +29,10 @@ public class GetTagUtil {
         }
     }
 
-    public static String getWeixin(String tagStr) {
+    public static String getGroupIds(String tagStr) {
         String[] array = tagStr.split(reg);
         if (array != null && array.length > 2) {
             return array[2];
-        } else {
-            return "";
-        }
-    }
-
-    public static String getPhoneNumber(String tagStr) {
-        String[] array = tagStr.split(reg);
-        if (array != null && array.length > 3) {
-            return array[3];
         } else {
             return "";
         }

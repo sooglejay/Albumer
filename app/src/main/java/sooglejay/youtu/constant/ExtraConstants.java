@@ -11,5 +11,8 @@ public interface ExtraConstants {
     //图片所在目录
     public static final String EXTRA_FOLDER_NAME = "folder_name";
 
+    //新建群组
+    public static final String EXTRA_CREATE_NEW_GROUP = "EXTRA_CREATE_NEW_GROUP";
+
 
 }

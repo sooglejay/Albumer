@@ -31,10 +31,6 @@ import sooglejay.youtu.widgets.youtu.sign.Base64Util;
  */
 public class AsyncBitmapLoader {
 
-    private static final int SUCCESS_DETECT_FACE = 0;
-    private static final int ERROR_DETECT_FACE = 1;//网络请求失败
-    private static final int ERROR_RESIZE_IMAGE = 2;//bad  picture
-
     /**
      * Used to save image by soft reference. It make image easy to release.
      */

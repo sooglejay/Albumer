@@ -21,6 +21,7 @@ import sooglejay.youtu.api.newperson.NewPersonUtil;
 import sooglejay.youtu.constant.IntConstant;
 import sooglejay.youtu.constant.NetWorkConstant;
 import sooglejay.youtu.model.NetCallback;
+import sooglejay.youtu.utils.GetGroupIdsUtil;
 import sooglejay.youtu.utils.GetTagUtil;
 import sooglejay.youtu.utils.ImageUtils;
 import sooglejay.youtu.widgets.RoundImageView;
@@ -52,8 +53,6 @@ public class EditFaceUserInfoActivity extends BaseActivity {
     private RoundImageView ivAvatar;
     private EditText etName;
     private EditText etPhoneNumber;
-    private EditText etQq;
-    private EditText etWeixin;
 
     /**
      * Find the Views in the layout<br />
@@ -66,8 +65,6 @@ public class EditFaceUserInfoActivity extends BaseActivity {
         ivAvatar = (RoundImageView)findViewById( R.id.iv_avatar );
         etName = (EditText)findViewById( R.id.et_name );
         etPhoneNumber = (EditText)findViewById( R.id.et_phone_number );
-        etQq = (EditText)findViewById( R.id.et_qq );
-        etWeixin = (EditText)findViewById( R.id.et_weixin );
     }
 
 
@@ -90,14 +87,12 @@ public class EditFaceUserInfoActivity extends BaseActivity {
 
             @Override
             public void onRightButtonClick(View v) {
-                String qqStr = etQq.getText().toString();
-                String weixinStr = etWeixin.getText().toString();
                 String phoneStr = etPhoneNumber.getText().toString();
                 String nameStr = etName.getText().toString();
                 ArrayList<String>groupids = new ArrayList<String>();
                 groupids.add(IntConstant.GROUP_ID+"");
 
-                NewPersonUtil.newPerson(activity, NetWorkConstant.APP_ID, groupids, "1", Base64Util.encode(faceByteArray), nameStr, GetTagUtil.getTag(nameStr, qqStr, weixinStr, phoneStr), new NetCallback<NewPersonResponseBean>(activity) {
+                NewPersonUtil.newPerson(activity, NetWorkConstant.APP_ID, groupids, "1", Base64Util.encode(faceByteArray), nameStr, GetTagUtil.getTag(nameStr,phoneStr, GetGroupIdsUtil.getGroupIds(groupids)), new NetCallback<NewPersonResponseBean>(activity) {
                     @Override
                     public void onFailure(RetrofitError error, String message) {
 
@@ -123,8 +118,6 @@ public class EditFaceUserInfoActivity extends BaseActivity {
         {
             String tag = identifyItems.get(0).getTag();
             etName.setText(GetTagUtil.getName(tag));
-            etQq.setText(GetTagUtil.getQq(tag));
-            etWeixin.setText(GetTagUtil.getWeixin(tag));
             etPhoneNumber.setText(GetTagUtil.getPhoneNumber(tag));
         }
 

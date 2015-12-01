@@ -159,20 +159,6 @@
                 android:layout_height="wrap_content"
                 android:background="@color/white_color"
                 android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:paddingBottom="@dimen/middle_padding"
-                    android:paddingLeft="@dimen/middle_padding"
-                    android:paddingTop="@dimen/middle_padding"
-                    android:paddingRight="@dimen/middle_padding"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:text="群组"
-                    android:textColor="@color/dark_gray_color"
-                    android:textSize="@dimen/middle_textsize" />
-
                 <TextView
                     android:id="@+id/tv_group_name"
                     android:layout_width="match_parent"
@@ -181,10 +167,13 @@
                     android:clickable="true"
                     android:gravity="center|left"
                     android:paddingLeft="@dimen/middle_padding"
+                    android:paddingTop="@dimen/middle_padding"
+                    android:paddingBottom="@dimen/middle_padding"
                      android:background="@drawable/btn_select_white"
                     android:maxLines="1"
-                    android:text="天煞孤星"
+                    android:text="群组名称"
                     android:textColorHint="#d1d1d2"
+                    android:drawableRight="@drawable/arrow_right"
                     android:textSize="@dimen/big_textsize" />
 
             </LinearLayout>
