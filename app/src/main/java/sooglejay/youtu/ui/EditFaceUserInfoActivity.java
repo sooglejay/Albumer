@@ -126,19 +126,21 @@ public class EditFaceUserInfoActivity extends BaseActivity {
                 identifyItems.get(position).setTag(newTag);
                 final ProgressDialogUtil progressDialogUtil = new ProgressDialogUtil(activity);
                 progressDialogUtil.show("正在提交人脸信息...");
-                mIdentifiedFaceBitMapCache.put("file://" + imageFilePath, identifyItems);
+                mIdentifiedFaceBitMapCache.put(imageFilePath, identifyItems);
 
                 SetInfoUtil.setInfo(activity, NetWorkConstant.APP_ID, identifyItems.get(position).getPerson_id(), nameStr, newTag, new NetCallback<SetInfoResponseBean>(activity) {
                     @Override
                     public void onFailure(RetrofitError error, String message) {
                         progressDialogUtil.hide();
+                        Log.d("Retrofit", "edit error !");
+
                     }
 
                     @Override
                     public void success(SetInfoResponseBean setInfoResponseBean, Response response) {
                         progressDialogUtil.hide();
+                        Log.d("Retrofit","edit success !");
                         Toast.makeText(activity, "修改成功！", Toast.LENGTH_SHORT).show();
-                        finish();
                     }
                 });
             }
