@@ -60,7 +60,6 @@ public class AddNewPersonActivity extends BaseActivity {
     private EditText etName;
     private String groupStrFromIntent;
     private TextView tv_group_name;
-    String groupName;//
     private EditText etPhoneNumber;
 
     /**
@@ -100,14 +99,12 @@ public class AddNewPersonActivity extends BaseActivity {
 
             @Override
             public void onRightButtonClick(View v) {
-                if (TextUtils.isEmpty(groupName)) {
+                if (TextUtils.isEmpty(groupStrFromIntent)) {
                     Toast.makeText(activity, "群组名称不能为空", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 final String phoneStr = etPhoneNumber.getText().toString();
                 final String nameStr = etName.getText().toString();
-                final ArrayList<String> groupids = new ArrayList<String>();
-                groupids.add(groupName);
                 final String person_id = System.currentTimeMillis() + "";
                 new AsyncTask<String, Bitmap, Bitmap>() {
                     @Override
@@ -125,7 +122,7 @@ public class AddNewPersonActivity extends BaseActivity {
                     @Override
                     protected void onPostExecute(final Bitmap bitmap) {
                         if (bitmap != null) {
-                            NewPersonUtil.newPerson(activity, NetWorkConstant.APP_ID, groupids, person_id, Base64Util.encode(ImageUtils.Bitmap2Bytes(bitmap)), nameStr, GetTagUtil.getTag(nameStr, phoneStr, GetGroupIdsUtil.getGroupIds(groupids)), new NetCallback<NewPersonResponseBean>(activity) {
+                            NewPersonUtil.newPerson(activity, NetWorkConstant.APP_ID, GetGroupIdsUtil.getGroupIdArrayList(groupStrFromIntent), person_id, Base64Util.encode(ImageUtils.Bitmap2Bytes(bitmap)), nameStr, GetTagUtil.getTag(nameStr, phoneStr,groupStrFromIntent), new NetCallback<NewPersonResponseBean>(activity) {
                                 @Override
                                 public void onFailure(RetrofitError error, String message) {
 
@@ -163,10 +160,8 @@ public class AddNewPersonActivity extends BaseActivity {
         if (identifyItems != null && identifyItems.size() > 0) {
 
             String tag = identifyItems.get(0).getTag();
-            Log.e("jwjw","tag"+tag);
             groupStrFromIntent = GetTagUtil.getGroupIds(tag);//人脸识别后，检测到的该人脸属于的组id
-            Log.e("jwjw","groupStrFromIntent"+groupStrFromIntent);
-
+            tv_group_name.setText(groupStrFromIntent.replaceAll(GetGroupIdsUtil.reg," "));
             etName.setText(GetTagUtil.getName(tag));
             etPhoneNumber.setText(GetTagUtil.getPhoneNumber(tag));
         }
@@ -178,8 +173,8 @@ public class AddNewPersonActivity extends BaseActivity {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case ACTION_CreateNewGroupActivity:
-                    groupName = data.getStringExtra(ExtraConstants.EXTRA_CREATE_NEW_GROUP);
-                    tv_group_name.setText(groupName.replaceAll(GetGroupIdsUtil.reg,","));
+                    groupStrFromIntent = data.getStringExtra(ExtraConstants.EXTRA_CREATE_NEW_GROUP);
+                    tv_group_name.setText(groupStrFromIntent.replaceAll(GetGroupIdsUtil.reg," "));
                     break;
             }
         }
