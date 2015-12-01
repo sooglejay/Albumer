@@ -140,33 +140,6 @@ public class CreateNewGroupActivity extends BaseActivity {
     private void doSomething() {
         groupListStrFromIntent = getIntent().getStringExtra(GROUP_IDS_STR);
         cacheUtil = new CacheUtil(this);
-//        datas.clear();
-//        if(cacheUtil.getAvailableGroupIdsFromFile()!=null)
-//        {
-//            datas.addAll(cacheUtil.getAvailableGroupIdsFromFile());
-//        }
-//        ArrayList<String> groupidsList = new ArrayList<>();
-//        if(!TextUtils.isEmpty(groupListStrFromIntent))
-//        {
-//            groupidsList.addAll( GetGroupIdsUtil.getGroupIdArrayList(groupListStrFromIntent));
-//        }
-//        ArrayList<GroupBean> groupBeanIterior = new ArrayList<GroupBean>();
-//        for (String groupIdStr : groupidsList) {
-//            for (GroupBean bean : datas)
-//            {
-//                if(!bean.getName().equals(groupIdStr))
-//                {
-//                   GroupBean b = new GroupBean();
-//                    b.setIsSelected(false);
-//                    b.setName(groupIdStr);
-//                    groupBeanIterior.add(b);
-//                    break;
-//                }
-//            }
-//        }
-//
-//
-//
 
         new AsyncTask<Void, ArrayList<GroupBean>, ArrayList<GroupBean>>() {
             @Override
@@ -180,7 +153,6 @@ public class CreateNewGroupActivity extends BaseActivity {
 
                 ArrayList<String> groupidsList = new ArrayList<>();
                 groupidsList = GetGroupIdsUtil.getGroupIdArrayList(groupListStrFromIntent);
-                Log.e("jwjw", groupidsList.toString());
                 ArrayList<GroupBean> groupBeans = new ArrayList<GroupBean>();
                 ArrayList<GroupBean> groupBeanArrayListForReturn = new ArrayList<GroupBean>();
                 if (cacheUtil.getAvailableGroupIdsFromFile() != null) {
