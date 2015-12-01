@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -36,7 +37,7 @@ public class CreateNewGroupActivity extends BaseActivity {
     private ArrayList<GroupBean> datas = new ArrayList<>();
     private CacheUtil cacheUtil;
     private Activity activity;
-    private String groupIdsForResult = "";
+
     private String groupListStrFromIntent = "";
 
     private LinearLayout layout_create_new_group;
@@ -44,6 +45,7 @@ public class CreateNewGroupActivity extends BaseActivity {
     private DialogFragmentCreater dialogFragmentCreater;
 
     private ProgressDialogUtil progressDialogUtil;
+
     public static void startActivity(Activity activity, String groupListStrFromIntent, int requestCode) {
         Intent intent = new Intent(activity, CreateNewGroupActivity.class);
         intent.putExtra(GROUP_IDS_STR, groupListStrFromIntent);
@@ -85,6 +87,7 @@ public class CreateNewGroupActivity extends BaseActivity {
 
             @Override
             public void onRightButtonClick(View v) {
+                String groupIdsForResult = "";
                 if (datas.size() > 0) {
                     for (GroupBean bean : datas) {
                         if (bean.isSelected()) {
@@ -137,6 +140,34 @@ public class CreateNewGroupActivity extends BaseActivity {
     private void doSomething() {
         groupListStrFromIntent = getIntent().getStringExtra(GROUP_IDS_STR);
         cacheUtil = new CacheUtil(this);
+//        datas.clear();
+//        if(cacheUtil.getAvailableGroupIdsFromFile()!=null)
+//        {
+//            datas.addAll(cacheUtil.getAvailableGroupIdsFromFile());
+//        }
+//        ArrayList<String> groupidsList = new ArrayList<>();
+//        if(!TextUtils.isEmpty(groupListStrFromIntent))
+//        {
+//            groupidsList.addAll( GetGroupIdsUtil.getGroupIdArrayList(groupListStrFromIntent));
+//        }
+//        ArrayList<GroupBean> groupBeanIterior = new ArrayList<GroupBean>();
+//        for (String groupIdStr : groupidsList) {
+//            for (GroupBean bean : datas)
+//            {
+//                if(!bean.getName().equals(groupIdStr))
+//                {
+//                   GroupBean b = new GroupBean();
+//                    b.setIsSelected(false);
+//                    b.setName(groupIdStr);
+//                    groupBeanIterior.add(b);
+//                    break;
+//                }
+//            }
+//        }
+//
+//
+//
+
         new AsyncTask<Void, ArrayList<GroupBean>, ArrayList<GroupBean>>() {
             @Override
             protected void onPreExecute() {
@@ -149,23 +180,25 @@ public class CreateNewGroupActivity extends BaseActivity {
 
                 ArrayList<String> groupidsList = new ArrayList<>();
                 groupidsList = GetGroupIdsUtil.getGroupIdArrayList(groupListStrFromIntent);
+                Log.e("jwjw", groupidsList.toString());
                 ArrayList<GroupBean> groupBeans = new ArrayList<GroupBean>();
                 ArrayList<GroupBean> groupBeanArrayListForReturn = new ArrayList<GroupBean>();
                 if (cacheUtil.getAvailableGroupIdsFromFile() != null) {
                     groupBeans = cacheUtil.getAvailableGroupIdsFromFile();
-                    groupBeanArrayListForReturn.addAll(groupBeans);
-                    for (GroupBean bean : groupBeans) {
-                        for (String groupStr : groupidsList) {
-                            if (bean.getName().equals(groupStr)) {
-                                continue;
-                            } else {
+                    for (String nameStr : groupidsList) {
+                        for (int i = 0; i < groupBeans.size(); i++) {
+                            if (groupBeans.get(i).getName().equals(nameStr)) {
+                                groupBeans.get(i).setIsSelected(true);
+                                break;
+                            } else if (i == groupBeans.size() - 1) {
                                 GroupBean b = new GroupBean();
-                                b.setName(groupStr);
-                                b.setIsSelected(false);
+                                b.setName(nameStr);
+                                b.setIsSelected(true);
                                 groupBeanArrayListForReturn.add(b);
                             }
                         }
                     }
+                    groupBeanArrayListForReturn.addAll(groupBeans);
                 } else {
                     for (String groupid : groupidsList) {
                         GroupBean bean = new GroupBean();
