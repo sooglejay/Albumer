@@ -12,7 +12,9 @@ import java.util.List;
 import sooglejay.youtu.R;
 import sooglejay.youtu.adapter.SetIdentifyGroupIdAdapter;
 import sooglejay.youtu.bean.GroupBean;
+import sooglejay.youtu.constant.PreferenceConstant;
 import sooglejay.youtu.db.GroupNameDao;
+import sooglejay.youtu.utils.PreferenceUtil;
 import sooglejay.youtu.widgets.TitleBar;
 
 /**
@@ -59,10 +61,6 @@ public class SetIdentifyGroupIdActivity extends BaseActivity {
     }
 
     private void refresh() {
-        if(swipeLayout.isRefreshing())
-        {
-            return;
-        }
         new AsyncTask<Void, List<GroupBean>, List<GroupBean>>() {
             @Override
             protected void onPreExecute() {
@@ -75,8 +73,28 @@ public class SetIdentifyGroupIdActivity extends BaseActivity {
                 if (beanList != null) {
                     datas.clear();
                     datas.addAll(beanList);
-                    adapter.notifyDataSetChanged();
+
                 }
+
+                String groupNameStr = PreferenceUtil.load(SetIdentifyGroupIdActivity.this, PreferenceConstant.IDENTIFY_GROUP_NAME,"1");
+                for(int i = 0 ;i<datas.size();i++)
+                {
+                    if(datas.get(i).isUsedForIdentify())
+                    {
+                        break;
+                    }else if(i==datas.size()-1)
+                    {
+                        for(int j = 0;j<datas.size();j++)
+                        {
+                            if(datas.get(j).getName().equals(groupNameStr))
+                            {
+                                datas.get(i).setIsUsedForIdentify(true);
+                                break;
+                            }
+                        }
+                    }
+                }
+                adapter.notifyDataSetChanged();
                 swipeLayout.setRefreshing(false);
             }
 
