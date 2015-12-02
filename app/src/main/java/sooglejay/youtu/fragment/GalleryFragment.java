@@ -1,16 +1,22 @@
 package sooglejay.youtu.fragment;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 import android.media.FaceDetector;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import retrofit.RetrofitError;
@@ -28,11 +34,13 @@ import sooglejay.youtu.constant.PreferenceConstant;
 import sooglejay.youtu.event.BusEvent;
 import sooglejay.youtu.model.NetCallback;
 import sooglejay.youtu.ui.GalleryActivity;
+import sooglejay.youtu.ui.MainActivity;
 import sooglejay.youtu.utils.AsyncBitmapLoader;
 import sooglejay.youtu.utils.CacheUtil;
 import sooglejay.youtu.utils.ImageUtils;
 import sooglejay.youtu.utils.PreferenceUtil;
 import sooglejay.youtu.utils.ProgressDialogUtil;
+import sooglejay.youtu.widgets.CircleButton;
 import sooglejay.youtu.widgets.FaceImageView;
 import sooglejay.youtu.widgets.youtu.sign.Base64Util;
 
@@ -40,7 +48,9 @@ public class GalleryFragment extends BaseFragment {
 
     FaceDetector.Face face1;
     private FaceImageView imageView;
+    private CircleButton tv_delete_image;
     private FrameLayout progressContainer;
+    private FrameLayout layout_operation;
     private int position;
 
     private String url;
@@ -67,6 +77,8 @@ public class GalleryFragment extends BaseFragment {
         position = getArguments().getInt("position", 0);
         url = getArguments().getString("url", "");
         imageView = (FaceImageView) view.findViewById(R.id.iv_photo);
+        layout_operation = (FrameLayout) view.findViewById(R.id.layout_operation);
+        tv_delete_image = (CircleButton) view.findViewById(R.id.tv_delete_image);
         dialogFragmentCreater = new DialogFragmentCreater();
         dialogFragmentCreater.initDialogFragment(getActivity(), getActivity().getSupportFragmentManager());
         imageView.setDialogFragmentCreater(dialogFragmentCreater);
@@ -76,6 +88,22 @@ public class GalleryFragment extends BaseFragment {
         asyncBitmapLoader = activity.asyncBitmapLoader;
 
         getImage(url.substring(7, url.length()));
+
+        tv_delete_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                builder.setTitle("提示").setMessage("真的要删除这个图片么?")
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (mCallback != null) {
+                                    mCallback.onDeleteImagefile(url.substring(7, url.length()));
+                                }
+                            }
+                        }).setNegativeButton("取消", null).create().show();
+            }
+        });
 
     }
 
@@ -258,6 +286,17 @@ public class GalleryFragment extends BaseFragment {
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            mCallback = (Callback) getActivity();
+        }catch (ClassCastException e){
+            throw new ClassCastException("The Activity must implement MultiImageSelectorFragment.Callback interface...");
+        }
+
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
         if(dialogFragmentCreater!=null)
@@ -287,6 +326,17 @@ public class GalleryFragment extends BaseFragment {
             default:
                 break;
         }
+    }
+
+
+    private Callback mCallback;
+
+    /**
+     * 回调接口
+     */
+    public interface Callback{
+        void onDeleteImagefile(String path);
+
     }
 
 

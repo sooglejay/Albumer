@@ -32,6 +32,7 @@ android {
         }
     }
     repositories {
+
         flatDir {
             dirs 'libs'
         }
@@ -39,6 +40,7 @@ android {
     allprojects {
         repositories {
             mavenCentral()
+            mavenLocal()
         }
     }
 }
@@ -55,5 +57,4 @@ dependencies {
     compile project(':umengshare')
     compile project(':photoView')
     compile(name: 'android-gif-drawable-1.1.10', ext: 'aar')
-
 }

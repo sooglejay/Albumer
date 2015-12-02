@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.RectF;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -16,19 +17,48 @@ import android.view.View;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.greenrobot.event.EventBus;
 import sooglejay.youtu.R;
 import sooglejay.youtu.constant.ExtraConstants;
+import sooglejay.youtu.event.BusEvent;
 import sooglejay.youtu.fragment.GalleryFragment;
 import sooglejay.youtu.utils.AsyncBitmapLoader;
 import sooglejay.youtu.utils.CacheUtil;
 import sooglejay.youtu.widgets.TitleBar;
 
 
-public class GalleryActivity extends BaseActivity implements GalleryFragment.OnRectfChangeListener {
+public class GalleryActivity extends BaseActivity implements GalleryFragment.OnRectfChangeListener, GalleryFragment.Callback {
     private List<String> originUrls = new ArrayList<>();
+
+    @Override
+    public void onDeleteImagefile(String path) {
+        File file = new File(path);
+        if (file.exists() && file.isFile()) {
+            file.delete();
+            try {
+                getContentResolver().delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, MediaStore.Images.Media.DATA + "=?", new String[]{path});
+            } catch (Exception e) {
+
+            } finally {
+                EventBus.getDefault().post(new BusEvent(BusEvent.MSG_DELETE_IMAGE_FILE));
+                finish();
+            }
+        } else {
+            try {
+                getContentResolver().delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, MediaStore.Images.Media.DATA + "=?", new String[]{path});
+            } catch (Exception e) {
+            } finally {
+                EventBus.getDefault().post(new BusEvent(BusEvent.MSG_DELETE_IMAGE_FILE));
+                finish();
+            }
+        }
+    }
+
     private String folderName;
     private int position;
 
@@ -162,7 +192,7 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.OnR
     protected void onResume() {
         super.onResume();
         if (asyncBitmapLoader != null && cacheUtil != null) {
-            Log.e("jwjw","test start Gallery ");
+            Log.e("jwjw", "test start Gallery ");
             asyncBitmapLoader.setmDetectedFaceBitMapCache(cacheUtil.getDetectedObjectFromFile());
             asyncBitmapLoader.setmIdentifiedFaceBitMapCache(cacheUtil.getIdentifiedObjectFromFile());
         }

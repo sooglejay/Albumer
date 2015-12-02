@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sooglejay.youtu.R;
+import sooglejay.youtu.event.BusEvent;
 import sooglejay.youtu.ui.GalleryActivity;
 import sooglejay.youtu.widgets.TitleBar;
 import sooglejay.youtu.widgets.imagepicker.adapter.FolderAdapter;
@@ -454,5 +455,25 @@ public class AlbumFragment extends BaseFragment {
         }
     };
 
+
+
+    /**
+     * EventBus 广播
+     *
+     * @param event
+     */
+    public void onEvent(BusEvent event) {
+        switch (event.getMsg()) {
+            case BusEvent.MSG_DELETE_IMAGE_FILE:
+                Log.e("jwjw","删除测试 CHG");
+                hasFolderGened = false;
+                if(mResultFolder!=null)
+                mResultFolder.clear();
+                getActivity().getSupportLoaderManager().restartLoader(LOADER_ALL, null, mLoaderCallback);
+                break;
+            default:
+                break;
+        }
+    }
 
 }
