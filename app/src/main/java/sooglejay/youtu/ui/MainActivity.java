@@ -21,6 +21,7 @@ import java.util.List;
 import sooglejay.youtu.R;
 import sooglejay.youtu.fragment.AlbumFragment;
 import sooglejay.youtu.fragment.DetectFaceBeautyFragment;
+import sooglejay.youtu.fragment.MeFragment;
 import sooglejay.youtu.utils.ImageUtils;
 import sooglejay.youtu.widgets.TabBar;
 import sooglejay.youtu.widgets.imagepicker.MultiImageSelectorActivity;
@@ -110,7 +111,7 @@ public class MainActivity extends BaseActivity {
                     fragment = new AlbumFragment();
                     break;
                 case 2:
-                    fragment = new DetectFaceBeautyFragment();
+                    fragment = new MeFragment();
                     break;
                 default:
                     break;

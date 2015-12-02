@@ -1,17 +1,28 @@
 package sooglejay.youtu.bean;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import sooglejay.youtu.model.Model;
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 
 /**
  * Created by JammyQtheLab on 2015/12/1.
  */
-public class GroupBean implements Model, Parcelable {
-    private String name;
-    private boolean isSelected;
 
+@DatabaseTable(tableName = "tb_group_name")
+public class GroupBean {
+    @DatabaseField
+    private String name;
+
+    @DatabaseField
+    private boolean isSelected;//这个字段是用于 adapter的显示的
+
+
+     @DatabaseField
+    private boolean isUsedForIdentify;//这个字段是用于是否做为人脸识别的groupid
+
+
+
+    @DatabaseField(generatedId = true)
+    private int id;
     @Override
     public String toString() {
         return "GroupBean{" +
@@ -36,32 +47,7 @@ public class GroupBean implements Model, Parcelable {
         this.isSelected = isSelected;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.name);
-        dest.writeByte(isSelected ? (byte) 1 : (byte) 0);
-    }
-
     public GroupBean() {
     }
 
-    protected GroupBean(Parcel in) {
-        this.name = in.readString();
-        this.isSelected = in.readByte() != 0;
-    }
-
-    public static final Parcelable.Creator<GroupBean> CREATOR = new Parcelable.Creator<GroupBean>() {
-        public GroupBean createFromParcel(Parcel source) {
-            return new GroupBean(source);
-        }
-
-        public GroupBean[] newArray(int size) {
-            return new GroupBean[size];
-        }
-    };
 }

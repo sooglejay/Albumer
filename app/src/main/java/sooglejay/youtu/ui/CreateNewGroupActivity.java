@@ -13,11 +13,13 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import sooglejay.youtu.R;
 import sooglejay.youtu.adapter.GroupListAdapter;
 import sooglejay.youtu.bean.GroupBean;
 import sooglejay.youtu.constant.ExtraConstants;
+import sooglejay.youtu.db.GroupNameDao;
 import sooglejay.youtu.fragment.DialogFragmentCreater;
 import sooglejay.youtu.utils.CacheUtil;
 import sooglejay.youtu.utils.GetGroupIdsUtil;
@@ -35,7 +37,6 @@ public class CreateNewGroupActivity extends BaseActivity {
     private TitleBar titleBar;
     private GroupListAdapter adapter;
     private ArrayList<GroupBean> datas = new ArrayList<>();
-    private CacheUtil cacheUtil;
     private Activity activity;
 
     private String groupListStrFromIntent = "";
@@ -44,7 +45,7 @@ public class CreateNewGroupActivity extends BaseActivity {
 
     private DialogFragmentCreater dialogFragmentCreater;
 
-    private ProgressDialogUtil progressDialogUtil;
+    private GroupNameDao groupNameDao;
 
     public static void startActivity(Activity activity, String groupListStrFromIntent, int requestCode) {
         Intent intent = new Intent(activity, CreateNewGroupActivity.class);
@@ -58,7 +59,7 @@ public class CreateNewGroupActivity extends BaseActivity {
         setContentView(R.layout.activity_create_new_group);
         activity = this;
         dialogFragmentCreater = new DialogFragmentCreater();
-        progressDialogUtil = new ProgressDialogUtil(this);
+        groupNameDao = new GroupNameDao(this);
         setUpView();
         setUpListener();
         doSomething();
@@ -123,6 +124,7 @@ public class CreateNewGroupActivity extends BaseActivity {
                                     GroupBean bean = new GroupBean();
                                     bean.setIsSelected(false);
                                     bean.setName(groupName);
+                                    groupNameDao.add(bean);
                                     datas.add(bean);
                                     adapter.notifyDataSetChanged();
                                     Toast.makeText(activity, "新建群组成功！", Toast.LENGTH_SHORT).show();
@@ -139,58 +141,20 @@ public class CreateNewGroupActivity extends BaseActivity {
 
     private void doSomething() {
         groupListStrFromIntent = getIntent().getStringExtra(GROUP_IDS_STR);
-        cacheUtil = new CacheUtil(this);
-
-        new AsyncTask<Void, ArrayList<GroupBean>, ArrayList<GroupBean>>() {
+        new AsyncTask<Void, List<GroupBean>, List<GroupBean>>() {
             @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                progressDialogUtil.show("正在获取群组信息...");
-            }
-
-            @Override
-            protected ArrayList<GroupBean> doInBackground(Void... voids) {
-
-                ArrayList<String> groupidsList = new ArrayList<>();
-                groupidsList = GetGroupIdsUtil.getGroupIdArrayList(groupListStrFromIntent);
-                ArrayList<GroupBean> groupBeans = new ArrayList<GroupBean>();
-                ArrayList<GroupBean> groupBeanArrayListForReturn = new ArrayList<GroupBean>();
-                if (cacheUtil.getAvailableGroupIdsFromFile() != null) {
-                    groupBeans = cacheUtil.getAvailableGroupIdsFromFile();
-                    for (String nameStr : groupidsList) {
-                        for (int i = 0; i < groupBeans.size(); i++) {
-                            if (groupBeans.get(i).getName().equals(nameStr)) {
-                                groupBeans.get(i).setIsSelected(true);
-                                break;
-                            } else if (i == groupBeans.size() - 1) {
-                                GroupBean b = new GroupBean();
-                                b.setName(nameStr);
-                                b.setIsSelected(true);
-                                groupBeanArrayListForReturn.add(b);
-                            }
-                        }
-                    }
-                    groupBeanArrayListForReturn.addAll(groupBeans);
-                } else if(groupidsList!=null){
-                    for (String groupid : groupidsList) {
-                        GroupBean bean = new GroupBean();
-                        bean.setName(groupid);
-                        bean.setIsSelected(true);
-                        groupBeanArrayListForReturn.add(bean);
-                    }
-                }
-                return groupBeanArrayListForReturn;
-            }
-
-            @Override
-            protected void onPostExecute(ArrayList<GroupBean> groupBeans) {
-                if (groupBeans != null) {
-                    datas.clear();
-                    datas.addAll(groupBeans);
+            protected void onPostExecute(List<GroupBean> aVoid) {
+                super.onPostExecute(aVoid);
+                if(aVoid!=null)
+                {
+                    datas.addAll(aVoid);
                     adapter.notifyDataSetChanged();
                 }
-                progressDialogUtil.hide();
-                super.onPostExecute(groupBeans);
+            }
+
+            @Override
+            protected List<GroupBean> doInBackground(Void... voids) {
+                return groupNameDao.getAll();
             }
         }.execute();
     }
@@ -198,8 +162,5 @@ public class CreateNewGroupActivity extends BaseActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (cacheUtil != null && activity != null && datas != null) {
-            cacheUtil.saveGroupIdsToFile(activity, datas);
-        }
     }
 }

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<EditText
+    android:hint="请输入一个名字"
+    android:id="@+id/et_name"
+    android:layout_margin="48dp"
+    android:layout_width="match_parent"
+    android:layout_height="48dp" />
+<LinearLayout
+    android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:layout_height="wrap_content">
+    <TextView
+        android:layout_width="0dp"
+        android:text="添加"
+        android:padding="@dimen/middle_padding"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_margin="@dimen/middle_padding"
+        android:id="@+id/tv_add"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:text="删除"
+        android:padding="@dimen/middle_padding"
+        android:layout_margin="@dimen/middle_padding"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:id="@+id/tv_delete"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:layout_width="0dp"
+        android:text="更新"
+        android:padding="@dimen/middle_padding"
+        android:layout_margin="@dimen/middle_padding"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:id="@+id/tv_update"
+        android:layout_height="wrap_content" />
+</LinearLayout>
+
+
+            <TextView
+                android:id="@+id/tv_result"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/middle_padding"
+                android:layout_width="wrap_content"
+                android:padding="@dimen/middle_padding"
+                android:layout_height="wrap_content" />
+</LinearLayout>

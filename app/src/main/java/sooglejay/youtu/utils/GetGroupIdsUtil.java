@@ -35,6 +35,7 @@ public class GetGroupIdsUtil {
                 resultList.add(array[j]);
             }
         }
+        resultList.add("1");
         return  resultList;
     }
 }
