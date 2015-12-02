@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -15,27 +14,29 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import sooglejay.youtu.R;
-import sooglejay.youtu.adapter.GroupListAdapter;
+import sooglejay.youtu.adapter.SetGroupIdAdapter;
+import sooglejay.youtu.api.getgroupids.GetGroupIdsResponseBean;
 import sooglejay.youtu.bean.GroupBean;
 import sooglejay.youtu.constant.ExtraConstants;
+import sooglejay.youtu.constant.NetWorkConstant;
 import sooglejay.youtu.db.GroupNameDao;
 import sooglejay.youtu.fragment.DialogFragmentCreater;
-import sooglejay.youtu.utils.CacheUtil;
+import sooglejay.youtu.model.NetCallback;
 import sooglejay.youtu.utils.GetGroupIdsUtil;
-import sooglejay.youtu.utils.ProgressDialogUtil;
 import sooglejay.youtu.widgets.TitleBar;
 
 /**
  * Created by JammyQtheLab on 2015/12/1.
  */
 public class CreateNewGroupActivity extends BaseActivity {
-    public static final String GROUP_IDS_STR = "GROUP_IDS_STR";//人脸识别后，识别出来的groupids字符串
 
 
     private ListView list_view;
     private TitleBar titleBar;
-    private GroupListAdapter adapter;
+    private SetGroupIdAdapter adapter;
     private ArrayList<GroupBean> datas = new ArrayList<>();
     private Activity activity;
 
@@ -47,9 +48,8 @@ public class CreateNewGroupActivity extends BaseActivity {
 
     private GroupNameDao groupNameDao;
 
-    public static void startActivity(Activity activity, String groupListStrFromIntent, int requestCode) {
+    public static void startActivity(Activity activity ,int requestCode) {
         Intent intent = new Intent(activity, CreateNewGroupActivity.class);
-        intent.putExtra(GROUP_IDS_STR, groupListStrFromIntent);
         activity.startActivityForResult(intent, requestCode);
     }
 
@@ -69,7 +69,7 @@ public class CreateNewGroupActivity extends BaseActivity {
 
     private void setUpView() {
         list_view = (ListView) findViewById(R.id.list_view);
-        adapter = new GroupListAdapter(this, datas);
+        adapter = new SetGroupIdAdapter(this, datas, groupNameDao);
         list_view.setAdapter(adapter);
         layout_create_new_group = (LinearLayout) findViewById(R.id.layout_create_new_group);
         titleBar = (TitleBar) findViewById(R.id.title_bar);
@@ -140,23 +140,48 @@ public class CreateNewGroupActivity extends BaseActivity {
     }
 
     private void doSomething() {
-        groupListStrFromIntent = getIntent().getStringExtra(GROUP_IDS_STR);
-        new AsyncTask<Void, List<GroupBean>, List<GroupBean>>() {
-            @Override
-            protected void onPostExecute(List<GroupBean> aVoid) {
-                super.onPostExecute(aVoid);
-                if(aVoid!=null)
-                {
-                    datas.addAll(aVoid);
-                    adapter.notifyDataSetChanged();
+        List<GroupBean> groupBeanList = groupNameDao.getAll();
+        if (groupBeanList != null && groupBeanList.size() > 0)//如果数据库有，就从数据库取数据
+        {
+            new AsyncTask<Void, List<GroupBean>, List<GroupBean>>() {
+                @Override
+                protected void onPostExecute(List<GroupBean> beanList) {
+                    super.onPostExecute(beanList);
+                    if (beanList != null) {
+                        datas.addAll(beanList);
+                        adapter.notifyDataSetChanged();
+                    }
                 }
-            }
 
-            @Override
-            protected List<GroupBean> doInBackground(Void... voids) {
-                return groupNameDao.getAll();
-            }
-        }.execute();
+                @Override
+                protected List<GroupBean> doInBackground(Void... voids) {
+                    return groupNameDao.getAll();
+                }
+            }.execute();
+        } else {
+            sooglejay.youtu.api.getgroupids.GetGroupIdsUtil.getGroupIds(this, NetWorkConstant.APP_ID, new NetCallback<GetGroupIdsResponseBean>(this) {
+                @Override
+                public void onFailure(RetrofitError error, String message) {
+
+                }
+
+                @Override
+                public void success(GetGroupIdsResponseBean getGroupIdsResponseBean, Response response) {
+                    if (getGroupIdsResponseBean != null) {
+                        List<String> stringArrayList = getGroupIdsResponseBean.getGroup_ids();
+                        groupNameDao.deleteAll();
+                        for (String name : stringArrayList) {
+                            GroupBean groupBean = new GroupBean();
+                            groupBean.setIsSelected(false);
+                            groupBean.setName(name);
+                            datas.add(groupBean);
+                            groupNameDao.add(groupBean);
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+            });
+        }
     }
 
     @Override

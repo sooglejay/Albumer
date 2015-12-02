@@ -24,11 +24,13 @@ import sooglejay.youtu.api.faceidentify.FaceIdentifyUtil;
 import sooglejay.youtu.api.faceidentify.IdentifyItem;
 import sooglejay.youtu.constant.IntConstant;
 import sooglejay.youtu.constant.NetWorkConstant;
+import sooglejay.youtu.constant.PreferenceConstant;
 import sooglejay.youtu.model.NetCallback;
 import sooglejay.youtu.ui.GalleryActivity;
 import sooglejay.youtu.utils.AsyncBitmapLoader;
 import sooglejay.youtu.utils.CacheUtil;
 import sooglejay.youtu.utils.ImageUtils;
+import sooglejay.youtu.utils.PreferenceUtil;
 import sooglejay.youtu.utils.ProgressDialogUtil;
 import sooglejay.youtu.widgets.FaceImageView;
 import sooglejay.youtu.widgets.youtu.sign.Base64Util;
@@ -175,7 +177,8 @@ public class GalleryFragment extends BaseFragment {
                 }else {
                     final ProgressDialogUtil progressDialogUtil = new ProgressDialogUtil(activity);
                     progressDialogUtil.show("正在进行人脸识别...");
-                    FaceIdentifyUtil.faceIdentify(activity, NetWorkConstant.APP_ID, IntConstant.GROUP_ID + "", Base64Util.encode(ImageUtils.Bitmap2Bytes(bitmap)), new NetCallback<FaceIdentifyResponseBean>(activity) {
+                    String group_id = PreferenceUtil.load(activity, PreferenceConstant.IDENTIFY_GROUP_NAME,"1");
+                    FaceIdentifyUtil.faceIdentify(activity, NetWorkConstant.APP_ID, group_id, Base64Util.encode(ImageUtils.Bitmap2Bytes(bitmap)), new NetCallback<FaceIdentifyResponseBean>(activity) {
                         @Override
                         public void onFailure(RetrofitError error, String message) {
                             progressDialogUtil.hide();
@@ -227,7 +230,8 @@ public class GalleryFragment extends BaseFragment {
                         }else {
                             final ProgressDialogUtil progressDialogUtil = new ProgressDialogUtil(activity);
                             progressDialogUtil.show("正在进行人脸识别...");
-                            FaceIdentifyUtil.faceIdentify(activity, NetWorkConstant.APP_ID, IntConstant.GROUP_ID + "", Base64Util.encode(ImageUtils.Bitmap2Bytes(bitmap)), new NetCallback<FaceIdentifyResponseBean>(activity) {
+                            String group_id = PreferenceUtil.load(activity, PreferenceConstant.IDENTIFY_GROUP_NAME,"1");
+                            FaceIdentifyUtil.faceIdentify(activity, NetWorkConstant.APP_ID, group_id, Base64Util.encode(ImageUtils.Bitmap2Bytes(bitmap)), new NetCallback<FaceIdentifyResponseBean>(activity) {
                                 @Override
                                 public void onFailure(RetrofitError error, String message) {
                                     progressDialogUtil.hide();

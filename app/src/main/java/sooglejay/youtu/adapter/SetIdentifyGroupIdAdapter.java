@@ -1,7 +1,6 @@
 package sooglejay.youtu.adapter;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -12,19 +11,20 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import sooglejay.youtu.R;
-import sooglejay.youtu.api.faceidentify.IdentifyItem;
 import sooglejay.youtu.bean.GroupBean;
-import sooglejay.youtu.utils.GetTagUtil;
+import sooglejay.youtu.db.GroupNameDao;
 
 /**
  * Created by JammyQtheLab on 2015/11/30.
  */
-public class GroupListAdapter extends BaseAdapter {
+public class SetIdentifyGroupIdAdapter extends BaseAdapter {
     private ArrayList<GroupBean> groupNameDatas;
+    private GroupNameDao groupNameDao;
 
-    public GroupListAdapter(Context context, ArrayList<GroupBean> groupNameDatas) {
+    public SetIdentifyGroupIdAdapter(Context context, ArrayList<GroupBean> groupNameDatas, GroupNameDao groupNameDao) {
         this.context = context;
         this.groupNameDatas = groupNameDatas;
+        this.groupNameDao = groupNameDao;
     }
 
     private Context context;
@@ -60,7 +60,13 @@ public class GroupListAdapter extends BaseAdapter {
                         GroupBean bean = (GroupBean) object;
                         switch (view.getId()) {
                             case R.id.item:
-                                bean.setIsSelected(!bean.isSelected());
+                                for(GroupBean bb : groupNameDatas)
+                                {
+                                   bb.setIsUsedForIdentify(false);
+                                }
+                                bean.setIsUsedForIdentify(true);
+                                groupNameDao.uodateGroupNameBean(bean);
+
                                 break;
                             default:
                                 break;
@@ -74,7 +80,7 @@ public class GroupListAdapter extends BaseAdapter {
             holder = (ViewHolder) view.getTag();
         }
         GroupBean bean = getItem(i);
-        if (bean.isSelected()) {
+        if (bean.isUsedForIdentify()) {
             holder.iv_selected.setImageResource(R.drawable.icon_choose_selected);
         } else {
             holder.iv_selected.setImageResource(R.drawable.icon_choose);

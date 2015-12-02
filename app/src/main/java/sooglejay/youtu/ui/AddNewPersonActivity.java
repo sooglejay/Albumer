@@ -139,14 +139,13 @@ public class AddNewPersonActivity extends BaseActivity {
                 }.execute(imageFilePath);
             }
         });
-
     }
     private void setUpListener()
     {
         tv_group_name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CreateNewGroupActivity.startActivity(activity, groupStrFromIntent, ACTION_CreateNewGroupActivity);
+                CreateNewGroupActivity.startActivity(activity,  ACTION_CreateNewGroupActivity);
             }
         });
     }

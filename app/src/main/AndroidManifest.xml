@@ -75,6 +75,11 @@
             android:configChanges="orientation|screenSize" >
 
           </activity>
+             <activity
+            android:name=".ui.SetIdentifyGroupIdActivity"
+            android:configChanges="orientation|screenSize" >
+
+          </activity>
         <service android:name="com.amap.api.location.APSService"></service>
 
 
