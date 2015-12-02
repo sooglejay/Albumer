@@ -12,7 +12,10 @@ import java.util.ArrayList;
 
 import sooglejay.youtu.R;
 import sooglejay.youtu.bean.GroupBean;
+import sooglejay.youtu.constant.PreferenceConstant;
 import sooglejay.youtu.db.GroupNameDao;
+import sooglejay.youtu.utils.CacheUtil;
+import sooglejay.youtu.utils.PreferenceUtil;
 
 /**
  * Created by JammyQtheLab on 2015/11/30.
@@ -20,11 +23,13 @@ import sooglejay.youtu.db.GroupNameDao;
 public class SetIdentifyGroupIdAdapter extends BaseAdapter {
     private ArrayList<GroupBean> groupNameDatas;
     private GroupNameDao groupNameDao;
+    private CacheUtil cacheUtil;
 
     public SetIdentifyGroupIdAdapter(Context context, ArrayList<GroupBean> groupNameDatas, GroupNameDao groupNameDao) {
         this.context = context;
         this.groupNameDatas = groupNameDatas;
         this.groupNameDao = groupNameDao;
+        cacheUtil = new CacheUtil(context);
     }
 
     private Context context;
@@ -60,13 +65,14 @@ public class SetIdentifyGroupIdAdapter extends BaseAdapter {
                         GroupBean bean = (GroupBean) object;
                         switch (view.getId()) {
                             case R.id.item:
-                                for(GroupBean bb : groupNameDatas)
-                                {
-                                   bb.setIsUsedForIdentify(false);
+                                for (GroupBean bb : groupNameDatas) {
+                                    bb.setIsUsedForIdentify(false);
                                 }
                                 bean.setIsUsedForIdentify(true);
                                 groupNameDao.uodateGroupNameBean(bean);
-
+                                String name = bean.getName();
+                                PreferenceUtil.save(context, PreferenceConstant.IDENTIFY_GROUP_NAME,name);
+                                cacheUtil.clearIdentifyCache();
                                 break;
                             default:
                                 break;

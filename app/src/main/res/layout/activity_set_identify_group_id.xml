@@ -2,6 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <sooglejay.youtu.widgets.TitleBar
+        android:layout_width="match_parent"
+        android:id="@+id/title_bar"
+        android:layout_height="wrap_content"></sooglejay.youtu.widgets.TitleBar>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -11,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="相册中的人脸识别就是从群组中选择最相似的Top5\n所以，你需要自己选择人脸识别的群组\n当然，如果你完全可以\n把所有需要识别的人脸放在一个群组当中"
+            android:text="相册中的人脸识别就是从群组中选择最相似的Top5\n所以，你需要自己选择人脸识别的群组。\n如果改动匹配的群组，会清除掉之前的缓存\n导致需要花大量时间请求网络\n重新检测和识别图片中的人脸。\n当然，你完全可以\n把所有需要识别的人脸放在一个群组当中\n尽量不去改动它"
             android:id="@+id/tv_explain"
             android:layout_height="wrap_content" />
     </LinearLayout>
