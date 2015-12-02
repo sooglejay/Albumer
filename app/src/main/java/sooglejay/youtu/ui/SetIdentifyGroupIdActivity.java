@@ -67,7 +67,6 @@ public class SetIdentifyGroupIdActivity extends BaseActivity {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                swipeLayout.setRefreshing(true);
             }
 
             @Override

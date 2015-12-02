@@ -23,7 +23,10 @@ import java.util.ArrayList;
 import sooglejay.youtu.R;
 import sooglejay.youtu.adapter.ChooseFaceAdapter;
 import sooglejay.youtu.api.faceidentify.IdentifyItem;
+import sooglejay.youtu.constant.PreferenceConstant;
+import sooglejay.youtu.utils.PreferenceUtil;
 import sooglejay.youtu.utils.ScreenUtils;
+import sooglejay.youtu.utils.SpannableStringUtil;
 
 
 /**
@@ -212,17 +215,31 @@ public class DialogFragmentCreater extends DialogFragment {
 
     private Dialog showChooseFaceDialog(final Context mContext) {
         View convertView = LayoutInflater.from(mContext).inflate(R.layout.dialog_choose_face, null);
+        TextView tv_title = (TextView) convertView.findViewById(R.id.tv_title);
+        TextView tv_from_group_name = (TextView) convertView.findViewById(R.id.tv_from_group_name);
         ListView listView = (ListView) convertView.findViewById(R.id.list_view);
-        LinearLayout layout_footer = (LinearLayout) convertView.findViewById(R.id.layout_footer);
+        TextView tv_add_new_person = (TextView) convertView.findViewById(R.id.tv_add_new_person);
         ChooseFaceAdapter adapter = new ChooseFaceAdapter(mContext, identifyItems);
         listView.setAdapter(adapter);
+        tv_title.setText("相似度Top"+identifyItems.size());
+        String groupNameStr = PreferenceUtil.load(mContext, PreferenceConstant.IDENTIFY_GROUP_NAME,"1");
+
+        tv_from_group_name.setText("");
+        tv_from_group_name.append(SpannableStringUtil.addUnderLineSpan("人脸数据源来自群组："+groupNameStr));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 onChooseFaceCallBack.onItemClickListener(adapterView, view, i, l);
             }
         });
-        layout_footer.setOnClickListener(new View.OnClickListener() {
+        tv_add_new_person.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onChooseFaceCallBack.onClick(view);
+            }
+        });
+
+        tv_from_group_name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onChooseFaceCallBack.onClick(view);

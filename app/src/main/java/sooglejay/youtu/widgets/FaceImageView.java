@@ -1,12 +1,14 @@
 package sooglejay.youtu.widgets;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -20,8 +22,8 @@ import sooglejay.youtu.api.faceidentify.IdentifyItem;
 import sooglejay.youtu.fragment.DialogFragmentCreater;
 import sooglejay.youtu.ui.AddNewPersonActivity;
 import sooglejay.youtu.ui.EditFaceUserInfoActivity;
+import sooglejay.youtu.ui.SetIdentifyGroupIdActivity;
 import sooglejay.youtu.utils.GetTagUtil;
-import sooglejay.youtu.utils.ImageUtils;
 import sooglejay.youtu.utils.UIUtil;
 import uk.co.senab.photoview.PhotoView;
 
@@ -143,6 +145,7 @@ public class FaceImageView extends PhotoView {
                     if (dialogFragmentCreater != null&&identifyItems!=null&&identifyItems.size()>0) {
 
                         dialogFragmentCreater.setIdentifyItems(identifyItems);
+                        Log.e("Retrofit","jwjw"+identifyItems.toString());
                         dialogFragmentCreater.setOnChooseFaceCallBack(new DialogFragmentCreater.OnChooseFaceCallBack() {
                             @Override
                             public void onItemClickListener(AdapterView<?> adapterView, View view, final int i, long l) {
@@ -193,7 +196,15 @@ public class FaceImageView extends PhotoView {
                             }
                             @Override
                             public void onClick(View view) {
-                                AddNewPersonActivity.startActivity(context,imageFilePath, identifyItems);
+                                switch (view.getId())
+                                {
+                                    case R.id.tv_from_group_name:
+                                        context.startActivity(new Intent(context, SetIdentifyGroupIdActivity.class));
+                                        break;
+                                    case R.id.tv_add_new_person:
+                                        AddNewPersonActivity.startActivity(context,imageFilePath, identifyItems);
+                                        break;
+                                }
                             }
                         });
                         dialogFragmentCreater.showDialog(context,DialogFragmentCreater.DIALOG_CHOOSE_FACE);
