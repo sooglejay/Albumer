@@ -17,9 +17,15 @@ import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import de.greenrobot.event.EventBus;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import sooglejay.youtu.R;
@@ -31,6 +37,7 @@ import sooglejay.youtu.api.setinfo.SetInfoUtil;
 import sooglejay.youtu.constant.ExtraConstants;
 import sooglejay.youtu.constant.IntConstant;
 import sooglejay.youtu.constant.NetWorkConstant;
+import sooglejay.youtu.event.BusEvent;
 import sooglejay.youtu.model.NetCallback;
 import sooglejay.youtu.utils.CacheUtil;
 import sooglejay.youtu.utils.GetGroupIdsUtil;
@@ -56,6 +63,7 @@ public class EditFaceUserInfoActivity extends BaseActivity {
 
     private int position;//人脸识别top5中，用户点击的第几个人脸
 
+    private IdentifyItem item;
     private CacheUtil cacheUtil;
 
     private HashMap<String,ArrayList<IdentifyItem>> mIdentifiedFaceBitMapCache = null;
@@ -99,7 +107,15 @@ public class EditFaceUserInfoActivity extends BaseActivity {
         setContentView(R.layout.activity_edit_face_user_info);
         activity = this;
         cacheUtil = new CacheUtil(this);
+        Log.e("jwjw", "test start");
         mIdentifiedFaceBitMapCache = cacheUtil.getIdentifiedObjectFromFile();
+        imageFilePath = getIntent().getStringExtra(EXTRA_FACE_IMAGE_PATH);
+        identifyItems = getIntent().getParcelableArrayListExtra(EXTRA_FACE_IDENTIFY_DATAS);
+        position = getIntent().getIntExtra(EXTRA_FACE_IDENTIFY_POSITION, 0);
+
+        if (identifyItems != null) {
+            item = identifyItems.get(position);
+        }
         setUpView();
         setUpListener();
         doSomethng();
@@ -123,7 +139,7 @@ public class EditFaceUserInfoActivity extends BaseActivity {
                 final String phoneStr = etPhoneNumber.getText().toString();
                 final String nameStr = etName.getText().toString();
                 String newTag = GetTagUtil.getTag(nameStr, phoneStr, groupStrFromIntent);
-                identifyItems.get(position).setTag(newTag);
+                item.setTag(newTag);
                 final ProgressDialogUtil progressDialogUtil = new ProgressDialogUtil(activity);
                 progressDialogUtil.show("正在提交人脸信息...");
                 mIdentifiedFaceBitMapCache.put(imageFilePath, identifyItems);
@@ -132,15 +148,25 @@ public class EditFaceUserInfoActivity extends BaseActivity {
                     @Override
                     public void onFailure(RetrofitError error, String message) {
                         progressDialogUtil.hide();
-                        Log.d("Retrofit", "edit error !");
-
                     }
-
                     @Override
                     public void success(SetInfoResponseBean setInfoResponseBean, Response response) {
-                        progressDialogUtil.hide();
-                        Log.d("Retrofit","edit success !");
-                        Toast.makeText(activity, "修改成功！", Toast.LENGTH_SHORT).show();
+                         new AsyncTask<Void, Void, Void>() {
+                             @Override
+                             protected Void doInBackground(Void... voids) {
+                                 cacheUtil.saveIdentifiedObjectToFile(activity, mIdentifiedFaceBitMapCache);
+                                 return null;
+                             }
+
+                             @Override
+                             protected void onPostExecute(Void aVoid) {
+                                 super.onPostExecute(aVoid);
+                                 progressDialogUtil.hide();
+                                 EventBus.getDefault().post(new BusEvent(BusEvent.MSG_EDIT_FACE_INFO));
+                                 Toast.makeText(activity, "修改成功！", Toast.LENGTH_SHORT).show();
+                                 finish();
+                             }
+                         }.execute();
                     }
                 });
             }
@@ -158,17 +184,15 @@ public class EditFaceUserInfoActivity extends BaseActivity {
     }
 
     private void doSomethng() {
-        imageFilePath = getIntent().getStringExtra(EXTRA_FACE_IMAGE_PATH);
-        identifyItems = getIntent().getParcelableArrayListExtra(EXTRA_FACE_IDENTIFY_DATAS);
-        position = getIntent().getIntExtra(EXTRA_FACE_IDENTIFY_POSITION,0);
 
         if (imageFilePath != null) {
             ImageLoader.getInstance().displayImage("file://" + imageFilePath, ivAvatar, ImageUtils.getOptions());
         }
-        if (identifyItems != null) {
-            String tag = identifyItems.get(position).getTag();
+        if (item != null) {
+            String tag = item.getTag();
             groupStrFromIntent = GetTagUtil.getGroupIds(tag);//人脸识别后，检测到的该人脸属于的组id
-            tv_group_name.setText(groupStrFromIntent.replaceAll(GetGroupIdsUtil.reg, " "));
+
+            tv_group_name.setText(GetGroupIdsUtil.removeRegex(groupStrFromIntent));
             etName.setText(GetTagUtil.getName(tag));
             etPhoneNumber.setText(GetTagUtil.getPhoneNumber(tag));
         }
@@ -181,7 +205,7 @@ public class EditFaceUserInfoActivity extends BaseActivity {
             switch (requestCode) {
                 case ACTION_CreateNewGroupActivity:
                     groupStrFromIntent = data.getStringExtra(ExtraConstants.EXTRA_CREATE_NEW_GROUP);
-                    tv_group_name.setText(groupStrFromIntent.replaceAll(GetGroupIdsUtil.reg, " "));
+                    tv_group_name.setText(GetGroupIdsUtil.removeRegex(groupStrFromIntent));
                     break;
             }
         }
@@ -189,13 +213,4 @@ public class EditFaceUserInfoActivity extends BaseActivity {
 
     }
 
-    @Override
-    public void onPause() {
-        // TODO Auto-generated method stub
-        super.onPause();
-        if (cacheUtil != null&&mIdentifiedFaceBitMapCache!=null) {
-            cacheUtil.saveIdentifiedObjectToFile(this,mIdentifiedFaceBitMapCache);
-        }
-        ImageLoader.getInstance().clearMemoryCache();
-    }
 }

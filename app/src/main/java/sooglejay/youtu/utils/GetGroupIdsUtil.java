@@ -9,14 +9,9 @@ import java.util.ArrayList;
  */
 public class GetGroupIdsUtil {
     public static final String reg = "_groupids_";
-    public static String getGroupIds(ArrayList<String>groupids)
+    public static String removeRegex(String groupidsWithReg)
     {
-        String groupidsStr = "";
-        for (int i = 0 ; i <groupids.size();i++)
-        {
-            groupidsStr += groupids.get(i)+reg;
-        }
-        return groupidsStr;
+        return groupidsWithReg.replaceAll(reg, " ");
     }
 
     public static ArrayList<String> getGroupIdArrayList(String groupIds)

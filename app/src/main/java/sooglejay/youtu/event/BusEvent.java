@@ -2,6 +2,7 @@ package sooglejay.youtu.event;
 
 public class BusEvent {
 
+    public static final int MSG_EDIT_FACE_INFO = 1000;
     private int msg=0;
     public int getMsg() {
         return msg;

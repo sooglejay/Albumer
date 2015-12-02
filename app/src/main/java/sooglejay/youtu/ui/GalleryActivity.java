@@ -162,6 +162,7 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.OnR
     protected void onResume() {
         super.onResume();
         if (asyncBitmapLoader != null && cacheUtil != null) {
+            Log.e("jwjw","test start Gallery ");
             asyncBitmapLoader.setmDetectedFaceBitMapCache(cacheUtil.getDetectedObjectFromFile());
             asyncBitmapLoader.setmIdentifiedFaceBitMapCache(cacheUtil.getIdentifiedObjectFromFile());
         }

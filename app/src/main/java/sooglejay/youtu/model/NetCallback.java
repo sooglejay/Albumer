@@ -3,6 +3,7 @@ package sooglejay.youtu.model;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 
 import org.json.JSONObject;
 
@@ -23,6 +24,7 @@ public abstract class NetCallback<T> implements Callback<T> {
     @Override
     public void failure(RetrofitError error) {
         String message = "";
+        Log.e("jwjw","1234566789:"+error.toString());
         try {
             InputStream in = error.getResponse().getBody().in();
             BufferedReader br = new BufferedReader(new InputStreamReader(in));

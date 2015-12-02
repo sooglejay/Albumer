@@ -19,16 +19,16 @@ public class SetInfoResponseBean implements Model,Parcelable {
 
     private String session_id;
     private String person_id;
-    private int errorcode;
-    private int errormsg;
+    private String errorcode;
+    private String errormsg;
 
     @Override
     public String toString() {
         return "SetInfoResponseBean{" +
                 "session_id='" + session_id + '\'' +
                 ", person_id='" + person_id + '\'' +
-                ", errorcode=" + errorcode +
-                ", errormsg=" + errormsg +
+                ", errorcode='" + errorcode + '\'' +
+                ", errormsg='" + errormsg + '\'' +
                 '}';
     }
 
@@ -48,19 +48,19 @@ public class SetInfoResponseBean implements Model,Parcelable {
         this.person_id = person_id;
     }
 
-    public int getErrorcode() {
+    public String getErrorcode() {
         return errorcode;
     }
 
-    public void setErrorcode(int errorcode) {
+    public void setErrorcode(String errorcode) {
         this.errorcode = errorcode;
     }
 
-    public int getErrormsg() {
+    public String getErrormsg() {
         return errormsg;
     }
 
-    public void setErrormsg(int errormsg) {
+    public void setErrormsg(String errormsg) {
         this.errormsg = errormsg;
     }
 
@@ -73,8 +73,8 @@ public class SetInfoResponseBean implements Model,Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.session_id);
         dest.writeString(this.person_id);
-        dest.writeInt(this.errorcode);
-        dest.writeInt(this.errormsg);
+        dest.writeString(this.errorcode);
+        dest.writeString(this.errormsg);
     }
 
     public SetInfoResponseBean() {
@@ -83,8 +83,8 @@ public class SetInfoResponseBean implements Model,Parcelable {
     protected SetInfoResponseBean(Parcel in) {
         this.session_id = in.readString();
         this.person_id = in.readString();
-        this.errorcode = in.readInt();
-        this.errormsg = in.readInt();
+        this.errorcode = in.readString();
+        this.errormsg = in.readString();
     }
 
     public static final Creator<SetInfoResponseBean> CREATOR = new Creator<SetInfoResponseBean>() {

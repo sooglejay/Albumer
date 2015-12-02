@@ -25,6 +25,7 @@ import sooglejay.youtu.api.faceidentify.IdentifyItem;
 import sooglejay.youtu.constant.IntConstant;
 import sooglejay.youtu.constant.NetWorkConstant;
 import sooglejay.youtu.constant.PreferenceConstant;
+import sooglejay.youtu.event.BusEvent;
 import sooglejay.youtu.model.NetCallback;
 import sooglejay.youtu.ui.GalleryActivity;
 import sooglejay.youtu.utils.AsyncBitmapLoader;
@@ -264,4 +265,29 @@ public class GalleryFragment extends BaseFragment {
             dialogFragmentCreater = null;
         }
     }
+
+
+    /**
+     * EventBus 广播
+     *
+     * @param event
+     */
+    public void onEvent(BusEvent event) {
+        switch (event.getMsg()) {
+            case BusEvent.MSG_EDIT_FACE_INFO:
+                Log.e("jwjw","jiangwei");
+                if (cacheUtil != null && imageView!=null) {
+                    ArrayList<IdentifyItem> identifyItems = cacheUtil.getIdentifiedObjectFromFile().get(url.substring(7, url.length()));
+                    if (identifyItems != null) {
+                        Log.e("jwjw","2");
+                        imageView.setIdentifyItems(identifyItems);
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+
 }

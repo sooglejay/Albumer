@@ -67,6 +67,7 @@ public class SetIdentifyGroupIdAdapter extends BaseAdapter {
                             case R.id.item:
                                 for (GroupBean bb : groupNameDatas) {
                                     bb.setIsUsedForIdentify(false);
+                                    groupNameDao.uodateGroupNameBean(bb);
                                 }
                                 bean.setIsUsedForIdentify(true);
                                 groupNameDao.uodateGroupNameBean(bean);
