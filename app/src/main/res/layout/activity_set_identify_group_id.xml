@@ -1,32 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="true"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
     <sooglejay.youtu.widgets.TitleBar
-        android:layout_width="match_parent"
         android:id="@+id/title_bar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"></sooglejay.youtu.widgets.TitleBar>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <TextView
-            android:layout_margin="@dimen/middle_padding"
-            android:textSize="@dimen/middle_textsize"
+            android:id="@+id/tv_explain"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_margin="@dimen/middle_padding"
             android:gravity="center"
             android:text="相册中的人脸识别就是从群组中选择最相似的Top5\n所以，你需要自己选择人脸识别的群组。\n如果改动匹配的群组，会清除掉之前的缓存\n导致需要花大量时间请求网络\n重新检测和识别图片中的人脸。\n当然，你完全可以\n把所有需要识别的人脸放在一个群组当中\n尽量不去改动它"
-            android:id="@+id/tv_explain"
-            android:layout_height="wrap_content" />
+            android:textSize="@dimen/middle_textsize" />
     </LinearLayout>
+
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-<ListView
-    android:layout_width="match_parent"
-    android:id="@+id/list_view"
-    android:dividerHeight="-1dp"
-    android:layout_height="wrap_content"></ListView>
+
+        <ListView
+            android:id="@+id/list_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:dividerHeight="-1dp"></ListView>
     </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

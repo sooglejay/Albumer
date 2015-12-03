@@ -14,6 +14,7 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -34,31 +35,6 @@ import sooglejay.youtu.widgets.TitleBar;
 
 public class GalleryActivity extends BaseActivity implements GalleryFragment.OnRectfChangeListener, GalleryFragment.Callback {
     private List<String> originUrls = new ArrayList<>();
-
-    @Override
-    public void onDeleteImagefile(String path) {
-        File file = new File(path);
-        if (file.exists() && file.isFile()) {
-            file.delete();
-            try {
-                getContentResolver().delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, MediaStore.Images.Media.DATA + "=?", new String[]{path});
-            } catch (Exception e) {
-
-            } finally {
-                EventBus.getDefault().post(new BusEvent(BusEvent.MSG_DELETE_IMAGE_FILE));
-                finish();
-            }
-        } else {
-            try {
-                getContentResolver().delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, MediaStore.Images.Media.DATA + "=?", new String[]{path});
-            } catch (Exception e) {
-            } finally {
-                EventBus.getDefault().post(new BusEvent(BusEvent.MSG_DELETE_IMAGE_FILE));
-                finish();
-            }
-        }
-    }
-
     private String folderName;
     private int position;
 
@@ -126,7 +102,6 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.OnR
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                Log.e("jwjw", "文件加载完毕");
                 galleryViewPager.setAdapter(galleryAdapter);
                 galleryViewPager.setOffscreenPageLimit(1);
                 galleryViewPager.setCurrentItem(position);
@@ -154,6 +129,75 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.OnR
                 });
             }
         }.execute();
+
+    }
+
+    @Override
+    public void onDeleteImagefile(String path, int position) {
+        File file = new File(path.substring(7, path.length()));
+        if (file.exists() && file.isFile()) {
+            file.delete();
+            try {
+                getContentResolver().delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, MediaStore.Images.Media.DATA + "=?", new String[]{path});
+            } catch (Exception e) {
+
+            } finally {
+                EventBus.getDefault().post(new BusEvent(BusEvent.MSG_DELETE_IMAGE_FILE));
+                if(originUrls.contains(path))
+                {
+                    Toast.makeText(this,"12121212",Toast.LENGTH_SHORT).show();
+                    originUrls.remove(path);
+                    if(position>=1) {
+                        galleryViewPager.setAdapter(null);
+                        final GalleryAdapter galleryAdapter = new GalleryAdapter(getSupportFragmentManager());
+                        galleryViewPager.setAdapter(galleryAdapter);
+                        galleryViewPager.setCurrentItem(position - 1);
+                    }
+                    else if(originUrls.size()>1){
+                        galleryViewPager.setAdapter(null);
+                        final GalleryAdapter galleryAdapter = new GalleryAdapter(getSupportFragmentManager());
+                        galleryViewPager.setAdapter(galleryAdapter);
+                        galleryViewPager.setCurrentItem(0);
+                    }else {
+                        finish();
+                    }
+                }else {
+                    Toast.makeText(this,"34343434",Toast.LENGTH_SHORT).show();
+                }
+            }
+        } else {
+            try {
+                getContentResolver().delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, MediaStore.Images.Media.DATA + "=?", new String[]{path});
+            } catch (Exception e) {
+            } finally {
+                EventBus.getDefault().post(new BusEvent(BusEvent.MSG_DELETE_IMAGE_FILE));
+                if(originUrls.contains(path))
+                {
+                    originUrls.remove(path);
+                    if(position>=1) {
+                        galleryViewPager.setAdapter(null);
+                        final GalleryAdapter galleryAdapter = new GalleryAdapter(getSupportFragmentManager());
+                        galleryViewPager.setAdapter(galleryAdapter);
+                        galleryViewPager.setCurrentItem(position - 1);
+                    }
+                    else if(originUrls.size()>1){
+                        galleryViewPager.setAdapter(null);
+                        final GalleryAdapter galleryAdapter = new GalleryAdapter(getSupportFragmentManager());
+                        galleryViewPager.setAdapter(galleryAdapter);
+                        galleryViewPager.setCurrentItem(0);
+                    }else {
+                        finish();
+                    }
+                }
+            }
+        }
+
+
+
+    }
+
+    @Override
+    public void onTouchImageView() {
 
     }
 

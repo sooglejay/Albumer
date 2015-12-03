@@ -20,6 +20,7 @@ import sooglejay.youtu.R;
 import sooglejay.youtu.api.detectface.FaceItem;
 import sooglejay.youtu.api.faceidentify.IdentifyItem;
 import sooglejay.youtu.fragment.DialogFragmentCreater;
+import sooglejay.youtu.fragment.GalleryFragment;
 import sooglejay.youtu.ui.AddNewPersonActivity;
 import sooglejay.youtu.ui.EditFaceUserInfoActivity;
 import sooglejay.youtu.ui.SetIdentifyGroupIdActivity;
@@ -32,6 +33,13 @@ import uk.co.senab.photoview.PhotoView;
  */
 public class FaceImageView extends PhotoView {
     private static final int MAX_CLICK_DURATION = 300;
+
+    public void setmCallback(GalleryFragment.Callback mCallback) {
+        this.mCallback = mCallback;
+    }
+
+    private GalleryFragment.Callback mCallback;
+
 
     private Context context;
     ArrayList<FaceItem> faceItemList = new ArrayList<>();
@@ -213,10 +221,10 @@ public class FaceImageView extends PhotoView {
                     }
 
                 } else {
-                    Toast.makeText(context, "X 符合，Y不符合", Toast.LENGTH_SHORT).show();
+                    mCallback.onTouchImageView();
                 }
             } else {
-                Toast.makeText(context, "X不符合", Toast.LENGTH_SHORT).show();
+                mCallback.onTouchImageView();
             }
         }
     }

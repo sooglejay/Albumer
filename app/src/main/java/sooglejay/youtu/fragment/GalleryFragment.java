@@ -82,6 +82,7 @@ public class GalleryFragment extends BaseFragment {
         dialogFragmentCreater = new DialogFragmentCreater();
         dialogFragmentCreater.initDialogFragment(getActivity(), getActivity().getSupportFragmentManager());
         imageView.setDialogFragmentCreater(dialogFragmentCreater);
+        imageView.setmCallback(mCallback);
         progressContainer = (FrameLayout) view.findViewById(R.id.progress_container);
         activity = (GalleryActivity) getActivity();
         cacheUtil = activity.cacheUtil;
@@ -98,7 +99,7 @@ public class GalleryFragment extends BaseFragment {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 if (mCallback != null) {
-                                    mCallback.onDeleteImagefile(url.substring(7, url.length()));
+                                    mCallback.onDeleteImagefile(url,position);
                                 }
                             }
                         }).setNegativeButton("取消", null).create().show();
@@ -329,13 +330,15 @@ public class GalleryFragment extends BaseFragment {
     }
 
 
+
     private Callback mCallback;
 
     /**
      * 回调接口
      */
     public interface Callback{
-        void onDeleteImagefile(String path);
+        void onDeleteImagefile(String path,int position);
+        void onTouchImageView();
 
     }
 
