@@ -43,12 +43,11 @@
                 android:orientation="vertical">
 
                 <sooglejay.youtu.widgets.CircleButton
-                    android:id="@+id/tv_delete_image"
+                    android:id="@+id/iv_delete_image"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/icon_choose"
-                    android:text="删除"
-                    app:cb_color="@color/base_color"
+                    android:src="@drawable/icon_delete"
+                    app:cb_color="@color/white_color"
                     app:cb_pressedRingWidth="8dip" />
 
                 <TextView
@@ -56,6 +55,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
+                    android:textColor="@color/white_color"
                     android:paddingLeft="@dimen/middle_padding"
                     android:paddingRight="@dimen/middle_padding"
                     android:text="删除" />
@@ -69,21 +69,23 @@
                 android:orientation="vertical">
 
                 <sooglejay.youtu.widgets.CircleButton
-                    android:id="@+id/tv_focus_image"
+                    android:id="@+id/iv_like_image"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/icon_choose"
-                    app:cb_color="@color/base_color"
+                    android:src="@drawable/icon_like"
+                    app:cb_color="@color/white_color"
                     app:cb_pressedRingWidth="8dip" />
 
                 <TextView
+                    android:id="@+id/tv_like"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:textColor="@color/white_color"
                     android:gravity="center"
                     android:paddingLeft="@dimen/middle_padding"
                     android:paddingRight="@dimen/middle_padding"
-                    android:text="关注" />
+                    android:text="喜欢" />
             </LinearLayout>
         </LinearLayout>
     </FrameLayout>

@@ -134,7 +134,7 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.OnR
 
     @Override
     public void onDeleteImagefile(String path, int position) {
-        File file = new File(path.substring(7, path.length()));
+        File file = new File(path);
         if (file.exists() && file.isFile()) {
             file.delete();
             try {

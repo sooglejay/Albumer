@@ -13,6 +13,7 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
 import sooglejay.youtu.bean.GroupBean;
+import sooglejay.youtu.bean.LikeBean;
 
 
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
@@ -28,6 +29,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
         try {
             TableUtils.createTable(connectionSource, GroupBean.class);
+            TableUtils.createTable(connectionSource, LikeBean.class);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -38,6 +40,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
                           ConnectionSource connectionSource, int oldVersion, int newVersion) {
         try {
             TableUtils.dropTable(connectionSource, GroupBean.class, true);
+            TableUtils.dropTable(connectionSource, LikeBean.class, true);
             onCreate(database, connectionSource);
         } catch (SQLException e) {
             e.printStackTrace();

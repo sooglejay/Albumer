@@ -354,7 +354,7 @@ public class AlbumFragment extends BaseFragment {
                                 index = j;
                             }
                             j++;
-                            urls.add("file://" + image1.path);
+                            urls.add(image1.path);
                         }
                         break;
                     }
@@ -365,7 +365,7 @@ public class AlbumFragment extends BaseFragment {
         else if (image != null && outerFolder != null) {
             ArrayList<String> urls = new ArrayList<>();
             for (Image image1 : outerFolder.images) {
-                urls.add("file://" + image1.path);
+                urls.add(image1.path);
             }
             GalleryActivity.startActivity(getActivity(),outerFolder.name, position, urls);
         }
@@ -434,15 +434,6 @@ public class AlbumFragment extends BaseFragment {
                     mImageAdapter.setData(images);
                     if (mResultFolder != null && mResultFolder.size() > 0) {
                         outerFolder = mResultFolder.get(0);
-
-
-//                        //先获取所有文件的文件名，这个操作在 用户选择所有文件，并点击一个图片文件时有效
-//                        for (Folder folder :mResultFolder)
-//                        {
-//                            for (Image image1 : folder.images) {
-//                                urls.add("file://" + image1.path);
-//                            }
-//                        }
                     }
                     hasFolderGened = true;
                 }

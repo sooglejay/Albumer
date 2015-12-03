@@ -1,6 +1,5 @@
 package sooglejay.youtu.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
@@ -15,9 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -28,13 +28,14 @@ import sooglejay.youtu.api.detectface.FaceItem;
 import sooglejay.youtu.api.faceidentify.FaceIdentifyResponseBean;
 import sooglejay.youtu.api.faceidentify.FaceIdentifyUtil;
 import sooglejay.youtu.api.faceidentify.IdentifyItem;
+import sooglejay.youtu.bean.LikeBean;
 import sooglejay.youtu.constant.IntConstant;
 import sooglejay.youtu.constant.NetWorkConstant;
 import sooglejay.youtu.constant.PreferenceConstant;
+import sooglejay.youtu.db.LikeDao;
 import sooglejay.youtu.event.BusEvent;
 import sooglejay.youtu.model.NetCallback;
 import sooglejay.youtu.ui.GalleryActivity;
-import sooglejay.youtu.ui.MainActivity;
 import sooglejay.youtu.utils.AsyncBitmapLoader;
 import sooglejay.youtu.utils.CacheUtil;
 import sooglejay.youtu.utils.ImageUtils;
@@ -48,7 +49,9 @@ public class GalleryFragment extends BaseFragment {
 
     FaceDetector.Face face1;
     private FaceImageView imageView;
-    private CircleButton tv_delete_image;
+    private CircleButton iv_delete_image;
+    private CircleButton iv_like_image;
+    private TextView tv_like;
     private FrameLayout progressContainer;
     private FrameLayout layout_operation;
     private int position;
@@ -64,6 +67,10 @@ public class GalleryFragment extends BaseFragment {
     private DialogFragmentCreater dialogFragmentCreater;
     private AsyncBitmapLoader.BitmapCallback callback;
 
+
+    private LikeDao likeDao;
+    private List<LikeBean> likeImageList = new ArrayList<>();
+    private boolean isLiked = false;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_gallery, container, false);
@@ -73,12 +80,19 @@ public class GalleryFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        likeDao = new LikeDao(getActivity());
+        likeImageList = likeDao.getAll();
+
         onRectfChangeListener = (OnRectfChangeListener) this.getActivity();
         position = getArguments().getInt("position", 0);
         url = getArguments().getString("url", "");
         imageView = (FaceImageView) view.findViewById(R.id.iv_photo);
         layout_operation = (FrameLayout) view.findViewById(R.id.layout_operation);
-        tv_delete_image = (CircleButton) view.findViewById(R.id.tv_delete_image);
+
+        iv_delete_image = (CircleButton) view.findViewById(R.id.iv_delete_image);
+        iv_like_image   = (CircleButton) view.findViewById(R.id.iv_like_image);
+        tv_like         = (TextView) view.findViewById(R.id.tv_like);
+
         dialogFragmentCreater = new DialogFragmentCreater();
         dialogFragmentCreater.initDialogFragment(getActivity(), getActivity().getSupportFragmentManager());
         imageView.setDialogFragmentCreater(dialogFragmentCreater);
@@ -88,23 +102,60 @@ public class GalleryFragment extends BaseFragment {
         cacheUtil = activity.cacheUtil;
         asyncBitmapLoader = activity.asyncBitmapLoader;
 
-        getImage(url.substring(7, url.length()));
+        getImage(url);
 
-        tv_delete_image.setOnClickListener(new View.OnClickListener() {
+        iv_delete_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity);
                 builder.setTitle("提示").setMessage("真的要删除这个图片么?")
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 if (mCallback != null) {
-                                    mCallback.onDeleteImagefile(url,position);
+                                    mCallback.onDeleteImagefile(url, position);
                                 }
                             }
                         }).setNegativeButton("取消", null).create().show();
             }
         });
+
+
+
+
+        if(likeImageList!=null)
+        {
+            for (LikeBean likeBean :likeImageList)
+            {
+                if(likeBean.getImagePath().equals(url))
+                {
+                    isLiked = true;
+                    break;
+                }
+            }
+        }
+        iv_like_image.setImageResource(isLiked?R.drawable.icon_liked:R.drawable.icon_like);
+        tv_like.setText(isLiked?"已喜欢":"喜欢");
+        iv_like_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(isLiked)//如果之前是喜欢，再点击就变成不喜欢了
+                {
+                    likeDao.deleteByName(url);
+                    Toast.makeText(activity,"取消喜欢",Toast.LENGTH_SHORT).show();
+                }else {
+                    LikeBean bean = new LikeBean();
+                    bean.setImagePath(url);
+                    likeDao.add(bean);
+                    Toast.makeText(activity,"已喜欢",Toast.LENGTH_SHORT).show();
+                }
+                isLiked = !isLiked;
+                iv_like_image.setImageResource(isLiked?R.drawable.icon_liked:R.drawable.icon_like);
+                tv_like.setText(isLiked?"已喜欢":"喜欢");
+            }
+        });
+
 
     }
 
@@ -317,7 +368,7 @@ public class GalleryFragment extends BaseFragment {
             case BusEvent.MSG_EDIT_FACE_INFO:
                 Log.e("jwjw","jiangwei");
                 if (cacheUtil != null && imageView!=null) {
-                    ArrayList<IdentifyItem> identifyItems = cacheUtil.getIdentifiedObjectFromFile().get(url.substring(7, url.length()));
+                    ArrayList<IdentifyItem> identifyItems = cacheUtil.getIdentifiedObjectFromFile().get(url);
                     if (identifyItems != null) {
                         Log.e("jwjw","2");
                         imageView.setIdentifyItems(identifyItems);
