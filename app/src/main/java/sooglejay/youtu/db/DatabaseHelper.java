@@ -12,6 +12,7 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
+import sooglejay.youtu.bean.FocusBean;
 import sooglejay.youtu.bean.GroupBean;
 import sooglejay.youtu.bean.LikeBean;
 
@@ -30,6 +31,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         try {
             TableUtils.createTable(connectionSource, GroupBean.class);
             TableUtils.createTable(connectionSource, LikeBean.class);
+            TableUtils.createTable(connectionSource, FocusBean.class);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -41,6 +43,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         try {
             TableUtils.dropTable(connectionSource, GroupBean.class, true);
             TableUtils.dropTable(connectionSource, LikeBean.class, true);
+            TableUtils.dropTable(connectionSource, FocusBean.class, true);
             onCreate(database, connectionSource);
         } catch (SQLException e) {
             e.printStackTrace();

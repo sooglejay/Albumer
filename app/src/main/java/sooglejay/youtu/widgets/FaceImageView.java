@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -66,6 +67,12 @@ public class FaceImageView extends PhotoView {
     float radius;
     Long clickTime;//点击时的时间戳
 
+
+    public void setBottomLayoutOperation(FrameLayout bottomLayoutOperation) {
+        this.bottomLayoutOperation = bottomLayoutOperation;
+    }
+
+    private FrameLayout bottomLayoutOperation;
 
     private DialogFragmentCreater dialogFragmentCreater;//生成对话框，显示人脸的操作选项
 
@@ -222,8 +229,10 @@ public class FaceImageView extends PhotoView {
 
                 } else {
                     mCallback.onTouchImageView();
+                    bottomLayoutOperation.setVisibility(bottomLayoutOperation.getVisibility()==VISIBLE?GONE:VISIBLE);
                 }
             } else {
+                bottomLayoutOperation.setVisibility(bottomLayoutOperation.getVisibility()==VISIBLE?GONE:VISIBLE);
                 mCallback.onTouchImageView();
             }
         }

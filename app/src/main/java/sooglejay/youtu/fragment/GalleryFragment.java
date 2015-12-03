@@ -28,10 +28,12 @@ import sooglejay.youtu.api.detectface.FaceItem;
 import sooglejay.youtu.api.faceidentify.FaceIdentifyResponseBean;
 import sooglejay.youtu.api.faceidentify.FaceIdentifyUtil;
 import sooglejay.youtu.api.faceidentify.IdentifyItem;
+import sooglejay.youtu.bean.FocusBean;
 import sooglejay.youtu.bean.LikeBean;
 import sooglejay.youtu.constant.IntConstant;
 import sooglejay.youtu.constant.NetWorkConstant;
 import sooglejay.youtu.constant.PreferenceConstant;
+import sooglejay.youtu.db.FocusDao;
 import sooglejay.youtu.db.LikeDao;
 import sooglejay.youtu.event.BusEvent;
 import sooglejay.youtu.model.NetCallback;
@@ -41,6 +43,7 @@ import sooglejay.youtu.utils.CacheUtil;
 import sooglejay.youtu.utils.ImageUtils;
 import sooglejay.youtu.utils.PreferenceUtil;
 import sooglejay.youtu.utils.ProgressDialogUtil;
+import sooglejay.youtu.utils.ShareUtils;
 import sooglejay.youtu.widgets.CircleButton;
 import sooglejay.youtu.widgets.FaceImageView;
 import sooglejay.youtu.widgets.youtu.sign.Base64Util;
@@ -51,9 +54,11 @@ public class GalleryFragment extends BaseFragment {
     private FaceImageView imageView;
     private CircleButton iv_delete_image;
     private CircleButton iv_like_image;
+    private CircleButton iv_focus_image;
+    private CircleButton iv_share_image;
     private TextView tv_like;
+    private TextView tv_focus;
     private FrameLayout progressContainer;
-    private FrameLayout layout_operation;
     private int position;
 
     private String url;
@@ -64,6 +69,8 @@ public class GalleryFragment extends BaseFragment {
 
     private GalleryActivity activity;
 
+    private FrameLayout layout_operation;
+
     private DialogFragmentCreater dialogFragmentCreater;
     private AsyncBitmapLoader.BitmapCallback callback;
 
@@ -71,6 +78,13 @@ public class GalleryFragment extends BaseFragment {
     private LikeDao likeDao;
     private List<LikeBean> likeImageList = new ArrayList<>();
     private boolean isLiked = false;
+
+
+    private FocusDao focusDao;
+    private List<FocusBean> focusImageList = new ArrayList<>();
+    private boolean isFocused = false;
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_gallery, container, false);
@@ -81,7 +95,9 @@ public class GalleryFragment extends BaseFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         likeDao = new LikeDao(getActivity());
+        focusDao = new FocusDao(getActivity());
         likeImageList = likeDao.getAll();
+        focusImageList = focusDao.getAll();
 
         onRectfChangeListener = (OnRectfChangeListener) this.getActivity();
         position = getArguments().getInt("position", 0);
@@ -89,9 +105,13 @@ public class GalleryFragment extends BaseFragment {
         imageView = (FaceImageView) view.findViewById(R.id.iv_photo);
         layout_operation = (FrameLayout) view.findViewById(R.id.layout_operation);
 
+        imageView.setBottomLayoutOperation(layout_operation);
         iv_delete_image = (CircleButton) view.findViewById(R.id.iv_delete_image);
-        iv_like_image   = (CircleButton) view.findViewById(R.id.iv_like_image);
-        tv_like         = (TextView) view.findViewById(R.id.tv_like);
+        iv_like_image = (CircleButton) view.findViewById(R.id.iv_like_image);
+        iv_focus_image = (CircleButton) view.findViewById(R.id.iv_focus_image);
+        iv_share_image = (CircleButton) view.findViewById(R.id.iv_share_image);
+        tv_like = (TextView) view.findViewById(R.id.tv_like);
+        tv_focus = (TextView) view.findViewById(R.id.tv_focus);
 
         dialogFragmentCreater = new DialogFragmentCreater();
         dialogFragmentCreater.initDialogFragment(getActivity(), getActivity().getSupportFragmentManager());
@@ -122,40 +142,73 @@ public class GalleryFragment extends BaseFragment {
         });
 
 
-
-
-        if(likeImageList!=null)
-        {
-            for (LikeBean likeBean :likeImageList)
-            {
-                if(likeBean.getImagePath().equals(url))
-                {
+        if (likeImageList != null) {
+            for (LikeBean likeBean : likeImageList) {
+                if (likeBean.getImagePath().equals(url)) {
                     isLiked = true;
                     break;
                 }
             }
         }
-        iv_like_image.setImageResource(isLiked?R.drawable.icon_liked:R.drawable.icon_like);
-        tv_like.setText(isLiked?"已喜欢":"喜欢");
+        iv_like_image.setImageResource(isLiked ? R.drawable.icon_liked : R.drawable.icon_like);
+        tv_like.setText(isLiked ? "已喜欢" : "喜欢");
         iv_like_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isLiked)//如果之前是喜欢，再点击就变成不喜欢了
+                if (isLiked)//如果之前是喜欢，再点击就变成不喜欢了
                 {
                     likeDao.deleteByName(url);
-                    Toast.makeText(activity,"取消喜欢",Toast.LENGTH_SHORT).show();
-                }else {
+                    Toast.makeText(activity, "取消喜欢", Toast.LENGTH_SHORT).show();
+                } else {
                     LikeBean bean = new LikeBean();
                     bean.setImagePath(url);
                     likeDao.add(bean);
-                    Toast.makeText(activity,"已喜欢",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity, "已喜欢", Toast.LENGTH_SHORT).show();
                 }
                 isLiked = !isLiked;
-                iv_like_image.setImageResource(isLiked?R.drawable.icon_liked:R.drawable.icon_like);
-                tv_like.setText(isLiked?"已喜欢":"喜欢");
+                iv_like_image.setImageResource(isLiked ? R.drawable.icon_liked : R.drawable.icon_like);
+                tv_like.setText(isLiked ? "已喜欢" : "喜欢");
             }
         });
 
+
+        if (focusImageList != null) {
+            for (FocusBean focusBean : focusImageList) {
+                if (focusBean.getImagePath().equals(url)) {
+                    isFocused = true;
+                    break;
+                }
+            }
+        }
+        iv_focus_image.setImageResource(isFocused ? R.drawable.icon_focus : R.drawable.icon_focused);
+        tv_focus.setText(isFocused ? "已关注" : "关注");
+        iv_focus_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isFocused)//如果之前是喜欢，再点击就变成不喜欢了
+                {
+                    focusDao.deleteByName(url);
+                    Toast.makeText(activity, "取消关注", Toast.LENGTH_SHORT).show();
+                } else {
+                    FocusBean bean = new FocusBean();
+                    bean.setImagePath(url);
+                    focusDao.add(bean);
+                    Toast.makeText(activity, "已关注", Toast.LENGTH_SHORT).show();
+                }
+                isFocused = !isFocused;
+                iv_focus_image.setImageResource(isFocused ? R.drawable.icon_focus : R.drawable.icon_focused);
+                tv_focus.setText(isFocused ? "已关注" : "关注");
+            }
+        });
+
+
+        iv_share_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ShareUtils shareUtils = new ShareUtils();
+                shareUtils.addCustomPlatforms(activity);
+            }
+        });
 
     }
 
@@ -249,16 +302,16 @@ public class GalleryFragment extends BaseFragment {
             public void faceidentify(Bitmap bitmap) {
 
                 //如果已经做过人脸识别，并且成功了的，就不再做了
-                if (asyncBitmapLoader.getmIdentifiedFaceBitMapCache() !=null&& asyncBitmapLoader.getmIdentifiedFaceBitMapCache().containsKey(imagePath)) {
+                if (asyncBitmapLoader.getmIdentifiedFaceBitMapCache() != null && asyncBitmapLoader.getmIdentifiedFaceBitMapCache().containsKey(imagePath)) {
                     Log.e("jwjw", 456 + "  containsKey");
                     ArrayList<IdentifyItem> identifyItems = asyncBitmapLoader.getmIdentifiedFaceBitMapCache().get(imagePath);
                     if (identifyItems != null) {
                         imageView.setIdentifyItems(identifyItems);
                     }
-                }else {
+                } else {
                     final ProgressDialogUtil progressDialogUtil = new ProgressDialogUtil(activity);
                     progressDialogUtil.show("正在进行人脸识别...");
-                    String group_id = PreferenceUtil.load(activity, PreferenceConstant.IDENTIFY_GROUP_NAME,"1");
+                    String group_id = PreferenceUtil.load(activity, PreferenceConstant.IDENTIFY_GROUP_NAME, "1");
                     FaceIdentifyUtil.faceIdentify(activity, NetWorkConstant.APP_ID, group_id, Base64Util.encode(ImageUtils.Bitmap2Bytes(bitmap)), new NetCallback<FaceIdentifyResponseBean>(activity) {
                         @Override
                         public void onFailure(RetrofitError error, String message) {
@@ -271,13 +324,15 @@ public class GalleryFragment extends BaseFragment {
                             if (faceIdentifyResponseBean.getCandidates() != null) {
                                 imageView.setIdentifyItems(faceIdentifyResponseBean.getCandidates());
                                 //新识别的人脸添加进缓存
-                                asyncBitmapLoader.addNewIdentifiedFaceToCache(imagePath,faceIdentifyResponseBean.getCandidates());
+                                asyncBitmapLoader.addNewIdentifiedFaceToCache(imagePath, faceIdentifyResponseBean.getCandidates());
                             }
                         }
                     });
                 }
             }
         };
+
+        //人脸检测缓存，如果已经检测到人脸
         final ArrayList<FaceItem> faces = asyncBitmapLoader.loadAsyncBean(getActivity(), imagePath, callback);
         if (faces != null && faces.size() > 0) {
             new AsyncTask<String, Bitmap, Bitmap>() {
@@ -289,41 +344,41 @@ public class GalleryFragment extends BaseFragment {
                 @Override
                 protected Bitmap doInBackground(String... params) {
                     Bitmap tempBitmap = ImageUtils.getBitmapFromLocalPath(params[0], 1);
-                    Bitmap bitmap = ImageUtils.getResizedBitmap(tempBitmap, IntConstant.IMAGE_SIZE,  IntConstant.IMAGE_SIZE);
+                    Bitmap bitmap = ImageUtils.getResizedBitmap(tempBitmap, IntConstant.IMAGE_SIZE, IntConstant.IMAGE_SIZE);
                     return bitmap;
                 }
 
                 @Override
                 protected void onPostExecute(final Bitmap bitmap) {
-                    asyncBitmapLoader.addNewDetectedFaceToCache(imagePath, faces);
                     if (bitmap != null) {
                         imageView.setCanvasBitmapRes(bitmap);
                         imageView.setCanvasFaceListRes(faces);
                         imageView.setImageFilePath(imagePath);
 
                         //如果已经做过人脸识别，并且成功了的，就不再做了
-                        if (asyncBitmapLoader.getmIdentifiedFaceBitMapCache() !=null&& asyncBitmapLoader.getmIdentifiedFaceBitMapCache().containsKey(imagePath)) {
+                        if (asyncBitmapLoader.getmIdentifiedFaceBitMapCache() != null && asyncBitmapLoader.getmIdentifiedFaceBitMapCache().containsKey(imagePath)) {
                             Log.e("jwjw", 456 + "  containsKey");
                             ArrayList<IdentifyItem> identifyItems = asyncBitmapLoader.getmIdentifiedFaceBitMapCache().get(imagePath);
                             if (identifyItems != null) {
                                 imageView.setIdentifyItems(identifyItems);
                             }
-                        }else {
+                        } else {
                             final ProgressDialogUtil progressDialogUtil = new ProgressDialogUtil(activity);
                             progressDialogUtil.show("正在进行人脸识别...");
-                            String group_id = PreferenceUtil.load(activity, PreferenceConstant.IDENTIFY_GROUP_NAME,"1");
+                            String group_id = PreferenceUtil.load(activity, PreferenceConstant.IDENTIFY_GROUP_NAME, "1");
                             FaceIdentifyUtil.faceIdentify(activity, NetWorkConstant.APP_ID, group_id, Base64Util.encode(ImageUtils.Bitmap2Bytes(bitmap)), new NetCallback<FaceIdentifyResponseBean>(activity) {
                                 @Override
                                 public void onFailure(RetrofitError error, String message) {
                                     progressDialogUtil.hide();
                                 }
+
                                 @Override
                                 public void success(FaceIdentifyResponseBean faceIdentifyResponseBean, Response response) {
                                     progressDialogUtil.hide();
                                     if (faceIdentifyResponseBean.getCandidates() != null) {
                                         imageView.setIdentifyItems(faceIdentifyResponseBean.getCandidates());
                                         //新识别的人脸添加进缓存
-                                        asyncBitmapLoader.addNewIdentifiedFaceToCache(imagePath,faceIdentifyResponseBean.getCandidates());
+                                        asyncBitmapLoader.addNewIdentifiedFaceToCache(imagePath, faceIdentifyResponseBean.getCandidates());
                                     }
                                 }
                             });
@@ -342,7 +397,7 @@ public class GalleryFragment extends BaseFragment {
         super.onAttach(context);
         try {
             mCallback = (Callback) getActivity();
-        }catch (ClassCastException e){
+        } catch (ClassCastException e) {
             throw new ClassCastException("The Activity must implement MultiImageSelectorFragment.Callback interface...");
         }
 
@@ -351,8 +406,7 @@ public class GalleryFragment extends BaseFragment {
     @Override
     public void onPause() {
         super.onPause();
-        if(dialogFragmentCreater!=null)
-        {
+        if (dialogFragmentCreater != null) {
             dialogFragmentCreater = null;
         }
     }
@@ -366,11 +420,11 @@ public class GalleryFragment extends BaseFragment {
     public void onEvent(BusEvent event) {
         switch (event.getMsg()) {
             case BusEvent.MSG_EDIT_FACE_INFO:
-                Log.e("jwjw","jiangwei");
-                if (cacheUtil != null && imageView!=null) {
+                Log.e("jwjw", "jiangwei");
+                if (cacheUtil != null && imageView != null) {
                     ArrayList<IdentifyItem> identifyItems = cacheUtil.getIdentifiedObjectFromFile().get(url);
                     if (identifyItems != null) {
-                        Log.e("jwjw","2");
+                        Log.e("jwjw", "2");
                         imageView.setIdentifyItems(identifyItems);
                     }
                 }
@@ -381,14 +435,14 @@ public class GalleryFragment extends BaseFragment {
     }
 
 
-
     private Callback mCallback;
 
     /**
      * 回调接口
      */
-    public interface Callback{
-        void onDeleteImagefile(String path,int position);
+    public interface Callback {
+        void onDeleteImagefile(String path, int position);
+
         void onTouchImageView();
 
     }
