@@ -191,7 +191,6 @@ public class EditFaceUserInfoActivity extends BaseActivity {
         if (item != null) {
             String tag = item.getTag();
             groupStrFromIntent = GetTagUtil.getGroupIds(tag);//人脸识别后，检测到的该人脸属于的组id
-
             tv_group_name.setText(GetGroupIdsUtil.removeRegex(groupStrFromIntent));
             etName.setText(GetTagUtil.getName(tag));
             etPhoneNumber.setText(GetTagUtil.getPhoneNumber(tag));
