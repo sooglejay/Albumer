@@ -108,9 +108,9 @@ public class FaceImageView extends PhotoView {
         this.context = context;
         this.setLongClickable(true);
         animation_enter = AnimationUtils.loadAnimation(context,
-                R.anim.enter_from_bottom);
+                R.anim.enter_from_bottom_200);
         animation_exit = AnimationUtils.loadAnimation(context,
-                R.anim.exit_to_bottom);
+                R.anim.exit_to_bottom_200);
 //        operationBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.icon_more_operation).copy(Bitmap.Config.ARGB_8888, true);
     }
 
@@ -236,7 +236,6 @@ public class FaceImageView extends PhotoView {
                     }
 
                 } else {
-                    mCallback.onTouchImageView();
                     switch (bottomLayoutOperation.getVisibility())
                     {
                         case View.VISIBLE:
@@ -247,7 +246,7 @@ public class FaceImageView extends PhotoView {
 
                                 @Override
                                 public void onAnimationEnd(Animation animation) {
-                                    bottomLayoutOperation.setVisibility(View.GONE);
+                                    bottomLayoutOperation.setVisibility(View.INVISIBLE);
                                 }
 
                                 @Override
@@ -256,6 +255,7 @@ public class FaceImageView extends PhotoView {
                             });
                             bottomLayoutOperation.startAnimation(animation_exit);
                             break;
+                        case View.INVISIBLE:
                         case View.GONE:
                             animation_enter.setAnimationListener(new Animation.AnimationListener() {
                                 @Override
@@ -276,9 +276,10 @@ public class FaceImageView extends PhotoView {
                             bottomLayoutOperation.startAnimation(animation_enter);
                             break;
                     }
+                    mCallback.onTouchImageView();
+
                 }
             } else {
-                mCallback.onTouchImageView();
                 switch (bottomLayoutOperation.getVisibility())
                 {
                     case View.VISIBLE:
@@ -289,7 +290,7 @@ public class FaceImageView extends PhotoView {
 
                             @Override
                             public void onAnimationEnd(Animation animation) {
-                                bottomLayoutOperation.setVisibility(View.GONE);
+                                bottomLayoutOperation.setVisibility(View.INVISIBLE);
                             }
 
                             @Override
@@ -298,10 +299,12 @@ public class FaceImageView extends PhotoView {
                         });
                         bottomLayoutOperation.startAnimation(animation_exit);
                         break;
+                    case View.INVISIBLE:
                     case View.GONE:
                         animation_enter.setAnimationListener(new Animation.AnimationListener() {
                             @Override
                             public void onAnimationStart(Animation animation) {
+                                bottomLayoutOperation.setVisibility(View.VISIBLE);
                             }
 
                             @Override
@@ -317,6 +320,7 @@ public class FaceImageView extends PhotoView {
                         bottomLayoutOperation.startAnimation(animation_enter);
                         break;
                 }
+                mCallback.onTouchImageView();
             }
         }
     }

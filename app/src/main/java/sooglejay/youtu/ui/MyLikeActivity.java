@@ -44,8 +44,8 @@ public class MyLikeActivity extends BaseActivity {
     private Activity activity;
 
     private FrameLayout layout_operation;
-     private Animation animation_enter ;
-     private Animation animation_exit ;
+    private Animation animation_enter;
+    private Animation animation_exit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,9 +53,9 @@ public class MyLikeActivity extends BaseActivity {
         setContentView(R.layout.activity_my_like);
         activity = this;
         animation_enter = AnimationUtils.loadAnimation(activity,
-                R.anim.enter_from_bottom);
+                R.anim.enter_from_bottom_200);
         animation_exit = AnimationUtils.loadAnimation(activity,
-                R.anim.exit_to_bottom);
+                R.anim.exit_to_bottom_200);
 
         likeDao = new LikeDao(this);
         datas = likeDao.getAll();
@@ -119,12 +119,11 @@ public class MyLikeActivity extends BaseActivity {
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-                LikeBean bean = datas.get(i);
-                String imagePath = bean.getImagePath();
                 ArrayList<String> urls = new ArrayList<String>();
-                urls.add(imagePath);
-                GalleryActivity.startActivity(activity, "", 0, urls);
+                for (LikeBean likeBean : datas) {
+                    urls.add(likeBean.getImagePath());
+                }
+                GalleryActivity.startActivity(activity, "", i, urls);
             }
         });
         grid.setLongClickable(true);
@@ -149,17 +148,18 @@ public class MyLikeActivity extends BaseActivity {
                     }
                 });
                 title_bar.setRightTv("全选", -1);
-                switch (layout_operation.getVisibility())
-                {
+                switch (layout_operation.getVisibility()) {
                     case View.VISIBLE:
                         animation_exit.setAnimationListener(new Animation.AnimationListener() {
                             @Override
                             public void onAnimationStart(Animation animation) {
                             }
+
                             @Override
                             public void onAnimationEnd(Animation animation) {
                                 layout_operation.setVisibility(View.GONE);
                             }
+
                             @Override
                             public void onAnimationRepeat(Animation animation) {
                             }
