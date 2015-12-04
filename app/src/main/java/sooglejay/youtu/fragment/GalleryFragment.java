@@ -131,6 +131,7 @@ public class GalleryFragment extends BaseFragment {
 //        position = getArguments().getInt("position", 0);
 //        url = getArguments().getString("url", "");
         imageView = (FaceImageView) view.findViewById(R.id.iv_photo);
+        imageView.setActivity(getActivity());
         layout_operation = (FrameLayout) view.findViewById(R.id.layout_operation);
 
         imageView.setBottomLayoutOperation(layout_operation);

@@ -88,11 +88,16 @@ public class AddNewPersonActivity extends BaseActivity {
         etPhoneNumber = (EditText) findViewById(R.id.et_phone_number);
     }
 
+    @Override
+    public void finish() {
+        super.finish();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_person_activity);
+
         activity = this;
         contactDao = new ContactDao(this);
         cacheUtil = new CacheUtil(this);
@@ -108,7 +113,7 @@ public class AddNewPersonActivity extends BaseActivity {
         titleBar.setOnTitleBarClickListener(new TitleBar.OnTitleBarClickListener() {
             @Override
             public void onLeftButtonClick(View v) {
-                activity.finish();
+                finish();
             }
 
             @Override
@@ -142,7 +147,7 @@ public class AddNewPersonActivity extends BaseActivity {
                                 @Override
                                 public void onFailure(RetrofitError error, String message) {
                                     progressDialogUtil.hide();
-                                    Toast.makeText(activity,"请求超时,请确保网络良好再重试",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(activity, "请求超时,请确保网络良好再重试", Toast.LENGTH_SHORT).show();
 
                                 }
 
@@ -152,6 +157,7 @@ public class AddNewPersonActivity extends BaseActivity {
                                     ContactBean bean = new ContactBean();
                                     bean.setUser_name(nameStr);
                                     bean.setPhoneNumber(phoneStr);
+                                    bean.setImage_path(imageFilePath);
                                     contactDao.add(bean);
                                     new AsyncTask<Void, Void, Void>() {
                                         @Override
@@ -213,11 +219,11 @@ public class AddNewPersonActivity extends BaseActivity {
             @Override
             protected void onPostExecute(Void value) {
                 super.onPostExecute(value);
-                    if (etName != null) {
-                        etName.requestFocus();
-                        InputMethodManager imm = (InputMethodManager) etName.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.toggleSoftInput(0, InputMethodManager.SHOW_FORCED);
-                    }
+                if (etName != null) {
+                    etName.requestFocus();
+                    InputMethodManager imm = (InputMethodManager) etName.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.toggleSoftInput(0, InputMethodManager.SHOW_FORCED);
+                }
             }
         }.execute(400);
     }

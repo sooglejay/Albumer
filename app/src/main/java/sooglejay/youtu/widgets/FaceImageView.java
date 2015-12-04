@@ -1,5 +1,6 @@
 package sooglejay.youtu.widgets;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -78,6 +79,13 @@ public class FaceImageView extends PhotoView {
     private Animation animation_exit ;
     private FrameLayout bottomLayoutOperation;
 
+
+    public void setActivity(Activity activity) {
+        this.activity = activity;
+    }
+
+    private Activity activity;
+
     private DialogFragmentCreater dialogFragmentCreater;//生成对话框，显示人脸的操作选项
 
     private Bitmap faceBitmap;//人脸部位的bitmap
@@ -111,6 +119,9 @@ public class FaceImageView extends PhotoView {
                 R.anim.enter_from_bottom_200);
         animation_exit = AnimationUtils.loadAnimation(context,
                 R.anim.exit_to_bottom_200);
+
+
+
 //        operationBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.icon_more_operation).copy(Bitmap.Config.ARGB_8888, true);
     }
 
@@ -224,7 +235,7 @@ public class FaceImageView extends PhotoView {
                                         context.startActivity(new Intent(context, SetIdentifyGroupIdActivity.class));
                                         break;
                                     case R.id.tv_add_new_person:
-                                        AddNewPersonActivity.startActivity(context,imageFilePath, identifyItems);
+                                        AddNewPersonActivity.startActivity(context, imageFilePath, identifyItems);
                                         break;
                                 }
                             }

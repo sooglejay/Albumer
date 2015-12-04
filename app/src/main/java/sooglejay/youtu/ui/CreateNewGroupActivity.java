@@ -186,6 +186,10 @@ public class CreateNewGroupActivity extends BaseActivity {
             });
         }
     }
+    @Override
+    public void finish() {
+        super.finish();
+    }
 
     @Override
     protected void onPause() {

@@ -60,7 +60,7 @@ public class MyContactsListAdapter extends BaseAdapter {
         ImageLoader.getInstance().displayImage("file://"+bean.getImage_path(),holder.iv_avatar, ImageUtils.getOptions());
         holder.tv_phone_number.setText(bean.getPhoneNumber()+"");
         holder.tv_user_name.setText(bean.getUser_name()+"");
-        return null;
+        return view;
     }
 
     private ViewHolder holder;
