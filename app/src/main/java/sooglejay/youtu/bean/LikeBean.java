@@ -15,13 +15,37 @@ public class LikeBean implements Parcelable {
     @DatabaseField
     private String imagePath;
 
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setIsSelected(boolean isSelected) {
+        this.isSelected = isSelected;
+    }
+
+    private boolean isSelected;//在adapter 中辅助显示
+
     @Override
     public String toString() {
         return "LikeBean{" +
                 "imagePath='" + imagePath + '\'' +
+                ", isSelected=" + isSelected +
+                ", status=" + status +
                 ", id=" + id +
                 '}';
     }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    private int status;//在adapter 中辅助显示
+
 
     public String getImagePath() {
         return imagePath;
@@ -42,6 +66,9 @@ public class LikeBean implements Parcelable {
     @DatabaseField(generatedId = true)
     private int id;
 
+    public LikeBean() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -50,14 +77,15 @@ public class LikeBean implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.imagePath);
+        dest.writeByte(isSelected ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.status);
         dest.writeInt(this.id);
-    }
-
-    public LikeBean() {
     }
 
     protected LikeBean(Parcel in) {
         this.imagePath = in.readString();
+        this.isSelected = in.readByte() != 0;
+        this.status = in.readInt();
         this.id = in.readInt();
     }
 

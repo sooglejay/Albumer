@@ -11,6 +11,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.Toast;
@@ -72,6 +74,8 @@ public class FaceImageView extends PhotoView {
         this.bottomLayoutOperation = bottomLayoutOperation;
     }
 
+    private Animation animation_enter;
+    private Animation animation_exit ;
     private FrameLayout bottomLayoutOperation;
 
     private DialogFragmentCreater dialogFragmentCreater;//生成对话框，显示人脸的操作选项
@@ -103,6 +107,10 @@ public class FaceImageView extends PhotoView {
     private void initView(Context context) {
         this.context = context;
         this.setLongClickable(true);
+        animation_enter = AnimationUtils.loadAnimation(context,
+                R.anim.enter_from_bottom);
+        animation_exit = AnimationUtils.loadAnimation(context,
+                R.anim.exit_to_bottom);
 //        operationBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.icon_more_operation).copy(Bitmap.Config.ARGB_8888, true);
     }
 
@@ -229,11 +237,86 @@ public class FaceImageView extends PhotoView {
 
                 } else {
                     mCallback.onTouchImageView();
-                    bottomLayoutOperation.setVisibility(bottomLayoutOperation.getVisibility()==VISIBLE?GONE:VISIBLE);
+                    switch (bottomLayoutOperation.getVisibility())
+                    {
+                        case View.VISIBLE:
+                            animation_exit.setAnimationListener(new Animation.AnimationListener() {
+                                @Override
+                                public void onAnimationStart(Animation animation) {
+                                }
+
+                                @Override
+                                public void onAnimationEnd(Animation animation) {
+                                    bottomLayoutOperation.setVisibility(View.GONE);
+                                }
+
+                                @Override
+                                public void onAnimationRepeat(Animation animation) {
+                                }
+                            });
+                            bottomLayoutOperation.startAnimation(animation_exit);
+                            break;
+                        case View.GONE:
+                            animation_enter.setAnimationListener(new Animation.AnimationListener() {
+                                @Override
+                                public void onAnimationStart(Animation animation) {
+                                    bottomLayoutOperation.setVisibility(View.VISIBLE);
+                                }
+
+                                @Override
+                                public void onAnimationEnd(Animation animation) {
+                                    bottomLayoutOperation.setVisibility(View.VISIBLE);
+                                }
+
+                                @Override
+                                public void onAnimationRepeat(Animation animation) {
+
+                                }
+                            });
+                            bottomLayoutOperation.startAnimation(animation_enter);
+                            break;
+                    }
                 }
             } else {
-                bottomLayoutOperation.setVisibility(bottomLayoutOperation.getVisibility()==VISIBLE?GONE:VISIBLE);
                 mCallback.onTouchImageView();
+                switch (bottomLayoutOperation.getVisibility())
+                {
+                    case View.VISIBLE:
+                        animation_exit.setAnimationListener(new Animation.AnimationListener() {
+                            @Override
+                            public void onAnimationStart(Animation animation) {
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animation animation) {
+                                bottomLayoutOperation.setVisibility(View.GONE);
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animation animation) {
+                            }
+                        });
+                        bottomLayoutOperation.startAnimation(animation_exit);
+                        break;
+                    case View.GONE:
+                        animation_enter.setAnimationListener(new Animation.AnimationListener() {
+                            @Override
+                            public void onAnimationStart(Animation animation) {
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animation animation) {
+                                bottomLayoutOperation.setVisibility(View.VISIBLE);
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animation animation) {
+
+                            }
+                        });
+                        bottomLayoutOperation.startAnimation(animation_enter);
+                        break;
+                }
             }
         }
     }

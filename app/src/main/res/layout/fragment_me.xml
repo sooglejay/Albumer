@@ -142,7 +142,7 @@
 
 
             <LinearLayout
-                android:id="@+id/my_answers_group"
+                android:id="@+id/my_contacts_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/btn_select_white"
@@ -150,7 +150,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:id="@+id/my_answers_or_questions_icon"
+                    android:id="@+id/my_contacts_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -174,7 +174,7 @@
                     android:textSize="@dimen/big_textsize" />
 
                 <TextView
-                    android:id="@+id/my_answers_or_questions_count_tv"
+                    android:id="@+id/my_contacts_count_tv"
                     android:layout_width="wrap_content"
 
                     android:layout_height="wrap_content"
@@ -234,6 +234,63 @@
 
                 <TextView
                     android:id="@+id/my_focus_count_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="14"
+                    android:textColor="@color/dark_black_color"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="@dimen/middle_padding"
+                    android:layout_marginRight="@dimen/middle_padding"
+                    android:src="@drawable/arrow_right" />
+            </LinearLayout>
+  <View
+                android:id="@+id/gray_line4"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="@dimen/large_padding"
+                android:layout_marginStart="@dimen/large_padding"
+                android:background="@color/very_light_gray_color" />
+
+            <!--我的关注-->
+            <LinearLayout
+                android:id="@+id/my_like_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_select_white"
+                android:clickable="true"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/like_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/most_big_padding"
+                    android:layout_marginStart="@dimen/most_big_padding"
+                    android:paddingBottom="@dimen/middle_padding"
+                    android:paddingTop="@dimen/middle_padding"
+                    android:scaleType="center"
+                    android:src="@drawable/icon_choose" />
+
+                <TextView
+                    android:id="@+id/my_like_des_tv"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/big_padding"
+                    android:layout_marginStart="@dimen/big_padding"
+                    android:layout_weight="1"
+                    android:text="喜欢"
+                    android:textColor="@color/dark_black_color" />
+
+                <TextView
+                    android:id="@+id/my_like_count_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"

@@ -73,7 +73,7 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.OnR
         // TODO Auto-generated method stub
 
         titleBar = (TitleBar) findViewById(R.id.title_bar);
-        folderName = TextUtils.isEmpty(folderName) ? "sooglejay" : folderName;
+        folderName = TextUtils.isEmpty(folderName) ? "" : folderName;
         titleBar.initTitleBarInfo((position + 1) + "/" + originUrls.size(), R.drawable.arrow_left, -1, folderName, "");
         titleBar.setOnTitleBarClickListener(new TitleBar.OnTitleBarClickListener() {
             @Override

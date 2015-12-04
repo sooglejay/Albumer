@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -20,6 +21,7 @@ import sooglejay.youtu.bean.GroupBean;
 import sooglejay.youtu.constant.NetWorkConstant;
 import sooglejay.youtu.db.GroupNameDao;
 import sooglejay.youtu.model.NetCallback;
+import sooglejay.youtu.ui.MyLikeActivity;
 import sooglejay.youtu.ui.SetIdentifyGroupIdActivity;
 import sooglejay.youtu.widgets.TitleBar;
 
@@ -32,6 +34,14 @@ public class MeFragment extends BaseFragment {
     private LinearLayout layout_choose_group_id;
     private Activity activity;
     private GroupNameDao groupNameDao ;
+
+    private TextView my_contacts_count_tv;
+    private TextView my_focus_count_tv;
+    private TextView my_like_count_tv;
+
+    private LinearLayout my_contacts_group;
+    private LinearLayout my_like_group;
+    private LinearLayout my_focus_group;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -45,6 +55,16 @@ public class MeFragment extends BaseFragment {
         groupNameDao = new GroupNameDao(getActivity());
         titleBar = (TitleBar) view.findViewById(R.id.title_bar);
         layout_choose_group_id = (LinearLayout)view.findViewById(R.id.layout_choose_group_id);
+
+        my_contacts_group = (LinearLayout)view.findViewById(R.id.my_contacts_group);
+        my_like_group = (LinearLayout)view.findViewById(R.id.my_like_group);
+        my_focus_group = (LinearLayout)view.findViewById(R.id.my_focus_group);
+
+        my_like_count_tv = (TextView)view.findViewById(R.id.my_like_count_tv);
+        my_contacts_count_tv = (TextView)view.findViewById(R.id.my_contacts_count_tv);
+        my_focus_count_tv = (TextView)view.findViewById(R.id.my_focus_count_tv);
+
+
         titleBar.initTitleBarInfo("我的", -1, -1, "", "");
 
 
@@ -53,6 +73,19 @@ public class MeFragment extends BaseFragment {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(activity,SetIdentifyGroupIdActivity.class));
+            }
+        });
+        my_like_group.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                    getActivity().startActivity(new Intent(getActivity(), MyLikeActivity.class));
+            }
+        });
+
+        my_focus_group.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
             }
         });
 
