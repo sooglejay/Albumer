@@ -156,5 +156,13 @@ public class CacheUtil {
            dir.delete();
         }
     }
+    public  void clearDetectFaceCache()
+    {
+        File dir = new File(cacheFilePath+File.separator+ CACHE_DETECT_FILE_NAME);
+        if(dir.exists()&&dir.isFile())
+        {
+           dir.delete();
+        }
+    }
 
 }

@@ -23,12 +23,16 @@ import java.util.ArrayList;
 import sooglejay.youtu.R;
 import sooglejay.youtu.api.detectface.FaceItem;
 import sooglejay.youtu.api.faceidentify.IdentifyItem;
+import sooglejay.youtu.constant.IntConstant;
+import sooglejay.youtu.constant.PreferenceConstant;
 import sooglejay.youtu.fragment.DialogFragmentCreater;
 import sooglejay.youtu.fragment.GalleryFragment;
 import sooglejay.youtu.ui.AddNewPersonActivity;
 import sooglejay.youtu.ui.EditFaceUserInfoActivity;
 import sooglejay.youtu.ui.SetIdentifyGroupIdActivity;
 import sooglejay.youtu.utils.GetTagUtil;
+import sooglejay.youtu.utils.ImageUtils;
+import sooglejay.youtu.utils.PreferenceUtil;
 import sooglejay.youtu.utils.UIUtil;
 import uk.co.senab.photoview.PhotoView;
 
@@ -70,13 +74,14 @@ public class FaceImageView extends PhotoView {
     float radius;
     Long clickTime;//点击时的时间戳
 
+    private boolean isDetectFace;// 是否开启人脸检测
 
     public void setBottomLayoutOperation(FrameLayout bottomLayoutOperation) {
         this.bottomLayoutOperation = bottomLayoutOperation;
     }
 
     private Animation animation_enter;
-    private Animation animation_exit ;
+    private Animation animation_exit;
     private FrameLayout bottomLayoutOperation;
 
 
@@ -89,6 +94,7 @@ public class FaceImageView extends PhotoView {
     private DialogFragmentCreater dialogFragmentCreater;//生成对话框，显示人脸的操作选项
 
     private Bitmap faceBitmap;//人脸部位的bitmap
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         mWidth = View.MeasureSpec.getSize(widthMeasureSpec);
@@ -120,6 +126,7 @@ public class FaceImageView extends PhotoView {
         animation_exit = AnimationUtils.loadAnimation(context,
                 R.anim.exit_to_bottom_200);
 
+        isDetectFace = PreferenceUtil.load(context, PreferenceConstant.SWITCH_DETECT_FACE, true);
 
 
 //        operationBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.icon_more_operation).copy(Bitmap.Config.ARGB_8888, true);
@@ -128,57 +135,59 @@ public class FaceImageView extends PhotoView {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        if (isDetectFace) {
+            cx = 0;
+            cy = 0;
 
-        cx = 0;
-        cy = 0;
-
-        if (bitmap != null) {
-            cx = (mWidth - bitmap.getWidth()) >> 1; // same as (...) / 2
-            cy = (mHeight - bitmap.getHeight()) >> 1;
-            if (mAngle > 0) {
-                canvas.rotate(mAngle, mWidth >> 1, mHeight >> 1);
-            }
-            canvas.drawBitmap(bitmap, cx, cy, null);
-            canvas.save();
-        }
-        if (faceItemList != null) {
-            Paint paint = new Paint();
-            paint.setColor(Color.GREEN);
-            paint.setStyle(Paint.Style.STROKE);
-            paint.setStrokeWidth(3);
-            for (FaceItem faceItem : faceItemList) {
-                outerFaceItem = faceItem;
-                centerX = faceItem.getWidth() / 2;
-                centerY = faceItem.getHeight() / 2;
-                radius = centerX > centerY ? centerX : centerY;
+            if (bitmap != null) {
+                cx = (mWidth - bitmap.getWidth()) >> 1; // same as (...) / 2
+                cy = (mHeight - bitmap.getHeight()) >> 1;
                 if (mAngle > 0) {
                     canvas.rotate(mAngle, mWidth >> 1, mHeight >> 1);
                 }
-                canvas.drawCircle(centerX + faceItem.getX() + cx, centerY + faceItem.getY() + cy, radius, paint);
+                canvas.drawBitmap(bitmap, cx, cy, null);
                 canvas.save();
+            }
+            if (faceItemList != null) {
+                Paint paint = new Paint();
+                paint.setColor(Color.GREEN);
+                paint.setStyle(Paint.Style.STROKE);
+                paint.setStrokeWidth(3);
+                for (FaceItem faceItem : faceItemList) {
+                    outerFaceItem = faceItem;
+                    centerX = faceItem.getWidth() / 2;
+                    centerY = faceItem.getHeight() / 2;
+                    radius = centerX > centerY ? centerX : centerY;
+                    if (mAngle > 0) {
+                        canvas.rotate(mAngle, mWidth >> 1, mHeight >> 1);
+                    }
+                    canvas.drawCircle(centerX + faceItem.getX() + cx, centerY + faceItem.getY() + cy, radius, paint);
+                    canvas.save();
 
-                canvas.clipRect(faceItem.getX(), faceItem.getY(), faceItem.getX() + faceItem.getX() + faceItem.getWidth(), faceItem.getY() + faceItem.getHeight());
-                canvas.save();
+                    canvas.clipRect(faceItem.getX(), faceItem.getY(), faceItem.getX() + faceItem.getX() + faceItem.getWidth(), faceItem.getY() + faceItem.getHeight());
+                    canvas.save();
 
-                faceBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-                canvas.restore();
+                    faceBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+                    canvas.restore();
+                }
             }
         }
     }
 
     /**
      * 点击用户的脸部
+     *
      * @param x
      * @param y
      */
     private void whichCircle(float x, float y) {
-        if(outerFaceItem!=null) {
+        if (outerFaceItem != null) {
             if (centerX + outerFaceItem.getX() + cx - radius <= x && x <= centerX + outerFaceItem.getX() + cx + radius) {
                 if (centerY + outerFaceItem.getY() + cy - radius <= y && y <= centerY + outerFaceItem.getY() + cy + radius) {
-                    if (dialogFragmentCreater != null&&identifyItems!=null&&identifyItems.size()>0) {
+                    if (dialogFragmentCreater != null && identifyItems != null && identifyItems.size() > 0) {
 
                         dialogFragmentCreater.setIdentifyItems(identifyItems);
-                        Log.e("Retrofit","jwjw"+identifyItems.toString());
+                        Log.e("Retrofit", "jwjw" + identifyItems.toString());
                         dialogFragmentCreater.setOnChooseFaceCallBack(new DialogFragmentCreater.OnChooseFaceCallBack() {
                             @Override
                             public void onItemClickListener(AdapterView<?> adapterView, View view, final int i, long l) {
@@ -198,7 +207,7 @@ public class FaceImageView extends PhotoView {
                                                         }
                                                         break;
                                                     case R.id.tv_edit_info:
-                                                        EditFaceUserInfoActivity.startActivity(context,imageFilePath, identifyItems,i);
+                                                        EditFaceUserInfoActivity.startActivity(context, imageFilePath, identifyItems, i);
                                                         break;
                                                     case R.id.tv_send_message:
                                                         if (identifyItems != null && identifyItems.size() > 0) {
@@ -227,10 +236,10 @@ public class FaceImageView extends PhotoView {
                                     }
                                 }.execute();
                             }
+
                             @Override
                             public void onClick(View view) {
-                                switch (view.getId())
-                                {
+                                switch (view.getId()) {
                                     case R.id.tv_from_group_name:
                                         context.startActivity(new Intent(context, SetIdentifyGroupIdActivity.class));
                                         break;
@@ -240,9 +249,9 @@ public class FaceImageView extends PhotoView {
                                 }
                             }
                         });
-                        dialogFragmentCreater.showDialog(context,DialogFragmentCreater.DIALOG_CHOOSE_FACE);
-                    }else {
-                        Toast.makeText(context,"没有可匹配的脸部信息",Toast.LENGTH_SHORT).show();
+                        dialogFragmentCreater.showDialog(context, DialogFragmentCreater.DIALOG_CHOOSE_FACE);
+                    } else {
+                        Toast.makeText(context, "没有可匹配的脸部信息", Toast.LENGTH_SHORT).show();
                     }
 
                 } else {
@@ -254,15 +263,14 @@ public class FaceImageView extends PhotoView {
                 triangleBottomLayoutOperation();
                 mCallback.onTouchImageView();
             }
-        }else {
+        } else {
             //没有人脸也需要操作图片
             triangleBottomLayoutOperation();
         }
     }
 
     private void triangleBottomLayoutOperation() {
-        switch (bottomLayoutOperation.getVisibility())
-        {
+        switch (bottomLayoutOperation.getVisibility()) {
             case View.VISIBLE:
                 animation_exit.setAnimationListener(new Animation.AnimationListener() {
                     @Override
@@ -319,7 +327,7 @@ public class FaceImageView extends PhotoView {
         return super.onTouchEvent(event);
     }
 
-    public void setCanvasRes(Bitmap bitmap, ArrayList<FaceItem> faceList,String imageFilePath) {
+    public void setCanvasRes(Bitmap bitmap, ArrayList<FaceItem> faceList, String imageFilePath) {
         this.bitmap = bitmap;
         this.faceItemList = faceList;
         this.imageFilePath = imageFilePath;
@@ -328,6 +336,28 @@ public class FaceImageView extends PhotoView {
 
     public void setImageFilePath(String imageFilePath) {
         this.imageFilePath = imageFilePath;
+        if (!isDetectFace) {//关闭了人脸检测就直接显示图片
+
+            new AsyncTask<String, Bitmap, Bitmap>() {
+                @Override
+                protected void onPreExecute() {
+                    super.onPreExecute();
+                }
+
+                @Override
+                protected Bitmap doInBackground(String... params) {
+                    Bitmap tempBitmap = ImageUtils.getBitmapFromLocalPath(params[0], 1);
+                    Bitmap bitmap = ImageUtils.getResizedBitmap(tempBitmap, IntConstant.IMAGE_SIZE, IntConstant.IMAGE_SIZE);
+                    return bitmap;
+                }
+
+                @Override
+                protected void onPostExecute(final Bitmap bitmap) {
+                    FaceImageView.this.setImageBitmap(bitmap);
+                }
+            }.execute(imageFilePath);
+
+        }
     }
 
     public void setCanvasBitmapRes(Bitmap bm) {
@@ -352,8 +382,7 @@ public class FaceImageView extends PhotoView {
         }
     }
 
-    public void setDialogFragmentCreater(DialogFragmentCreater dialogFragmentCreater)
-    {
+    public void setDialogFragmentCreater(DialogFragmentCreater dialogFragmentCreater) {
         this.dialogFragmentCreater = dialogFragmentCreater;
     }
 

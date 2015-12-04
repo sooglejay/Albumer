@@ -16,7 +16,6 @@ import java.util.List;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import sooglejay.youtu.R;
-import sooglejay.youtu.adapter.MyFocusAdapter;
 import sooglejay.youtu.api.getgroupids.GetGroupIdsResponseBean;
 import sooglejay.youtu.api.getgroupids.GetGroupIdsUtil;
 import sooglejay.youtu.bean.GroupBean;
@@ -28,6 +27,7 @@ import sooglejay.youtu.model.NetCallback;
 import sooglejay.youtu.ui.MyContactsActivity;
 import sooglejay.youtu.ui.MyFocusActivity;
 import sooglejay.youtu.ui.MyLikeActivity;
+import sooglejay.youtu.ui.SettingActivity;
 import sooglejay.youtu.ui.SetIdentifyGroupIdActivity;
 import sooglejay.youtu.widgets.TitleBar;
 
@@ -48,6 +48,7 @@ public class MeFragment extends BaseFragment {
     private LinearLayout my_contacts_group;
     private LinearLayout my_like_group;
     private LinearLayout my_focus_group;
+    private LinearLayout my_setting_group;
 
 
     private LikeDao likeDao;
@@ -80,6 +81,7 @@ public class MeFragment extends BaseFragment {
         my_contacts_group = (LinearLayout) view.findViewById(R.id.my_contacts_group);
         my_like_group = (LinearLayout) view.findViewById(R.id.my_like_group);
         my_focus_group = (LinearLayout) view.findViewById(R.id.my_focus_group);
+        my_setting_group = (LinearLayout) view.findViewById(R.id.my_setting_group);
 
         my_like_count_tv = (TextView) view.findViewById(R.id.my_like_count_tv);
         my_contacts_count_tv = (TextView) view.findViewById(R.id.my_contacts_count_tv);
@@ -119,6 +121,12 @@ public class MeFragment extends BaseFragment {
             @Override
             public void onClick(View view) {
                 getActivity().startActivity(new Intent(getActivity(), MyFocusActivity.class));
+            }
+        });
+        my_setting_group.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().startActivity(new Intent(getActivity(), SettingActivity.class));
             }
         });
 

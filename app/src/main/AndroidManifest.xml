@@ -89,6 +89,9 @@
      <activity
             android:name=".ui.MyContactsActivity"
             android:configChanges="orientation|screenSize"></activity>
+  <activity
+            android:name=".ui.SettingActivity"
+            android:configChanges="orientation|screenSize"></activity>
 
         <service android:name="com.amap.api.location.APSService"></service>
 

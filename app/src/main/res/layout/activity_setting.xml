@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:fitsSystemWindows="true"
+    android:clipChildren="true"
+    android:background="@color/very_light_gray_color">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white_color"
+        android:orientation="vertical">
+
+        <sooglejay.youtu.widgets.TitleBar
+            android:id="@+id/title_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <!--  头像 -->
+        <LinearLayout
+            android:id="@+id/avatar_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_select_white"
+            android:clickable="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/big_padding"
+                android:layout_marginStart="@dimen/big_padding"
+                android:layout_weight="1"
+                android:paddingBottom="@dimen/middle_padding"
+                android:paddingTop="@dimen/middle_padding"
+                android:text="头像"
+                android:textSize="@dimen/middle_textsize" />
+
+            <sooglejay.youtu.widgets.RoundImageView
+                android:id="@+id/avatar_image"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="@dimen/middle_padding"
+                android:layout_marginRight="@dimen/middle_padding"
+                android:scaleType="center"
+                android:src="@drawable/test" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="@dimen/big_padding"
+            android:layout_marginStart="@dimen/big_padding"
+            android:background="@color/very_light_gray_color" />
+
+        <!-- 签名-->
+        <LinearLayout
+            android:id="@+id/signature_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_select_white"
+            android:clickable="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/big_padding"
+
+                android:layout_marginStart="@dimen/big_padding"
+                android:paddingBottom="@dimen/middle_padding"
+                android:paddingTop="@dimen/middle_padding"
+                android:text="签名"
+                android:textSize="@dimen/middle_textsize" />
+
+            <TextView
+                android:id="@+id/my_signature_count_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/middle_padding"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:gravity="right"
+                android:singleLine="true"
+                android:text="老师说，不要造恋了，对身体"
+                android:textColor="@color/gray_color"
+                android:textSize="@dimen/middle_textsize" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="@dimen/middle_padding"
+                android:layout_marginRight="@dimen/small_padding"
+                android:src="@drawable/arrow_right" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/middle_padding"
+            android:background="@color/very_light_gray_color" />
+
+        <LinearLayout
+            android:id="@+id/school_name_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_select_white"
+            android:clickable="true"
+            android:orientation="horizontal">
+
+            <TextView
+
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/big_padding"
+                android:layout_marginStart="@dimen/big_padding"
+                android:layout_weight="1"
+                android:paddingBottom="@dimen/middle_padding"
+                android:paddingTop="@dimen/middle_padding"
+                android:text="开启人脸检测" />
+
+            <sooglejay.youtu.widgets.customswitch.SwitchButton
+                android:id="@+id/switch_detect_face"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginRight="@dimen/middle_padding"
+                android:checked="true"
+                app:kswOnColor="@color/base_color" />
+
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="@dimen/big_padding"
+            android:layout_marginStart="@dimen/big_padding"
+            android:background="@color/very_light_gray_color" />
+
+
+        <!--年级-->
+        <LinearLayout
+            android:id="@+id/gradle_level_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_select_white"
+            android:clickable="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/big_padding"
+                android:layout_marginStart="@dimen/big_padding"
+                android:layout_weight="1"
+                android:paddingBottom="@dimen/middle_padding"
+                android:paddingTop="@dimen/middle_padding"
+                android:text="开启人脸识别" />
+
+            <sooglejay.youtu.widgets.customswitch.SwitchButton
+                android:id="@+id/switch_identify"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginRight="@dimen/middle_padding"
+                android:checked="true"
+                app:kswOnColor="@color/base_color" />
+
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/middle_padding"
+            android:background="@color/very_light_gray_color" />
+
+        <LinearLayout
+            android:id="@+id/clear_cache_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_select_white"
+            android:clickable="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/big_padding"
+                android:layout_marginStart="@dimen/big_padding"
+                android:paddingBottom="@dimen/middle_padding"
+                android:paddingTop="@dimen/middle_padding"
+                android:text="清空缓存"
+                android:textSize="@dimen/middle_textsize" />
+
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="@dimen/big_padding"
+            android:layout_marginStart="@dimen/big_padding"
+            android:background="@color/very_light_gray_color" />
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/middle_padding"
+            android:background="@color/very_light_gray_color" />
+
+        <LinearLayout
+            android:id="@+id/about_me_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_select_white"
+            android:clickable="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/big_padding"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:paddingBottom="@dimen/middle_padding"
+                android:paddingTop="@dimen/middle_padding"
+                android:text="关于作者" />
+        </LinearLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/very_light_gray_color" />
+    </LinearLayout>
+</ScrollView>

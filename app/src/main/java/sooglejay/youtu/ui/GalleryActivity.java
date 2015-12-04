@@ -26,10 +26,12 @@ import java.util.List;
 import de.greenrobot.event.EventBus;
 import sooglejay.youtu.R;
 import sooglejay.youtu.constant.ExtraConstants;
+import sooglejay.youtu.constant.PreferenceConstant;
 import sooglejay.youtu.event.BusEvent;
 import sooglejay.youtu.fragment.GalleryFragment;
 import sooglejay.youtu.utils.AsyncBitmapLoader;
 import sooglejay.youtu.utils.CacheUtil;
+import sooglejay.youtu.utils.PreferenceUtil;
 import sooglejay.youtu.widgets.TitleBar;
 
 
@@ -66,10 +68,11 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.OnR
         position = getIntent().getIntExtra(ExtraConstants.EXTRA_POSITION, 0);
         folderName = getIntent().getStringExtra(ExtraConstants.EXTRA_FOLDER_NAME);
 
+        boolean isDetectFace  = PreferenceUtil.load(this, PreferenceConstant.SWITCH_DETECT_FACE,true);
         for(int i = 0 ; i< originUrls.size();i++)
         {
             GalleryFragment fragment = new GalleryFragment();
-            fragment.init(originUrls.get(i),i);
+            fragment.init(originUrls.get(i),i,isDetectFace);
             fragments.add(fragment);
         }
 

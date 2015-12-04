@@ -1,5 +1,6 @@
 package sooglejay.youtu.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
@@ -85,6 +86,10 @@ public class GalleryFragment extends BaseFragment {
     private boolean isFocused = false;
 
 
+
+
+    private boolean isDetectFace;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_gallery, container, false);
@@ -94,7 +99,7 @@ public class GalleryFragment extends BaseFragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
+        if (isVisibleToUser && isDetectFace) {
             new AsyncTask<Void, Void, Void>() {
                 @Override
                 protected void onPreExecute() {
@@ -132,6 +137,7 @@ public class GalleryFragment extends BaseFragment {
 //        url = getArguments().getString("url", "");
         imageView = (FaceImageView) view.findViewById(R.id.iv_photo);
         imageView.setActivity(getActivity());
+        imageView.setImageFilePath(url);
         layout_operation = (FrameLayout) view.findViewById(R.id.layout_operation);
 
         imageView.setBottomLayoutOperation(layout_operation);
@@ -238,6 +244,7 @@ public class GalleryFragment extends BaseFragment {
             }
         });
 
+
     }
 
     @Override
@@ -294,9 +301,10 @@ public class GalleryFragment extends BaseFragment {
         System.gc();
     }
 
-    public void init(String s, int i) {
+    public void init(String s, int i,boolean isDetectFace) {
         url = s;
         position = i;
+        this.isDetectFace = isDetectFace;
     }
 
     public interface OnRectfChangeListener {
@@ -468,6 +476,13 @@ public class GalleryFragment extends BaseFragment {
                 break;
             case BusEvent.MSG_REFRESH:
                 getImage(url);
+                break;
+            case BusEvent.MSG_IS_DETECT_FACE:
+                isDetectFace = PreferenceUtil.load(getActivity(),PreferenceConstant.SWITCH_DETECT_FACE,true);
+                if(!isDetectFace)
+                {
+
+                }
                 break;
             default:
                 break;
