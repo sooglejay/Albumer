@@ -162,6 +162,7 @@ public class EditFaceUserInfoActivity extends BaseActivity {
                              @Override
                              protected void onPostExecute(Void aVoid) {
                                  super.onPostExecute(aVoid);
+                                 EventBus.getDefault().post(new BusEvent(BusEvent.MSG_REFRESH));
                                  progressDialogUtil.hide();
                                  Toast.makeText(activity, "修改成功！", Toast.LENGTH_SHORT).show();
                                  finish();

@@ -18,6 +18,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import de.greenrobot.event.EventBus;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import sooglejay.youtu.R;
@@ -32,6 +33,7 @@ import sooglejay.youtu.constant.ExtraConstants;
 import sooglejay.youtu.constant.IntConstant;
 import sooglejay.youtu.constant.NetWorkConstant;
 import sooglejay.youtu.db.ContactDao;
+import sooglejay.youtu.event.BusEvent;
 import sooglejay.youtu.model.NetCallback;
 import sooglejay.youtu.utils.CacheUtil;
 import sooglejay.youtu.utils.GetGroupIdsUtil;
@@ -154,6 +156,7 @@ public class AddNewPersonActivity extends BaseActivity {
                                         @Override
                                         protected void onPostExecute(Void aVoid) {
                                             super.onPostExecute(aVoid);
+                                            EventBus.getDefault().post(new BusEvent(BusEvent.MSG_REFRESH));
                                             Toast.makeText(activity, "添加成功！", Toast.LENGTH_SHORT).show();
                                             finish();
                                         }

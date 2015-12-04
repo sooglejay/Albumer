@@ -116,6 +116,7 @@ public class GalleryFragment extends BaseFragment {
                     return null;
                 }
             }.execute();
+            Toast.makeText(getActivity(),"121212",Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -465,8 +466,8 @@ public class GalleryFragment extends BaseFragment {
                     }
                 }
                 break;
-            case BusEvent.MSG_ADD_NEW_FACE:
-
+            case BusEvent.MSG_REFRESH:
+                getImage(url);
                 break;
             default:
                 break;
