@@ -65,7 +65,6 @@ public class EditFaceUserInfoActivity extends BaseActivity {
 
     private IdentifyItem item;
     private CacheUtil cacheUtil;
-
     private HashMap<String,ArrayList<IdentifyItem>> mIdentifiedFaceBitMapCache = null;
 
 

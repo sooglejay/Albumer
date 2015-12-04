@@ -117,6 +117,7 @@
                         android:id="@+id/request_as_senior_tv"
                         android:textColor="@color/dark_black_color"
                         android:layout_width="0dp"
+                        android:textSize="@dimen/middle_textsize"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginLeft="@dimen/big_padding"
@@ -162,7 +163,7 @@
                     android:src="@drawable/icon_choose" />
 
                 <TextView
-                    android:id="@+id/my_answers_or_questions_des_tv"
+                    android:id="@+id/my_contacts_des_tv"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -171,12 +172,11 @@
                     android:layout_weight="1"
                     android:text="联系人"
                     android:textColor="@color/dark_black_color"
-                    android:textSize="@dimen/big_textsize" />
+                    android:textSize="@dimen/middle_textsize" />
 
                 <TextView
                     android:id="@+id/my_contacts_count_tv"
                     android:layout_width="wrap_content"
-
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="14"
@@ -226,6 +226,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:textSize="@dimen/middle_textsize"
                     android:layout_marginLeft="@dimen/big_padding"
                     android:layout_marginStart="@dimen/big_padding"
                     android:layout_weight="1"
@@ -287,6 +288,7 @@
                     android:layout_marginStart="@dimen/big_padding"
                     android:layout_weight="1"
                     android:text="喜欢"
+                    android:textSize="@dimen/middle_textsize"
                     android:textColor="@color/dark_black_color" />
 
                 <TextView
@@ -340,6 +342,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:textSize="@dimen/middle_textsize"
                     android:layout_marginLeft="@dimen/big_padding"
                     android:textColor="@color/dark_black_color"    android:layout_marginStart="@dimen/big_padding"
                     android:layout_weight="1"

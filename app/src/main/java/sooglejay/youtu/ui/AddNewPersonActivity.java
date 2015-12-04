@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -26,10 +27,13 @@ import sooglejay.youtu.api.detectface.FaceItem;
 import sooglejay.youtu.api.faceidentify.IdentifyItem;
 import sooglejay.youtu.api.newperson.NewPersonResponseBean;
 import sooglejay.youtu.api.newperson.NewPersonUtil;
+import sooglejay.youtu.bean.ContactBean;
 import sooglejay.youtu.constant.ExtraConstants;
 import sooglejay.youtu.constant.IntConstant;
 import sooglejay.youtu.constant.NetWorkConstant;
+import sooglejay.youtu.db.ContactDao;
 import sooglejay.youtu.model.NetCallback;
+import sooglejay.youtu.utils.CacheUtil;
 import sooglejay.youtu.utils.GetGroupIdsUtil;
 import sooglejay.youtu.utils.GetTagUtil;
 import sooglejay.youtu.utils.ImageUtils;
@@ -47,6 +51,10 @@ public class AddNewPersonActivity extends BaseActivity {
     private Activity activity;
     private String imageFilePath;//图片文件的地址
     private ArrayList<IdentifyItem> identifyItems;//人脸识别 置信度 top5列表
+    private HashMap<String, ArrayList<IdentifyItem>> mIdentifiedFaceBitMapCache = null;
+    private CacheUtil cacheUtil;
+
+    private ContactDao contactDao;
 
     public static void startActivity(Context context, String imageFilePath, ArrayList<IdentifyItem> identifyItems) {
         Intent intent = new Intent(context, AddNewPersonActivity.class);
@@ -82,13 +90,14 @@ public class AddNewPersonActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_person_activity);
         activity = this;
+        contactDao = new ContactDao(this);
+        mIdentifiedFaceBitMapCache = cacheUtil.getIdentifiedObjectFromFile();
         setUpView();
         setUpListener();
         doSomethng();
     }
 
-    private void setUpView()
-    {
+    private void setUpView() {
         findViews();
         titleBar.initTitleBarInfo("添加人脸联系人", R.drawable.arrow_left, -1, "", "确定");
         titleBar.setOnTitleBarClickListener(new TitleBar.OnTitleBarClickListener() {
@@ -122,7 +131,7 @@ public class AddNewPersonActivity extends BaseActivity {
                     @Override
                     protected void onPostExecute(final Bitmap bitmap) {
                         if (bitmap != null) {
-                            NewPersonUtil.newPerson(activity, NetWorkConstant.APP_ID, GetGroupIdsUtil.getGroupIdArrayList(groupStrFromIntent), person_id, Base64Util.encode(ImageUtils.Bitmap2Bytes(bitmap)), nameStr, GetTagUtil.getTag(nameStr, phoneStr,groupStrFromIntent), new NetCallback<NewPersonResponseBean>(activity) {
+                            NewPersonUtil.newPerson(activity, NetWorkConstant.APP_ID, GetGroupIdsUtil.getGroupIdArrayList(groupStrFromIntent), person_id, Base64Util.encode(ImageUtils.Bitmap2Bytes(bitmap)), nameStr, GetTagUtil.getTag(nameStr, phoneStr, groupStrFromIntent), new NetCallback<NewPersonResponseBean>(activity) {
                                 @Override
                                 public void onFailure(RetrofitError error, String message) {
 
@@ -130,7 +139,13 @@ public class AddNewPersonActivity extends BaseActivity {
 
                                 @Override
                                 public void success(NewPersonResponseBean newPersonResponseBean, Response response) {
-
+                                    ContactBean bean = new ContactBean();
+                                    bean.setUser_name(nameStr);
+                                    bean.setPhoneNumber(phoneStr);
+                                    contactDao.add(bean);
+                                    Toast.makeText(activity, "添加成功！", Toast.LENGTH_SHORT).show();
+                                    mIdentifiedFaceBitMapCache.remove(imageFilePath);
+                                    finish();
                                 }
                             });
 
@@ -140,12 +155,12 @@ public class AddNewPersonActivity extends BaseActivity {
             }
         });
     }
-    private void setUpListener()
-    {
+
+    private void setUpListener() {
         tv_group_name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CreateNewGroupActivity.startActivity(activity,  ACTION_CreateNewGroupActivity);
+                CreateNewGroupActivity.startActivity(activity, ACTION_CreateNewGroupActivity);
             }
         });
     }
@@ -156,14 +171,7 @@ public class AddNewPersonActivity extends BaseActivity {
         if (imageFilePath != null) {
             ImageLoader.getInstance().displayImage("file://" + imageFilePath, ivAvatar, ImageUtils.getOptions());
         }
-        if (identifyItems != null && identifyItems.size() > 0) {
-
-            String tag = identifyItems.get(0).getTag();
-            groupStrFromIntent = GetTagUtil.getGroupIds(tag);//人脸识别后，检测到的该人脸属于的组id
-            tv_group_name.setText(groupStrFromIntent.replaceAll(GetGroupIdsUtil.reg," "));
-            etName.setText(GetTagUtil.getName(tag));
-            etPhoneNumber.setText(GetTagUtil.getPhoneNumber(tag));
-        }
+        tv_group_name.setText("群组名称");
     }
 
 
@@ -173,7 +181,7 @@ public class AddNewPersonActivity extends BaseActivity {
             switch (requestCode) {
                 case ACTION_CreateNewGroupActivity:
                     groupStrFromIntent = data.getStringExtra(ExtraConstants.EXTRA_CREATE_NEW_GROUP);
-                    tv_group_name.setText(groupStrFromIntent.replaceAll(GetGroupIdsUtil.reg," "));
+                    tv_group_name.setText(groupStrFromIntent.replaceAll(GetGroupIdsUtil.reg, " "));
                     break;
             }
         }

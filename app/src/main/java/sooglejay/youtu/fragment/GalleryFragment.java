@@ -94,30 +94,28 @@ public class GalleryFragment extends BaseFragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if(isVisibleToUser)
-        {
-           new AsyncTask<Void, Void, Void>() {
-               @Override
-               protected void onPreExecute() {
-                   super.onPreExecute();
+        if (isVisibleToUser) {
+            new AsyncTask<Void, Void, Void>() {
+                @Override
+                protected void onPreExecute() {
+                    super.onPreExecute();
 
-               }
+                }
 
-               @Override
-               protected void onPostExecute(Void aVoid) {
-                   super.onPostExecute(aVoid);
-                   getImage(url);
-               }
+                @Override
+                protected void onPostExecute(Void aVoid) {
+                    super.onPostExecute(aVoid);
+                    getImage(url);
+                }
 
-               @Override
-               protected Void doInBackground(Void... voids) {
-                  while (asyncBitmapLoader==null||getActivity()==null)
-                  {
+                @Override
+                protected Void doInBackground(Void... voids) {
+                    while (asyncBitmapLoader == null || getActivity() == null) {
 
-                  }
-                   return null;
-               }
-           }.execute();
+                    }
+                    return null;
+                }
+            }.execute();
         }
     }
 
@@ -151,7 +149,6 @@ public class GalleryFragment extends BaseFragment {
         activity = (GalleryActivity) getActivity();
         cacheUtil = activity.cacheUtil;
         asyncBitmapLoader = activity.asyncBitmapLoader;
-
 
 
         iv_delete_image.setOnClickListener(new View.OnClickListener() {
@@ -295,7 +292,7 @@ public class GalleryFragment extends BaseFragment {
     }
 
     public void init(String s, int i) {
-        url =s;
+        url = s;
         position = i;
     }
 
@@ -312,9 +309,9 @@ public class GalleryFragment extends BaseFragment {
         final AsyncBitmapLoader.BitmapCallback callback = new AsyncBitmapLoader.BitmapCallback() {
             @Override
             public void facesLoaded(ArrayList<FaceItem> faces) {
-                    imageView.setCanvasFaceListRes(faces);
-                    imageView.setImageFilePath(imagePath);
-                    asyncBitmapLoader.addNewDetectedFaceToCache(imagePath, faces);
+                imageView.setCanvasFaceListRes(faces);
+                imageView.setImageFilePath(imagePath);
+                asyncBitmapLoader.addNewDetectedFaceToCache(imagePath, faces);
             }
 
             @Override
@@ -461,6 +458,9 @@ public class GalleryFragment extends BaseFragment {
                         imageView.setIdentifyItems(identifyItems);
                     }
                 }
+                break;
+            case BusEvent.MSG_ADD_NEW_FACE:
+
                 break;
             default:
                 break;

@@ -24,6 +24,7 @@ import sooglejay.youtu.db.FocusDao;
 import sooglejay.youtu.db.GroupNameDao;
 import sooglejay.youtu.db.LikeDao;
 import sooglejay.youtu.model.NetCallback;
+import sooglejay.youtu.ui.MyContactsActivity;
 import sooglejay.youtu.ui.MyFocusActivity;
 import sooglejay.youtu.ui.MyLikeActivity;
 import sooglejay.youtu.ui.SetIdentifyGroupIdActivity;
@@ -85,7 +86,7 @@ public class MeFragment extends BaseFragment {
 
 
         my_like_count_tv.setText(likeCount+"");
-        my_focus_count_tv.setText(focusCount+"");
+        my_focus_count_tv.setText(focusCount + "");
 
 
 
@@ -97,6 +98,13 @@ public class MeFragment extends BaseFragment {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(activity, SetIdentifyGroupIdActivity.class));
+            }
+        });
+        my_contacts_group.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().startActivity(new Intent(getActivity(), MyContactsActivity.class));
+
             }
         });
         my_like_group.setOnClickListener(new View.OnClickListener() {

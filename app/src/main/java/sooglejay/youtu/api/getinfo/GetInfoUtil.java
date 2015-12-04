@@ -30,7 +30,7 @@ public class GetInfoUtil extends RetrofitUtil {
      * @param person_id
      * @param callback
      */
-    public static void setInfo(Context mContext,
+    public static void getinfo(Context mContext,
                                String app_id,
                                String person_id,
                                NetCallback<GetInfoReponseBean> callback) {
