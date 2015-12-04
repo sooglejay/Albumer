@@ -153,7 +153,7 @@ public class EditFaceUserInfoActivity extends BaseActivity {
                          new AsyncTask<Void, Void, Void>() {
                              @Override
                              protected Void doInBackground(Void... voids) {
-                                 cacheUtil.saveIdentifiedObjectToFile(activity, mIdentifiedFaceBitMapCache);
+                                 cacheUtil.clearIdentifyCache();
                                  return null;
                              }
 
@@ -161,7 +161,6 @@ public class EditFaceUserInfoActivity extends BaseActivity {
                              protected void onPostExecute(Void aVoid) {
                                  super.onPostExecute(aVoid);
                                  progressDialogUtil.hide();
-                                 EventBus.getDefault().post(new BusEvent(BusEvent.MSG_EDIT_FACE_INFO));
                                  Toast.makeText(activity, "修改成功！", Toast.LENGTH_SHORT).show();
                                  finish();
                              }

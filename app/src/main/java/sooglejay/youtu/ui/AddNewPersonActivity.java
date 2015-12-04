@@ -149,19 +149,17 @@ public class AddNewPersonActivity extends BaseActivity {
                                     bean.setUser_name(nameStr);
                                     bean.setPhoneNumber(phoneStr);
                                     contactDao.add(bean);
-                                    mIdentifiedFaceBitMapCache.remove(imageFilePath);
                                     new AsyncTask<Void, Void, Void>() {
                                         @Override
                                         protected void onPostExecute(Void aVoid) {
                                             super.onPostExecute(aVoid);
-
                                             Toast.makeText(activity, "添加成功！", Toast.LENGTH_SHORT).show();
                                             finish();
                                         }
 
                                         @Override
                                         protected Void doInBackground(Void... voids) {
-                                            cacheUtil.saveIdentifiedObjectToFile(activity,mIdentifiedFaceBitMapCache);
+                                            cacheUtil.clearIdentifyCache();
                                             return null;
                                         }
                                     }.execute();
