@@ -93,34 +93,34 @@ public class MyLikeActivity extends BaseActivity {
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 if (mTimeLineText.getVisibility() == View.VISIBLE) {
                     int index = firstVisibleItem + 1 == view.getAdapter().getCount() ? view.getAdapter().getCount() - 1 : firstVisibleItem + 1;
-                    Image image = (Image) view.getAdapter().getItem(index);
-                    if (image != null) {
-                        mTimeLineText.setText(TimeUtils.formatPhotoDate(image.path));
+                    LikeBean bean = (LikeBean) view.getAdapter().getItem(index);
+                    if (bean != null) {
+                        mTimeLineText.setText(TimeUtils.formatPhotoDate(bean.getImagePath()));
                     }
                 }
             }
         });
         grid.setAdapter(adapter);
-//        grid.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-//            @Override
-//            @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-//            public void onGlobalLayout() {
-//                final int width = grid.getWidth();
-//                final int height = grid.getHeight();
-//                mGridWidth = width;
-//                mGridHeight = height;
-//                final int desireSize = getResources().getDimensionPixelOffset(R.dimen.image_size);
-//                final int numCount = width / desireSize;
-//                final int columnSpace = getResources().getDimensionPixelOffset(R.dimen.space_size);
-//                int columnWidth = (width - columnSpace * (numCount - 1)) / numCount;
-//                adapter.setItemSize(columnWidth);
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-//                    grid.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-//                } else {
-//                    grid.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-//                }
-//            }
-//        });
+        grid.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+            public void onGlobalLayout() {
+                final int width = grid.getWidth();
+                final int height = grid.getHeight();
+                mGridWidth = width;
+                mGridHeight = height;
+                final int desireSize = getResources().getDimensionPixelOffset(R.dimen.image_size);
+                final int numCount = width / desireSize;
+                final int columnSpace = getResources().getDimensionPixelOffset(R.dimen.space_size);
+                int columnWidth = (width - columnSpace * (numCount - 1)) / numCount;
+                adapter.setItemSize(columnWidth);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    grid.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                } else {
+                    grid.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
+            }
+        });
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {

@@ -108,7 +108,16 @@ public class MyLikeAdapter extends BaseAdapter {
             holde = (ViewHolde) view.getTag();
         }
         LikeBean bean = getItem(i);
-        ImageLoader.getInstance().displayImage("file://"+bean.getImagePath(),holde.image, ImageUtils.getOptions());
+        File imageFile = new File(bean.getImagePath());
+        if (mItemSize > 0) {
+            // 显示图片
+            Picasso.with(activity)
+                    .load(imageFile)
+                    .placeholder(R.drawable.default_error)
+                    .resize(mItemSize, mItemSize)
+                    .centerCrop()
+                    .into(holde.image);
+        }
         if (isShowSelectIndicator) {
             holde.indicator.setVisibility(View.VISIBLE);
             holde.mask.setVisibility(View.VISIBLE);
