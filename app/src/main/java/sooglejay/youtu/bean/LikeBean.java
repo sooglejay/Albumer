@@ -26,25 +26,15 @@ public class LikeBean implements Parcelable {
 
     private boolean isSelected;//在adapter 中辅助显示
 
-    @Override
-    public String toString() {
-        return "LikeBean{" +
-                "imagePath='" + imagePath + '\'' +
-                ", isSelected=" + isSelected +
-                ", status=" + status +
-                ", id=" + id +
-                '}';
+    public boolean getIsVisible() {
+        return isVisible;
     }
 
-    public int getStatus() {
-        return status;
+    public void setIsVisible(boolean isVisible) {
+        this.isVisible = isVisible;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    private int status;//在adapter 中辅助显示
+    private boolean isVisible;//在adapter 中辅助显示
 
 
     public String getImagePath() {
@@ -70,6 +60,16 @@ public class LikeBean implements Parcelable {
     }
 
     @Override
+    public String toString() {
+        return "LikeBean{" +
+                "imagePath='" + imagePath + '\'' +
+                ", isSelected=" + isSelected +
+                ", isVisible=" + isVisible +
+                ", id=" + id +
+                '}';
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }
@@ -78,14 +78,14 @@ public class LikeBean implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.imagePath);
         dest.writeByte(isSelected ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.status);
+        dest.writeByte(isVisible ? (byte) 1 : (byte) 0);
         dest.writeInt(this.id);
     }
 
     protected LikeBean(Parcel in) {
         this.imagePath = in.readString();
         this.isSelected = in.readByte() != 0;
-        this.status = in.readInt();
+        this.isVisible = in.readByte() != 0;
         this.id = in.readInt();
     }
 

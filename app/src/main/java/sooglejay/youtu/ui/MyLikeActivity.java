@@ -23,6 +23,7 @@ import sooglejay.youtu.R;
 import sooglejay.youtu.adapter.MyLikeAdapter;
 import sooglejay.youtu.bean.LikeBean;
 import sooglejay.youtu.db.LikeDao;
+import sooglejay.youtu.widgets.CircleButton;
 import sooglejay.youtu.widgets.TitleBar;
 import sooglejay.youtu.widgets.imagepicker.bean.Image;
 import sooglejay.youtu.widgets.imagepicker.utils.TimeUtils;
@@ -44,6 +45,8 @@ public class MyLikeActivity extends BaseActivity {
     private Activity activity;
 
     private FrameLayout layout_operation;
+    private CircleButton iv_cancel_image;
+    private CircleButton iv_delete_image;
     private Animation animation_enter;
     private Animation animation_exit;
 
@@ -60,6 +63,8 @@ public class MyLikeActivity extends BaseActivity {
         likeDao = new LikeDao(this);
         datas = likeDao.getAll();
         title_bar = (TitleBar) findViewById(R.id.title_bar);
+        iv_cancel_image = (CircleButton) findViewById(R.id.iv_cancel_image);
+        iv_delete_image = (CircleButton) findViewById(R.id.iv_delete_image);
         grid = (GridView) findViewById(R.id.grid);
         mTimeLineText = (TextView) findViewById(R.id.timeline_area);
         layout_operation = (FrameLayout) findViewById(R.id.layout_operation);
@@ -126,13 +131,13 @@ public class MyLikeActivity extends BaseActivity {
                 GalleryActivity.startActivity(activity, "", i, urls);
             }
         });
-        grid.setLongClickable(true);
-        grid.setOnLongClickListener(new View.OnLongClickListener() {
+
+        grid.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onLongClick(View view) {
-                for (LikeBean bean : datas) {
-                    bean.setStatus(MyLikeAdapter.VISIBLE_UNSELECTED);
-                }
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                adapter.setIsShowSelectIndicator(true);
+
+                title_bar.setOnTitleBarClickListener(null);
                 title_bar.setOnTitleBarClickListener(new TitleBar.OnTitleBarClickListener() {
                     @Override
                     public void onLeftButtonClick(View v) {
@@ -187,6 +192,35 @@ public class MyLikeActivity extends BaseActivity {
                 }
                 adapter.notifyDataSetChanged();
                 return true;
+            }
+        });
+        layout_operation.setVisibility(View.GONE);
+        iv_delete_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        iv_cancel_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                adapter.setIsShowSelectIndicator(false);
+                layout_operation.setVisibility(View.GONE);
+                for (LikeBean bean : datas) {
+                    bean.setIsSelected(false);
+                }
+                title_bar.setOnTitleBarClickListener(null);
+                title_bar.setOnTitleBarClickListener(new TitleBar.OnTitleBarClickListener() {
+                    @Override
+                    public void onLeftButtonClick(View v) {
+                        finish();
+                    }
+                    @Override
+                    public void onRightButtonClick(View v) {
+                    }
+                });
+                title_bar.setRightTv("", -1);
+                adapter.notifyDataSetChanged();
             }
         });
 
