@@ -190,7 +190,6 @@ public class MyLikeActivity extends BaseActivity {
                         layout_operation.startAnimation(animation_enter);
                         break;
                 }
-                adapter.notifyDataSetChanged();
                 return true;
             }
         });

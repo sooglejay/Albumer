@@ -31,6 +31,7 @@ public class MyLikeAdapter extends BaseAdapter {
 
     public void setIsShowSelectIndicator(boolean isShowSelectIndicator) {
         this.isShowSelectIndicator = isShowSelectIndicator;
+        notifyDataSetChanged();
     }
 
     private boolean isShowSelectIndicator = false;
