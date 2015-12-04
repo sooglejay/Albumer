@@ -82,8 +82,10 @@
         </activity>
         <activity
             android:name=".ui.MyLikeActivity"
-            android:configChanges="orientation|screenSize">
-        </activity>
+            android:configChanges="orientation|screenSize"></activity>
+        <activity
+            android:name=".ui.MyFocusActivity"
+            android:configChanges="orientation|screenSize"></activity>
 
         <service android:name="com.amap.api.location.APSService"></service>
 

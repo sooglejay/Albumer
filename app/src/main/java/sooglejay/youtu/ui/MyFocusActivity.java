@@ -20,26 +20,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sooglejay.youtu.R;
-import sooglejay.youtu.adapter.MyLikeAdapter;
-import sooglejay.youtu.bean.LikeBean;
-import sooglejay.youtu.db.LikeDao;
+import sooglejay.youtu.adapter.MyFocusAdapter;
+import sooglejay.youtu.bean.FocusBean;
+import sooglejay.youtu.db.FocusDao;
 import sooglejay.youtu.widgets.CircleButton;
 import sooglejay.youtu.widgets.TitleBar;
-import sooglejay.youtu.widgets.imagepicker.bean.Image;
 import sooglejay.youtu.widgets.imagepicker.utils.TimeUtils;
 
 /**
  * Created by JammyQtheLab on 2015/12/3.
  */
-public class MyLikeActivity extends BaseActivity {
+public class MyFocusActivity extends BaseActivity {
     private TitleBar title_bar;
     private GridView grid;
     // 时间线
     private TextView mTimeLineText;
-    private List<LikeBean> datas = new ArrayList<>();
-    private LikeDao likeDao;
+    private List<FocusBean> datas = new ArrayList<>();
+    private FocusDao focusDao;
 
-    private MyLikeAdapter adapter;
+    private MyFocusAdapter adapter;
 
     private Activity activity;
 
@@ -59,8 +58,8 @@ public class MyLikeActivity extends BaseActivity {
         animation_exit = AnimationUtils.loadAnimation(activity,
                 R.anim.exit_to_bottom_200);
 
-        likeDao = new LikeDao(this);
-        datas = likeDao.getAll();
+        focusDao = new FocusDao(this);
+        datas = focusDao.getAll();
         title_bar = (TitleBar) findViewById(R.id.title_bar);
         iv_cancel_image = (CircleButton) findViewById(R.id.iv_cancel_image);
         iv_delete_image = (CircleButton) findViewById(R.id.iv_delete_image);
@@ -70,7 +69,7 @@ public class MyLikeActivity extends BaseActivity {
         // 初始化，先隐藏当前timeline
         mTimeLineText.setVisibility(View.GONE);
 
-        adapter = new MyLikeAdapter(datas, this);
+        adapter = new MyFocusAdapter(datas, this);
         grid.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView absListView, int state) {
@@ -92,7 +91,7 @@ public class MyLikeActivity extends BaseActivity {
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 if (mTimeLineText.getVisibility() == View.VISIBLE) {
                     int index = firstVisibleItem + 1 == view.getAdapter().getCount() ? view.getAdapter().getCount() - 1 : firstVisibleItem + 1;
-                    LikeBean bean = (LikeBean) view.getAdapter().getItem(index);
+                    FocusBean bean = (FocusBean) view.getAdapter().getItem(index);
                     if (bean != null) {
                         mTimeLineText.setText(TimeUtils.formatPhotoDate(bean.getImagePath()));
                     }
@@ -121,8 +120,8 @@ public class MyLikeActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 ArrayList<String> urls = new ArrayList<String>();
-                for (LikeBean bean : datas) {
-                    urls.add(bean.getImagePath());
+                for (FocusBean FocusBean : datas) {
+                    urls.add(FocusBean.getImagePath());
                 }
                 GalleryActivity.startActivity(activity, "", i, urls);
             }
@@ -142,11 +141,11 @@ public class MyLikeActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 triangleBottomLayoutOperation(false);
-                ArrayList<LikeBean>newDatas = new ArrayList<LikeBean>();
+                ArrayList<FocusBean>newDatas = new ArrayList<FocusBean>();
                 newDatas.addAll(datas);
                 for (int i = 0 ; i <datas.size();i++) {
                     if (datas.get(i).isSelected()) {
-                        likeDao.deleteByName(datas.get(i).getImagePath());
+                        focusDao.deleteByName(datas.get(i).getImagePath());
                         newDatas.remove(i);
                     }
                 }
@@ -160,7 +159,7 @@ public class MyLikeActivity extends BaseActivity {
             public void onClick(View view) {
                 adapter.setIsShowSelectIndicator(false);
                 triangleBottomLayoutOperation(false);
-                for (LikeBean bean : datas) {
+                for (FocusBean bean : datas) {
                     bean.setIsSelected(false);
                 }
                 adapter.notifyDataSetChanged();
@@ -232,7 +231,7 @@ public class MyLikeActivity extends BaseActivity {
 
                 @Override
                 public void onRightButtonClick(View v) {
-                    for (LikeBean bean : datas) {
+                    for (FocusBean bean : datas) {
                         bean.setIsSelected(true);
                     }
                     adapter.notifyDataSetChanged();
