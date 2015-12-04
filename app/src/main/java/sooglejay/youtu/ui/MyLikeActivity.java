@@ -2,6 +2,7 @@ package sooglejay.youtu.ui;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -132,7 +133,6 @@ public class MyLikeActivity extends BaseActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 adapter.setIsShowSelectIndicator(true);
-
                 triangleBottomLayoutOperation(true);
                 return true;
             }
@@ -142,17 +142,34 @@ public class MyLikeActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 triangleBottomLayoutOperation(false);
-                ArrayList<LikeBean>newDatas = new ArrayList<LikeBean>();
-                newDatas.addAll(datas);
                 for (int i = 0 ; i <datas.size();i++) {
                     if (datas.get(i).isSelected()) {
                         likeDao.deleteByName(datas.get(i).getImagePath());
-                        newDatas.remove(i);
                     }
                 }
                 datas.clear();
-                datas.addAll(newDatas);
+                datas.addAll(likeDao.getAll());
                 adapter.setIsShowSelectIndicator(false);
+//                new AsyncTask<Void, List<LikeBean>, List<LikeBean>>() {
+//                    @Override
+//                    protected void onPostExecute(List<LikeBean> aVoid) {
+//                        super.onPostExecute(aVoid);
+//                        datas.addAll(aVoid);
+//                        adapter.setIsShowSelectIndicator(false);
+//                    }
+//
+//                    @Override
+//                    protected void onPreExecute() {
+//                        super.onPreExecute();
+//                        datas.clear();
+//                    }
+//
+//                    @Override
+//                    protected List<LikeBean> doInBackground(Void... voids) {
+//                        return likeDao.getAll();
+//                    }
+//                }.execute();
+
             }
         });
         iv_cancel_image.setOnClickListener(new View.OnClickListener() {

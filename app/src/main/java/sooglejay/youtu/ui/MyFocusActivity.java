@@ -2,6 +2,7 @@ package sooglejay.youtu.ui;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -141,17 +142,34 @@ public class MyFocusActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 triangleBottomLayoutOperation(false);
-                ArrayList<FocusBean>newDatas = new ArrayList<FocusBean>();
-                newDatas.addAll(datas);
                 for (int i = 0 ; i <datas.size();i++) {
                     if (datas.get(i).isSelected()) {
                         focusDao.deleteByName(datas.get(i).getImagePath());
-                        newDatas.remove(i);
                     }
                 }
                 datas.clear();
-                datas.addAll(newDatas);
+                datas.addAll(focusDao.getAll());
                 adapter.setIsShowSelectIndicator(false);
+
+//                new AsyncTask<Void, List<FocusBean>, List<FocusBean>>() {
+//                    @Override
+//                    protected void onPostExecute(List<FocusBean> aVoid) {
+//                        super.onPostExecute(aVoid);
+//                        datas.addAll(aVoid);
+//                        adapter.setIsShowSelectIndicator(false);
+//                    }
+//
+//                    @Override
+//                    protected void onPreExecute() {
+//                        super.onPreExecute();
+//                        datas.clear();
+//                    }
+//
+//                    @Override
+//                    protected List<FocusBean> doInBackground(Void... voids) {
+//                        return focusDao.getAll();
+//                    }
+//                }.execute();
             }
         });
         iv_cancel_image.setOnClickListener(new View.OnClickListener() {
@@ -166,7 +184,7 @@ public class MyFocusActivity extends BaseActivity {
             }
         });
 
-        title_bar.initTitleBarInfo("我喜欢的", R.drawable.arrow_left, -1, "", "");
+        title_bar.initTitleBarInfo("我关注的", R.drawable.arrow_left, -1, "", "");
         title_bar.setOnTitleBarClickListener(new TitleBar.OnTitleBarClickListener() {
             @Override
             public void onLeftButtonClick(View v) {
