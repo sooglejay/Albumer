@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -124,6 +125,7 @@ public class MeFragment extends BaseFragment {
         GetGroupIdsUtil.getGroupIds(getActivity(), NetWorkConstant.APP_ID, new NetCallback<GetGroupIdsResponseBean>(getActivity()) {
             @Override
             public void onFailure(RetrofitError error, String message) {
+                Toast.makeText(activity, "请求超时,请确保网络良好再重试", Toast.LENGTH_SHORT).show();
 
             }
 

@@ -10,6 +10,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -130,6 +131,8 @@ public class AsyncBitmapLoader {
                         @Override
                         public void onFailure(RetrofitError error, String message) {
                             progressDialogUtil.hide();
+                            Toast.makeText(context, "请求超时,请确保网络良好再重试", Toast.LENGTH_SHORT).show();
+
                         }
 
                         @Override

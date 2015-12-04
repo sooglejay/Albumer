@@ -162,6 +162,7 @@ public class CreateNewGroupActivity extends BaseActivity {
             sooglejay.youtu.api.getgroupids.GetGroupIdsUtil.getGroupIds(this, NetWorkConstant.APP_ID, new NetCallback<GetGroupIdsResponseBean>(this) {
                 @Override
                 public void onFailure(RetrofitError error, String message) {
+                    Toast.makeText(activity,"请求超时,请确保网络良好再重试",Toast.LENGTH_SHORT).show();
 
                 }
 

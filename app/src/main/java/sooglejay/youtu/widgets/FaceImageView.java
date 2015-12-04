@@ -164,7 +164,6 @@ public class FaceImageView extends PhotoView {
         if(outerFaceItem!=null) {
             if (centerX + outerFaceItem.getX() + cx - radius <= x && x <= centerX + outerFaceItem.getX() + cx + radius) {
                 if (centerY + outerFaceItem.getY() + cy - radius <= y && y <= centerY + outerFaceItem.getY() + cy + radius) {
-                    Toast.makeText(context, "点自己", Toast.LENGTH_SHORT).show();
                     if (dialogFragmentCreater != null&&identifyItems!=null&&identifyItems.size()>0) {
 
                         dialogFragmentCreater.setIdentifyItems(identifyItems);

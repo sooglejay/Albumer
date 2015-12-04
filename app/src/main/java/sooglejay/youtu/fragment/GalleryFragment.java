@@ -261,6 +261,8 @@ public class GalleryFragment extends BaseFragment {
             public void onFailure(RetrofitError error, String message) {
                 progressContainer.setVisibility(View.GONE);
                 imageView.setCanvasBitmapRes(bitmap);
+                Toast.makeText(activity,"请求超时,请确保网络良好再重试",Toast.LENGTH_SHORT).show();
+
             }
 
             @Override
@@ -346,6 +348,8 @@ public class GalleryFragment extends BaseFragment {
                         @Override
                         public void onFailure(RetrofitError error, String message) {
                             progressDialogUtil.hide();
+                            Toast.makeText(activity,"请求超时,请确保网络良好再重试",Toast.LENGTH_SHORT).show();
+
                         }
 
                         @Override
@@ -400,6 +404,8 @@ public class GalleryFragment extends BaseFragment {
                                 @Override
                                 public void onFailure(RetrofitError error, String message) {
                                     progressDialogUtil.hide();
+                                    Toast.makeText(activity,"请求超时,请确保网络良好再重试",Toast.LENGTH_SHORT).show();
+
                                 }
 
                                 @Override

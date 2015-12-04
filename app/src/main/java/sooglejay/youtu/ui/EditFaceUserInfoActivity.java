@@ -147,6 +147,8 @@ public class EditFaceUserInfoActivity extends BaseActivity {
                     @Override
                     public void onFailure(RetrofitError error, String message) {
                         progressDialogUtil.hide();
+                        Toast.makeText(activity,"请求超时,请确保网络良好再重试",Toast.LENGTH_SHORT).show();
+
                     }
                     @Override
                     public void success(SetInfoResponseBean setInfoResponseBean, Response response) {

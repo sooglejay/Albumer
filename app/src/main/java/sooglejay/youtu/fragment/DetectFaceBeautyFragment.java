@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -139,6 +140,7 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
             public void onFailure(RetrofitError error, String message) {
                 p.hide();
                 ivImage.setCanvasBitmapRes(bitmap);
+
             }
 
             @Override
