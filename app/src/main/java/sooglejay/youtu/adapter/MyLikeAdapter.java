@@ -43,7 +43,6 @@ public class MyLikeAdapter extends BaseAdapter {
         mItemLayoutParams = new GridView.LayoutParams(GridView.LayoutParams.MATCH_PARENT, GridView.LayoutParams.MATCH_PARENT);
     }
 
-    private boolean showSelectIndicator = false;
 
     private Activity activity;
 
@@ -125,14 +124,15 @@ public class MyLikeAdapter extends BaseAdapter {
         }
 
         holde.indicator.setTag(bean);
+        holde.indicator.setClickable(true);
         holde.indicator.setOnClickListener(holde.onClickListener);
 
-
-        /** Fixed View Size */
-        GridView.LayoutParams lp = (GridView.LayoutParams) view.getLayoutParams();
-        if (lp.height != mItemSize) {
-            view.setLayoutParams(mItemLayoutParams);
-        }
+//
+//        /** Fixed View Size */
+//        GridView.LayoutParams lp = (GridView.LayoutParams) view.getLayoutParams();
+//        if (lp.height != mItemSize) {
+//            view.setLayoutParams(mItemLayoutParams);
+//        }
 
         return view;
     }

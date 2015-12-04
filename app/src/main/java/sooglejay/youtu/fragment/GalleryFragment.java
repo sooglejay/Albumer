@@ -180,7 +180,7 @@ public class GalleryFragment extends BaseFragment {
                 }
             }
         }
-        iv_focus_image.setImageResource(isFocused ? R.drawable.icon_focus : R.drawable.icon_focused);
+        iv_focus_image.setImageResource(isFocused ? R.drawable.icon_focused : R.drawable.icon_focus);
         tv_focus.setText(isFocused ? "已关注" : "关注");
         iv_focus_image.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -196,7 +196,7 @@ public class GalleryFragment extends BaseFragment {
                     Toast.makeText(activity, "已关注", Toast.LENGTH_SHORT).show();
                 }
                 isFocused = !isFocused;
-                iv_focus_image.setImageResource(isFocused ? R.drawable.icon_focus : R.drawable.icon_focused);
+                iv_focus_image.setImageResource(isFocused ? R.drawable.icon_focused : R.drawable.icon_focus);
                 tv_focus.setText(isFocused ? "已关注" : "关注");
             }
         });
@@ -277,11 +277,9 @@ public class GalleryFragment extends BaseFragment {
         final AsyncBitmapLoader.BitmapCallback callback = new AsyncBitmapLoader.BitmapCallback() {
             @Override
             public void facesLoaded(ArrayList<FaceItem> faces) {
-                if (faces != null && faces.size() > 0) {
                     imageView.setCanvasFaceListRes(faces);
                     imageView.setImageFilePath(imagePath);
                     asyncBitmapLoader.addNewDetectedFaceToCache(imagePath, faces);
-                }
             }
 
             @Override

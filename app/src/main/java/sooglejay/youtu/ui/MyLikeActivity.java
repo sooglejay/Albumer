@@ -101,26 +101,26 @@ public class MyLikeActivity extends BaseActivity {
             }
         });
         grid.setAdapter(adapter);
-        grid.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-            public void onGlobalLayout() {
-                final int width = grid.getWidth();
-                final int height = grid.getHeight();
-                mGridWidth = width;
-                mGridHeight = height;
-                final int desireSize = getResources().getDimensionPixelOffset(R.dimen.image_size);
-                final int numCount = width / desireSize;
-                final int columnSpace = getResources().getDimensionPixelOffset(R.dimen.space_size);
-                int columnWidth = (width - columnSpace * (numCount - 1)) / numCount;
-                adapter.setItemSize(columnWidth);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    grid.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                } else {
-                    grid.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                }
-            }
-        });
+//        grid.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+//            @Override
+//            @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+//            public void onGlobalLayout() {
+//                final int width = grid.getWidth();
+//                final int height = grid.getHeight();
+//                mGridWidth = width;
+//                mGridHeight = height;
+//                final int desireSize = getResources().getDimensionPixelOffset(R.dimen.image_size);
+//                final int numCount = width / desireSize;
+//                final int columnSpace = getResources().getDimensionPixelOffset(R.dimen.space_size);
+//                int columnWidth = (width - columnSpace * (numCount - 1)) / numCount;
+//                adapter.setItemSize(columnWidth);
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+//                    grid.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+//                } else {
+//                    grid.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+//                }
+//            }
+//        });
         grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {

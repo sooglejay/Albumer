@@ -74,7 +74,7 @@
                     android:id="@+id/iv_focus_image"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/icon_delete"
+                    android:src="@drawable/icon_focus"
                     app:cb_color="@color/white_color"
                     app:cb_pressedRingWidth="8dip" />
 

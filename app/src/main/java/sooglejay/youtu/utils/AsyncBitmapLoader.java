@@ -136,8 +136,11 @@ public class AsyncBitmapLoader {
                         public void success(DetectFaceResponseBean detectFaceResponseBean, Response response) {
                             progressDialogUtil.hide();
                             ArrayList<FaceItem> faceItem = detectFaceResponseBean.getFace();
-                            callback.facesLoaded(faceItem);
-                            callback.faceidentify(bitmap);
+                            if(faceItem!=null&&faceItem.size()>0)
+                            {
+                                callback.facesLoaded(faceItem);
+                                callback.faceidentify(bitmap);
+                            }
                         }
                     });
                 } else {

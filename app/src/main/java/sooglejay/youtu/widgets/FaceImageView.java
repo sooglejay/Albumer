@@ -236,92 +236,60 @@ public class FaceImageView extends PhotoView {
                     }
 
                 } else {
-                    switch (bottomLayoutOperation.getVisibility())
-                    {
-                        case View.VISIBLE:
-                            animation_exit.setAnimationListener(new Animation.AnimationListener() {
-                                @Override
-                                public void onAnimationStart(Animation animation) {
-                                }
-
-                                @Override
-                                public void onAnimationEnd(Animation animation) {
-                                    bottomLayoutOperation.setVisibility(View.INVISIBLE);
-                                }
-
-                                @Override
-                                public void onAnimationRepeat(Animation animation) {
-                                }
-                            });
-                            bottomLayoutOperation.startAnimation(animation_exit);
-                            break;
-                        case View.INVISIBLE:
-                        case View.GONE:
-                            animation_enter.setAnimationListener(new Animation.AnimationListener() {
-                                @Override
-                                public void onAnimationStart(Animation animation) {
-                                    bottomLayoutOperation.setVisibility(View.VISIBLE);
-                                }
-
-                                @Override
-                                public void onAnimationEnd(Animation animation) {
-                                    bottomLayoutOperation.setVisibility(View.VISIBLE);
-                                }
-
-                                @Override
-                                public void onAnimationRepeat(Animation animation) {
-
-                                }
-                            });
-                            bottomLayoutOperation.startAnimation(animation_enter);
-                            break;
-                    }
+                    triangleBottomLayoutOperation();
                     mCallback.onTouchImageView();
 
                 }
             } else {
-                switch (bottomLayoutOperation.getVisibility())
-                {
-                    case View.VISIBLE:
-                        animation_exit.setAnimationListener(new Animation.AnimationListener() {
-                            @Override
-                            public void onAnimationStart(Animation animation) {
-                            }
-
-                            @Override
-                            public void onAnimationEnd(Animation animation) {
-                                bottomLayoutOperation.setVisibility(View.INVISIBLE);
-                            }
-
-                            @Override
-                            public void onAnimationRepeat(Animation animation) {
-                            }
-                        });
-                        bottomLayoutOperation.startAnimation(animation_exit);
-                        break;
-                    case View.INVISIBLE:
-                    case View.GONE:
-                        animation_enter.setAnimationListener(new Animation.AnimationListener() {
-                            @Override
-                            public void onAnimationStart(Animation animation) {
-                                bottomLayoutOperation.setVisibility(View.VISIBLE);
-                            }
-
-                            @Override
-                            public void onAnimationEnd(Animation animation) {
-                                bottomLayoutOperation.setVisibility(View.VISIBLE);
-                            }
-
-                            @Override
-                            public void onAnimationRepeat(Animation animation) {
-
-                            }
-                        });
-                        bottomLayoutOperation.startAnimation(animation_enter);
-                        break;
-                }
+                triangleBottomLayoutOperation();
                 mCallback.onTouchImageView();
             }
+        }else {
+            //没有人脸也需要操作图片
+            triangleBottomLayoutOperation();
+        }
+    }
+
+    private void triangleBottomLayoutOperation() {
+        switch (bottomLayoutOperation.getVisibility())
+        {
+            case View.VISIBLE:
+                animation_exit.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        bottomLayoutOperation.setVisibility(View.INVISIBLE);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+                    }
+                });
+                bottomLayoutOperation.startAnimation(animation_exit);
+                break;
+            case View.INVISIBLE:
+            case View.GONE:
+                animation_enter.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                        bottomLayoutOperation.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        bottomLayoutOperation.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+                bottomLayoutOperation.startAnimation(animation_enter);
+                break;
         }
     }
 
