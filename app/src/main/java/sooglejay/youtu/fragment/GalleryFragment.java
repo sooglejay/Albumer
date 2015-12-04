@@ -116,7 +116,6 @@ public class GalleryFragment extends BaseFragment {
                     return null;
                 }
             }.execute();
-            Toast.makeText(getActivity(),"121212",Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -196,6 +197,29 @@ public class AddNewPersonActivity extends BaseActivity {
             ImageLoader.getInstance().displayImage("file://" + imageFilePath, ivAvatar, ImageUtils.getOptions());
         }
         tv_group_name.setText("群组名称");
+
+
+        new AsyncTask<Integer, Void, Void>() {
+            @Override
+            protected Void doInBackground(Integer... params) {
+                try {
+                    Thread.sleep(params[0]);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void value) {
+                super.onPostExecute(value);
+                    if (etName != null) {
+                        etName.requestFocus();
+                        InputMethodManager imm = (InputMethodManager) etName.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.toggleSoftInput(0, InputMethodManager.SHOW_FORCED);
+                    }
+            }
+        }.execute(400);
     }
 
 
