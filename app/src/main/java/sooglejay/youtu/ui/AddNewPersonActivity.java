@@ -37,6 +37,7 @@ import sooglejay.youtu.utils.CacheUtil;
 import sooglejay.youtu.utils.GetGroupIdsUtil;
 import sooglejay.youtu.utils.GetTagUtil;
 import sooglejay.youtu.utils.ImageUtils;
+import sooglejay.youtu.utils.ProgressDialogUtil;
 import sooglejay.youtu.widgets.RoundImageView;
 import sooglejay.youtu.widgets.TitleBar;
 import sooglejay.youtu.widgets.youtu.sign.Base64Util;
@@ -116,10 +117,12 @@ public class AddNewPersonActivity extends BaseActivity {
                 final String phoneStr = etPhoneNumber.getText().toString();
                 final String nameStr = etName.getText().toString();
                 final String person_id = System.currentTimeMillis() + "";
+                final ProgressDialogUtil progressDialogUtil = new ProgressDialogUtil(activity);
                 new AsyncTask<String, Bitmap, Bitmap>() {
                     @Override
                     protected void onPreExecute() {
                         super.onPreExecute();
+                        progressDialogUtil.show("正在添加人脸");
                     }
 
                     @Override
@@ -135,21 +138,39 @@ public class AddNewPersonActivity extends BaseActivity {
                             NewPersonUtil.newPerson(activity, NetWorkConstant.APP_ID, GetGroupIdsUtil.getGroupIdArrayList(groupStrFromIntent), person_id, Base64Util.encode(ImageUtils.Bitmap2Bytes(bitmap)), nameStr, GetTagUtil.getTag(nameStr, phoneStr, groupStrFromIntent), new NetCallback<NewPersonResponseBean>(activity) {
                                 @Override
                                 public void onFailure(RetrofitError error, String message) {
+                                    progressDialogUtil.hide();
 
                                 }
 
                                 @Override
                                 public void success(NewPersonResponseBean newPersonResponseBean, Response response) {
+                                    progressDialogUtil.hide();
                                     ContactBean bean = new ContactBean();
                                     bean.setUser_name(nameStr);
                                     bean.setPhoneNumber(phoneStr);
                                     contactDao.add(bean);
-                                    Toast.makeText(activity, "添加成功！", Toast.LENGTH_SHORT).show();
                                     mIdentifiedFaceBitMapCache.remove(imageFilePath);
-                                    finish();
+                                    new AsyncTask<Void, Void, Void>() {
+                                        @Override
+                                        protected void onPostExecute(Void aVoid) {
+                                            super.onPostExecute(aVoid);
+
+                                            Toast.makeText(activity, "添加成功！", Toast.LENGTH_SHORT).show();
+                                            finish();
+                                        }
+
+                                        @Override
+                                        protected Void doInBackground(Void... voids) {
+                                            cacheUtil.saveIdentifiedObjectToFile(activity,mIdentifiedFaceBitMapCache);
+                                            return null;
+                                        }
+                                    }.execute();
+
                                 }
                             });
 
+                        } else {
+                            progressDialogUtil.hide();
                         }
                     }
                 }.execute(imageFilePath);
