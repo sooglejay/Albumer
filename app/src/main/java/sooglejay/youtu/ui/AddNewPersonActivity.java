@@ -91,6 +91,7 @@ public class AddNewPersonActivity extends BaseActivity {
         setContentView(R.layout.activity_add_new_person_activity);
         activity = this;
         contactDao = new ContactDao(this);
+        cacheUtil = new CacheUtil(this);
         mIdentifiedFaceBitMapCache = cacheUtil.getIdentifiedObjectFromFile();
         setUpView();
         setUpListener();

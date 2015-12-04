@@ -411,8 +411,22 @@ public class ImageUtils {
                 newWidth = (int)(newHeight/scale);
                 Log.e("Retrofit","newWidth:"+newWidth);
                 Log.e("Retrofit","newHeight:"+newHeight);
+            }else if(oW>newWidth){
+                float oHf = oH;
+                float scale = oHf/oW;
+                Log.e("Retrofit","oH:"+oH);
+                Log.e("Retrofit","oW:"+oW);
+                Log.e("Retrofit","scale:"+scale);
+                newWidth = (int)(newHeight/scale);
+                Log.e("Retrofit","newWidth:"+newWidth);
+                Log.e("Retrofit","newHeight:"+newHeight);
+            }else {
+                newHeight = oH;
+                newWidth = oW;
+                Log.e("Retrofit","oH:"+oH);
+                Log.e("Retrofit","oW:"+oW);
             }
-            return Bitmap.createScaledBitmap(srcBitmap, newWidth, newHeight, true);
+            return Bitmap.createScaledBitmap(srcBitmap, newWidth, newHeight,true);
         } catch (Exception e) {
             //  Logger.e(e.toString());
         }catch (OutOfMemoryError oom)
