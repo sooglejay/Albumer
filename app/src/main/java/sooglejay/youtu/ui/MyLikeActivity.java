@@ -197,7 +197,12 @@ public class MyLikeActivity extends BaseActivity {
         iv_delete_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                for (LikeBean bean : datas) {
+                    if (bean.isSelected()) {
+                        likeDao.deleteByName(bean.getImagePath());
+                    }
+                }
+                adapter.notifyDataSetChanged();
             }
         });
         iv_cancel_image.setOnClickListener(new View.OnClickListener() {
@@ -214,6 +219,7 @@ public class MyLikeActivity extends BaseActivity {
                     public void onLeftButtonClick(View v) {
                         finish();
                     }
+
                     @Override
                     public void onRightButtonClick(View v) {
                     }

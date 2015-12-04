@@ -77,7 +77,7 @@
                         android:textColor="@color/white_color"
                         android:paddingLeft="@dimen/middle_padding"
                         android:paddingRight="@dimen/middle_padding"
-                        android:text="删除" />
+                        android:text="移除" />
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="0dp"

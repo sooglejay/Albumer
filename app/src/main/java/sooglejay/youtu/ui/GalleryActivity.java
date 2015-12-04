@@ -55,6 +55,9 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.OnR
         activity.startActivity(intent);
     }
 
+
+    private ArrayList<GalleryFragment>fragments = new ArrayList<>();
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +65,13 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.OnR
         originUrls = getIntent().getStringArrayListExtra(ExtraConstants.EXTRA_URLS);
         position = getIntent().getIntExtra(ExtraConstants.EXTRA_POSITION, 0);
         folderName = getIntent().getStringExtra(ExtraConstants.EXTRA_FOLDER_NAME);
+
+        for(int i = 0 ; i< originUrls.size();i++)
+        {
+            GalleryFragment fragment = new GalleryFragment();
+            fragment.init(originUrls.get(i),i);
+            fragments.add(fragment);
+        }
 
         cacheUtil = new CacheUtil(this);
         asyncBitmapLoader = new AsyncBitmapLoader();
@@ -192,8 +202,6 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.OnR
             }
         }
 
-
-
     }
 
     @Override
@@ -211,23 +219,13 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.OnR
         @Override
         public Fragment getItem(int position) {
             // TODO Auto-generated method stub
-            GalleryFragment fragment = new GalleryFragment();
-            Bundle b = new Bundle();
-            if (originUrls != null && originUrls.size() > position) {
-                b.putString("url", originUrls.get(position));
-                b.putInt("count", originUrls.size());
-                b.putInt("position", position);
-            }
-            fragment.setArguments(b);
-            return fragment;
+            return fragments.get(position);
         }
 
         @Override
         public int getCount() {
             // TODO Auto-generated method stub
-            if (originUrls != null)
-                return originUrls.size();
-            else return 0;
+           return fragments.size();
 
         }
     }

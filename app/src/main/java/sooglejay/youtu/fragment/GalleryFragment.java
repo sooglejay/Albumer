@@ -92,6 +92,36 @@ public class GalleryFragment extends BaseFragment {
 
 
     @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(isVisibleToUser)
+        {
+           new AsyncTask<Void, Void, Void>() {
+               @Override
+               protected void onPreExecute() {
+                   super.onPreExecute();
+
+               }
+
+               @Override
+               protected void onPostExecute(Void aVoid) {
+                   super.onPostExecute(aVoid);
+                   getImage(url);
+               }
+
+               @Override
+               protected Void doInBackground(Void... voids) {
+                  while (asyncBitmapLoader==null||getActivity()==null)
+                  {
+
+                  }
+                   return null;
+               }
+           }.execute();
+        }
+    }
+
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         likeDao = new LikeDao(getActivity());
@@ -100,8 +130,8 @@ public class GalleryFragment extends BaseFragment {
         focusImageList = focusDao.getAll();
 
         onRectfChangeListener = (OnRectfChangeListener) this.getActivity();
-        position = getArguments().getInt("position", 0);
-        url = getArguments().getString("url", "");
+//        position = getArguments().getInt("position", 0);
+//        url = getArguments().getString("url", "");
         imageView = (FaceImageView) view.findViewById(R.id.iv_photo);
         layout_operation = (FrameLayout) view.findViewById(R.id.layout_operation);
 
@@ -122,7 +152,7 @@ public class GalleryFragment extends BaseFragment {
         cacheUtil = activity.cacheUtil;
         asyncBitmapLoader = activity.asyncBitmapLoader;
 
-        getImage(url);
+
 
         iv_delete_image.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -262,6 +292,11 @@ public class GalleryFragment extends BaseFragment {
             imageView.clearCanvasRes();
         }
         System.gc();
+    }
+
+    public void init(String s, int i) {
+        url =s;
+        position = i;
     }
 
     public interface OnRectfChangeListener {
