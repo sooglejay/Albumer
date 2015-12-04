@@ -67,6 +67,22 @@ public class LikeDao {
         }
         return new ArrayList<>();
     }
+    /**
+     * 获取表中数据记录个数
+     *
+     * @return
+     */
+    public int getCount() {
+        int count =  0;
+        try {
+            count = likeDaoOpe.queryForAll().size();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            count = 0 ;
+        }finally {
+            return count;
+        }
+    }
 
     public void deleteByName(String imagePathName) {
         try {

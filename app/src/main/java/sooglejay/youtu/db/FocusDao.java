@@ -53,7 +53,22 @@ public class FocusDao {
         }
         return bean;
     }
-
+    /**
+     * 获取表中数据记录个数
+     *
+     * @return
+     */
+    public int getCount() {
+        int count =  0;
+        try {
+            count = focusDaoOpe.queryForAll().size();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            count = 0 ;
+        }finally {
+            return count;
+        }
+    }
     /**
      * 获取所有的FocusBean
      *

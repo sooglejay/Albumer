@@ -20,7 +20,9 @@ import sooglejay.youtu.api.getgroupids.GetGroupIdsResponseBean;
 import sooglejay.youtu.api.getgroupids.GetGroupIdsUtil;
 import sooglejay.youtu.bean.GroupBean;
 import sooglejay.youtu.constant.NetWorkConstant;
+import sooglejay.youtu.db.FocusDao;
 import sooglejay.youtu.db.GroupNameDao;
+import sooglejay.youtu.db.LikeDao;
 import sooglejay.youtu.model.NetCallback;
 import sooglejay.youtu.ui.MyFocusActivity;
 import sooglejay.youtu.ui.MyLikeActivity;
@@ -45,6 +47,13 @@ public class MeFragment extends BaseFragment {
     private LinearLayout my_like_group;
     private LinearLayout my_focus_group;
 
+
+    private LikeDao likeDao;
+    private FocusDao focusDao;
+
+    private int likeCount = 0 ;
+    private int focusCount = 0 ;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -55,6 +64,13 @@ public class MeFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         activity = this.getActivity();
+
+        likeDao = new LikeDao(getActivity());
+        focusDao = new FocusDao(getActivity());
+
+        likeCount = likeDao.getCount();
+        focusCount = focusDao.getCount();
+
         groupNameDao = new GroupNameDao(getActivity());
         titleBar = (TitleBar) view.findViewById(R.id.title_bar);
         layout_choose_group_id = (LinearLayout) view.findViewById(R.id.layout_choose_group_id);
@@ -66,6 +82,11 @@ public class MeFragment extends BaseFragment {
         my_like_count_tv = (TextView) view.findViewById(R.id.my_like_count_tv);
         my_contacts_count_tv = (TextView) view.findViewById(R.id.my_contacts_count_tv);
         my_focus_count_tv = (TextView) view.findViewById(R.id.my_focus_count_tv);
+
+
+        my_like_count_tv.setText(likeCount+"");
+        my_focus_count_tv.setText(focusCount+"");
+
 
 
         titleBar.initTitleBarInfo("我的", -1, -1, "", "");

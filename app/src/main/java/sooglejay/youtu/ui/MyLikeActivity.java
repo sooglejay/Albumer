@@ -53,7 +53,7 @@ public class MyLikeActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_focus);
+        setContentView(R.layout.activity_my_like);
         activity = this;
         animation_enter = AnimationUtils.loadAnimation(activity,
                 R.anim.enter_from_bottom_200);
