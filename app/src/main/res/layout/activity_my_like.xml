@@ -74,7 +74,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:gravity="center"
-                        android:textColor="@color/white_color"
+                        android:textColor="@color/dark_black_color"
                         android:paddingLeft="@dimen/middle_padding"
                         android:paddingRight="@dimen/middle_padding"
                         android:text="移除" />
@@ -101,7 +101,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:gravity="center"
-                        android:textColor="@color/white_color"
+                        android:textColor="@color/dark_black_color"
                         android:paddingLeft="@dimen/middle_padding"
                         android:paddingRight="@dimen/middle_padding"
                         android:text="取消" />
