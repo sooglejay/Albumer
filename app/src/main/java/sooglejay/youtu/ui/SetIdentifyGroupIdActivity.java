@@ -77,18 +77,20 @@ public class SetIdentifyGroupIdActivity extends BaseActivity {
                 }
 
                 String groupNameStr = PreferenceUtil.load(SetIdentifyGroupIdActivity.this, PreferenceConstant.IDENTIFY_GROUP_NAME,"1");
+
                 for(int i = 0 ;i<datas.size();i++)
                 {
                     if(datas.get(i).isUsedForIdentify())
                     {
                         break;
-                    }else if(i==datas.size()-1)
-                    {
-                        for(int j = 0;j<datas.size();j++)
+                    }
+                    else if(i==datas.size()-1)
+                    {//如果在最后一个都没有 符合条件的，就在此循环，使用xml存储的字符串来匹配
+                        for(int k = 0;k<datas.size();k++)
                         {
-                            if(datas.get(j).getName().equals(groupNameStr))
+                            if(datas.get(k).getName().equals(groupNameStr))
                             {
-                                datas.get(i).setIsUsedForIdentify(true);
+                                datas.get(k).setIsUsedForIdentify(true);
                                 break;
                             }
                         }

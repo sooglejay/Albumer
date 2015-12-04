@@ -230,12 +230,16 @@ public class DialogFragmentCreater extends DialogFragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 onChooseFaceCallBack.onItemClickListener(adapterView, view, i, l);
+                dismiss();
+
             }
         });
         tv_add_new_person.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onChooseFaceCallBack.onClick(view);
+                dismiss();
+
             }
         });
 
@@ -243,6 +247,7 @@ public class DialogFragmentCreater extends DialogFragment {
             @Override
             public void onClick(View view) {
                 onChooseFaceCallBack.onClick(view);
+                dismiss();
             }
         });
         final Dialog dialog = new Dialog(mContext, R.style.CustomDialog);

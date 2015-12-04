@@ -123,6 +123,7 @@ public class CreateNewGroupActivity extends BaseActivity {
                                 } else {
                                     GroupBean bean = new GroupBean();
                                     bean.setIsSelected(false);
+                                    bean.setIsUsedForIdentify(false);
                                     bean.setName(groupName);
                                     groupNameDao.add(bean);
                                     datas.add(bean);
@@ -174,6 +175,7 @@ public class CreateNewGroupActivity extends BaseActivity {
                         for (String name : stringArrayList) {
                             GroupBean groupBean = new GroupBean();
                             groupBean.setIsSelected(false);
+                            groupBean.setIsUsedForIdentify(false);
                             groupBean.setName(name);
                             datas.add(groupBean);
                             groupNameDao.add(groupBean);
