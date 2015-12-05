@@ -87,7 +87,7 @@ public class ContactDao {
     public void deleteByName(String imagePathName) {
         try {
             DeleteBuilder<ContactBean, Integer> deleteBuilder = contactDao.deleteBuilder();
-            deleteBuilder.where().eq("imagePath", imagePathName);
+            deleteBuilder.where().eq("image_path", imagePathName);
             deleteBuilder.delete();
         } catch (SQLException e) {
             e.printStackTrace();

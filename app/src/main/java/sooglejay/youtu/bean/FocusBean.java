@@ -17,6 +17,7 @@ public class FocusBean implements Parcelable {
 
 
     private boolean isSelected;//在adapter 中辅助显示
+    private boolean isVisible;//在adapter 中辅助显示
 
     @Override
     public String toString() {
@@ -48,7 +49,6 @@ public class FocusBean implements Parcelable {
         return CREATOR;
     }
 
-    private boolean isVisible;//在adapter 中辅助显示
 
 
     public String getImagePath() {

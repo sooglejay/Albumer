@@ -17,15 +17,33 @@ public class ContactBean implements Parcelable {
     @DatabaseField
     private String image_path;//用户图片地址
 
+    private boolean isSelected;//在adapter 中辅助显示
+
+
     @Override
     public String toString() {
         return "ContactBean{" +
                 "user_name='" + user_name + '\'' +
                 ", image_path='" + image_path + '\'' +
+                ", isSelected=" + isSelected +
                 ", age=" + age +
                 ", beauty=" + beauty +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 '}';
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setIsSelected(boolean isSelected) {
+        this.isSelected = isSelected;
+    }
+
+
+
+    public static Creator<ContactBean> getCREATOR() {
+        return CREATOR;
     }
 
     public String getUser_name() {
@@ -75,6 +93,9 @@ public class ContactBean implements Parcelable {
     @DatabaseField
     private String phoneNumber;//用户手机号码
 
+    public ContactBean() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -84,17 +105,16 @@ public class ContactBean implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.user_name);
         dest.writeString(this.image_path);
+        dest.writeByte(isSelected ? (byte) 1 : (byte) 0);
         dest.writeInt(this.age);
         dest.writeInt(this.beauty);
         dest.writeString(this.phoneNumber);
     }
 
-    public ContactBean() {
-    }
-
     protected ContactBean(Parcel in) {
         this.user_name = in.readString();
         this.image_path = in.readString();
+        this.isSelected = in.readByte() != 0;
         this.age = in.readInt();
         this.beauty = in.readInt();
         this.phoneNumber = in.readString();

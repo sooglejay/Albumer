@@ -62,8 +62,6 @@ public class MyFocusActivity extends BaseActivity {
         focusDao = new FocusDao(this);
         datas = focusDao.getAll();
         title_bar = (TitleBar) findViewById(R.id.title_bar);
-        iv_cancel_image = (CircleButton) findViewById(R.id.iv_cancel_image);
-        iv_delete_image = (CircleButton) findViewById(R.id.iv_delete_image);
         grid = (GridView) findViewById(R.id.grid);
         mTimeLineText = (TextView) findViewById(R.id.timeline_area);
         layout_operation = (FrameLayout) findViewById(R.id.layout_operation);

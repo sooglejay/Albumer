@@ -35,6 +35,7 @@ import sooglejay.youtu.utils.ImageUtils;
 import sooglejay.youtu.utils.PreferenceUtil;
 import sooglejay.youtu.utils.UIUtil;
 import uk.co.senab.photoview.PhotoView;
+import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**
  * Created by sooglejay on 2015/11/21.
@@ -133,7 +134,7 @@ public class FaceImageView extends PhotoView {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(final Canvas canvas) {
         super.onDraw(canvas);
         if (isDetectFace) {
             cx = 0;
@@ -356,6 +357,13 @@ public class FaceImageView extends PhotoView {
                     FaceImageView.this.setImageBitmap(bitmap);
                 }
             }.execute(imageFilePath);
+
+            this.setOnPhotoTapListener(new PhotoViewAttacher.OnPhotoTapListener() {
+                @Override
+                public void onPhotoTap(View view, float x, float y) {
+                    triangleBottomLayoutOperation();
+                }
+            });
 
         }
     }

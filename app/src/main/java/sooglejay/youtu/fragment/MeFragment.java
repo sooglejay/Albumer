@@ -54,13 +54,27 @@ public class MeFragment extends BaseFragment {
     private LikeDao likeDao;
     private FocusDao focusDao;
 
-    private int likeCount = 0 ;
-    private int focusCount = 0 ;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_me, container, false);
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            if (likeDao != null && focusDao != null) {
+                int likeCount = 0;
+                int focusCount = 0;
+                likeCount = likeDao.getCount();
+                focusCount = focusDao.getCount();
+                my_like_count_tv.setText(likeCount + "");
+                my_focus_count_tv.setText(focusCount + "");
+
+            }
+        }
     }
 
     @Override
@@ -71,8 +85,6 @@ public class MeFragment extends BaseFragment {
         likeDao = new LikeDao(getActivity());
         focusDao = new FocusDao(getActivity());
 
-        likeCount = likeDao.getCount();
-        focusCount = focusDao.getCount();
 
         groupNameDao = new GroupNameDao(getActivity());
         titleBar = (TitleBar) view.findViewById(R.id.title_bar);
@@ -86,11 +98,6 @@ public class MeFragment extends BaseFragment {
         my_like_count_tv = (TextView) view.findViewById(R.id.my_like_count_tv);
         my_contacts_count_tv = (TextView) view.findViewById(R.id.my_contacts_count_tv);
         my_focus_count_tv = (TextView) view.findViewById(R.id.my_focus_count_tv);
-
-
-        my_like_count_tv.setText(likeCount+"");
-        my_focus_count_tv.setText(focusCount + "");
-
 
 
         titleBar.initTitleBarInfo("我的", -1, -1, "", "");

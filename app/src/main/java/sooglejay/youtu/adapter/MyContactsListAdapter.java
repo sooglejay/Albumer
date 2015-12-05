@@ -22,6 +22,7 @@ import sooglejay.youtu.widgets.imagepicker.bean.Image;
 public class MyContactsListAdapter extends BaseAdapter {
     private ArrayList<ContactBean> datas = new ArrayList<>();
     private Activity activity;
+    private boolean isShowSelectIndicator=false;
 
     public MyContactsListAdapter(ArrayList<ContactBean> datas, Activity activity) {
         this.datas = datas;
@@ -51,24 +52,59 @@ public class MyContactsListAdapter extends BaseAdapter {
             view = View.inflate(activity, R.layout.list_item_my_contact,null);
             holder.iv_avatar = (ImageView)view.findViewById(R.id.iv_avatar);
             holder.tv_user_name = (TextView)view.findViewById(R.id.tv_user_name);
+            holder.iv_choose = (ImageView)view.findViewById(R.id.iv_choose);
             holder.tv_phone_number = (TextView)view.findViewById(R.id.tv_phone_number);
+            holder.onClickListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ContactBean bean = (ContactBean)view.getTag();
+                    switch (view.getId())
+                    {
+                        case R.id.iv_choose:
+                            bean.setIsSelected(!bean.isSelected());
+                            notifyDataSetChanged();
+                            break;
+                    }
+                }
+            };
             view.setTag(holder);
         }else {
             holder = (ViewHolder)view.getTag();
         }
         ContactBean bean = getItem(i);
-        ImageLoader.getInstance().displayImage("file://"+bean.getImage_path(),holder.iv_avatar, ImageUtils.getOptions());
+        ImageLoader.getInstance().displayImage("file://" + bean.getImage_path(), holder.iv_avatar, ImageUtils.getOptions());
         holder.tv_phone_number.setText(bean.getPhoneNumber()+"");
         holder.tv_user_name.setText(bean.getUser_name()+"");
+        if(isShowSelectIndicator)
+        {
+            holder.iv_choose.setVisibility(View.VISIBLE);
+        }else {
+            holder.iv_choose.setVisibility(View.GONE);
+        }
+        if(bean.isSelected())
+        {
+            holder.iv_choose.setImageResource(R.drawable.icon_choose_selected);
+        }else {
+            holder.iv_choose.setImageResource(R.drawable.icon_choose);
+        }
+        holder.iv_choose.setTag(bean);
+        holder.iv_choose.setOnClickListener(holder.onClickListener);
         return view;
     }
 
     private ViewHolder holder;
+
+    public void setIsShowSelectIndicator(boolean isShowSelectIndicator) {
+        this.isShowSelectIndicator = isShowSelectIndicator;
+    }
+
     private class ViewHolder
     {
         private ImageView iv_avatar;
         private TextView tv_user_name;
         private TextView tv_phone_number;
+        private ImageView iv_choose;
+        private View.OnClickListener onClickListener;
     }
 
 }
