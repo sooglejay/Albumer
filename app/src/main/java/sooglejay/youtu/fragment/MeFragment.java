@@ -26,7 +26,6 @@ import sooglejay.youtu.db.LikeDao;
 import sooglejay.youtu.model.NetCallback;
 import sooglejay.youtu.ui.MyContactsActivity;
 import sooglejay.youtu.ui.MyFocusActivity;
-import sooglejay.youtu.ui.MyGroupActivity;
 import sooglejay.youtu.ui.MyLikeActivity;
 import sooglejay.youtu.ui.SettingActivity;
 import sooglejay.youtu.ui.SetIdentifyGroupIdActivity;
@@ -47,7 +46,6 @@ public class MeFragment extends BaseFragment {
     private TextView my_like_count_tv;
 
     private LinearLayout my_contacts_group;
-    private LinearLayout my_group;
     private LinearLayout my_like_group;
     private LinearLayout my_focus_group;
     private LinearLayout my_setting_group;
@@ -93,7 +91,6 @@ public class MeFragment extends BaseFragment {
         layout_choose_group_id = (LinearLayout) view.findViewById(R.id.layout_choose_group_id);
 
         my_contacts_group = (LinearLayout) view.findViewById(R.id.my_contacts_group);
-        my_group = (LinearLayout) view.findViewById(R.id.my_group);
         my_like_group = (LinearLayout) view.findViewById(R.id.my_like_group);
         my_focus_group = (LinearLayout) view.findViewById(R.id.my_focus_group);
         my_setting_group = (LinearLayout) view.findViewById(R.id.my_setting_group);
@@ -121,13 +118,7 @@ public class MeFragment extends BaseFragment {
             }
         });
 
-        my_group.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().startActivity(new Intent(getActivity(), MyGroupActivity.class));
 
-            }
-        });
         my_like_group.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
