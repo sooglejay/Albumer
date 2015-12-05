@@ -95,6 +95,9 @@
        <activity
             android:name=".test.ApiTestActivity"
             android:configChanges="orientation|screenSize"></activity>
+       <activity
+            android:name=".ui.ModifyInfoActivity"
+            android:configChanges="orientation|screenSize"></activity>
     </application>
 
 </manifest>

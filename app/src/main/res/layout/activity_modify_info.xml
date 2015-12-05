@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<sooglejay.youtu.widgets.TitleBar
+    android:id="@+id/title_bar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+</sooglejay.youtu.widgets.TitleBar>
+
+
+    <EditText
+        android:id="@+id/et_signature"
+        android:layout_marginLeft="@dimen/middle_padding"
+        android:layout_marginRight="@dimen/middle_padding"
+        android:layout_width="match_parent"
+        android:background="@null"
+        android:hint="请输入签名"
+        android:layout_height="48dp" />
+</LinearLayout>

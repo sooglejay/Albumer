@@ -29,21 +29,28 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedFile;
 import sooglejay.youtu.R;
+import sooglejay.youtu.constant.IntConstant;
 import sooglejay.youtu.constant.PreferenceConstant;
+import sooglejay.youtu.constant.StringConstant;
+import sooglejay.youtu.event.BusEvent;
 import sooglejay.youtu.utils.CacheUtil;
+import sooglejay.youtu.utils.ImageUtils;
 import sooglejay.youtu.utils.PreferenceUtil;
 import sooglejay.youtu.utils.ProgressDialogUtil;
 import sooglejay.youtu.widgets.RoundImageView;
 import sooglejay.youtu.widgets.TitleBar;
 import sooglejay.youtu.widgets.customswitch.SwitchButton;
+import sooglejay.youtu.widgets.imagepicker.MultiImageSelectorActivity;
 
 
 public class SettingActivity extends BaseActivity {
 
     private TitleBar title_bar = null;
+    private TextView my_signature_count_tv;
 
 
     private LinearLayout avatar_group;
+    private RoundImageView avatar_image;
     private LinearLayout signature_group;
     private LinearLayout clear_cache_group;
     private SwitchButton switch_detect_face;
@@ -51,6 +58,21 @@ public class SettingActivity extends BaseActivity {
 
     private Activity activity;
     private CacheUtil cacheUtil;
+
+
+
+    private ArrayList<String> imageList = new ArrayList<>();
+    private String resultPath;//图片最终位置
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (my_signature_count_tv != null)
+        {
+            my_signature_count_tv.setText(PreferenceUtil.load(this, PreferenceConstant.USER_SIGNATURE, StringConstant.default_signature));
+        }
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,17 +81,22 @@ public class SettingActivity extends BaseActivity {
         cacheUtil = new CacheUtil(this);
 
 
-        avatar_group = (LinearLayout)findViewById(R.id.avatar_group);
-        switch_detect_face = (SwitchButton)findViewById(R.id.switch_detect_face);
-        switch_identify = (SwitchButton)findViewById(R.id.switch_identify);
+        avatar_group = (LinearLayout) findViewById(R.id.avatar_group);
+        avatar_image = (RoundImageView) findViewById(R.id.avatar_image);
+        String s = PreferenceUtil.load(this,PreferenceConstant.USER_AVATAR,"");
+        ImageLoader.getInstance().displayImage("file://"+s,avatar_image,ImageUtils.getOptions());
+
+        switch_detect_face = (SwitchButton) findViewById(R.id.switch_detect_face);
+        switch_identify = (SwitchButton) findViewById(R.id.switch_identify);
 
 
-        switch_identify.setChecked( PreferenceUtil.load(activity, PreferenceConstant.SWITCH_IDENTIFY, true));
-        switch_detect_face.setChecked( PreferenceUtil.load(activity, PreferenceConstant.SWITCH_DETECT_FACE, true));
-        signature_group = (LinearLayout)findViewById(R.id.signature_group);
-        clear_cache_group = (LinearLayout)findViewById(R.id.clear_cache_group);
-        title_bar = (TitleBar)findViewById(R.id.title_bar);
-        title_bar.initTitleBarInfo("设置",R.drawable.arrow_left,-1,"","");
+        switch_identify.setChecked(PreferenceUtil.load(activity, PreferenceConstant.SWITCH_IDENTIFY, true));
+        switch_detect_face.setChecked(PreferenceUtil.load(activity, PreferenceConstant.SWITCH_DETECT_FACE, true));
+        signature_group = (LinearLayout) findViewById(R.id.signature_group);
+        my_signature_count_tv = (TextView) findViewById(R.id.my_signature_count_tv);
+        clear_cache_group = (LinearLayout) findViewById(R.id.clear_cache_group);
+        title_bar = (TitleBar) findViewById(R.id.title_bar);
+        title_bar.initTitleBarInfo("设置", R.drawable.arrow_left, -1, "", "");
         title_bar.setOnTitleBarClickListener(new TitleBar.OnTitleBarClickListener() {
             @Override
             public void onLeftButtonClick(View v) {
@@ -91,7 +118,7 @@ public class SettingActivity extends BaseActivity {
         switch_identify.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                    PreferenceUtil.save(activity, PreferenceConstant.SWITCH_IDENTIFY,b);
+                PreferenceUtil.save(activity, PreferenceConstant.SWITCH_IDENTIFY, b);
             }
         });
         clear_cache_group.setOnClickListener(new View.OnClickListener() {
@@ -118,13 +145,65 @@ public class SettingActivity extends BaseActivity {
 
                         super.onPostExecute(aVoid);
                         progressDialogUtil.hide();
-                        Toast.makeText(activity,"缓存已清除！",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity, "缓存已清除！", Toast.LENGTH_SHORT).show();
                     }
                 }.execute();
 
             }
         });
 
+
+        avatar_group.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ImageUtils.startPickPhoto(activity, imageList, 1, false);
+            }
+        });
+
+
+        signature_group.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(SettingActivity.this, ModifyInfoActivity.class));
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                //若是从图库选择图
+                case ImageUtils.REQUEST_CODE_PICK_IMAGE:
+                    // 获取返回的图片列表
+                    List<String> paths = data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
+                    imageList.clear();
+                    imageList.addAll(paths);
+                    if (imageList.size() > 0) {
+                        resultPath = ImageUtils.getImageFolderPath(activity)+File.separator+System.currentTimeMillis()+".jpg";
+                        ImageUtils.cropImage(this, Uri.fromFile(new File(imageList.get(0))), resultPath, 1, 1);
+                    }
+                    break;
+
+                //裁剪图片
+                case ImageUtils.REQUEST_CODE_CROP_IMAGE:
+                    //添加图片到list并且显示出来
+                    //上传图片
+                    if (!TextUtils.isEmpty(resultPath)) {
+                        EventBus.getDefault().post(new BusEvent(BusEvent.MSG_MODIFY_USER_INFO));
+                        PreferenceUtil.save(activity,PreferenceConstant.USER_AVATAR,resultPath);
+                        ImageLoader.getInstance().displayImage("file://"+resultPath,avatar_image,ImageUtils.getOptions());
+                    } else {
+                        Toast.makeText(activity,"选择图片失败，请重试",Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+            }
+
+        } else {
+
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
 
     }
 }

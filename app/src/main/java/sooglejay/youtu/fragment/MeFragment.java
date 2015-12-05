@@ -4,12 +4,15 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
@@ -20,15 +23,21 @@ import sooglejay.youtu.api.getgroupids.GetGroupIdsResponseBean;
 import sooglejay.youtu.api.getgroupids.GetGroupIdsUtil;
 import sooglejay.youtu.bean.GroupBean;
 import sooglejay.youtu.constant.NetWorkConstant;
+import sooglejay.youtu.constant.PreferenceConstant;
+import sooglejay.youtu.constant.StringConstant;
 import sooglejay.youtu.db.FocusDao;
 import sooglejay.youtu.db.GroupNameDao;
 import sooglejay.youtu.db.LikeDao;
+import sooglejay.youtu.event.BusEvent;
 import sooglejay.youtu.model.NetCallback;
 import sooglejay.youtu.ui.MyContactsActivity;
 import sooglejay.youtu.ui.MyFocusActivity;
 import sooglejay.youtu.ui.MyLikeActivity;
 import sooglejay.youtu.ui.SettingActivity;
 import sooglejay.youtu.ui.SetIdentifyGroupIdActivity;
+import sooglejay.youtu.utils.ImageUtils;
+import sooglejay.youtu.utils.PreferenceUtil;
+import sooglejay.youtu.widgets.RoundImageView;
 import sooglejay.youtu.widgets.TitleBar;
 
 /**
@@ -37,10 +46,12 @@ import sooglejay.youtu.widgets.TitleBar;
 public class MeFragment extends BaseFragment {
 
     private TitleBar titleBar;
+    private RoundImageView my_avatar_image;
     private LinearLayout layout_choose_group_id;
     private Activity activity;
     private GroupNameDao groupNameDao;
 
+    private TextView tv_signature;
     private TextView my_contacts_count_tv;
     private TextView my_focus_count_tv;
     private TextView my_like_count_tv;
@@ -65,6 +76,8 @@ public class MeFragment extends BaseFragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
+            Log.e("qwqw","qwqwqw73");
+
             if (likeDao != null && focusDao != null) {
                 int likeCount = 0;
                 int focusCount = 0;
@@ -72,8 +85,17 @@ public class MeFragment extends BaseFragment {
                 focusCount = focusDao.getCount();
                 my_like_count_tv.setText(likeCount + "");
                 my_focus_count_tv.setText(focusCount + "");
-
+                Log.e("qwqw", "qwqwqw82");
             }
+            if(tv_signature!=null)
+            {
+                Log.e("qwqw","qwqwqw86");
+
+                tv_signature.setText(PreferenceUtil.load(getActivity(), PreferenceConstant.USER_SIGNATURE, StringConstant.default_signature));
+            }
+
+
+
         }
     }
 
@@ -88,6 +110,7 @@ public class MeFragment extends BaseFragment {
 
         groupNameDao = new GroupNameDao(getActivity());
         titleBar = (TitleBar) view.findViewById(R.id.title_bar);
+        my_avatar_image = (RoundImageView) view.findViewById(R.id.my_avatar_image);
         layout_choose_group_id = (LinearLayout) view.findViewById(R.id.layout_choose_group_id);
 
         my_contacts_group = (LinearLayout) view.findViewById(R.id.my_contacts_group);
@@ -95,6 +118,7 @@ public class MeFragment extends BaseFragment {
         my_focus_group = (LinearLayout) view.findViewById(R.id.my_focus_group);
         my_setting_group = (LinearLayout) view.findViewById(R.id.my_setting_group);
 
+        tv_signature = (TextView) view.findViewById(R.id.tv_signature);
         my_like_count_tv = (TextView) view.findViewById(R.id.my_like_count_tv);
         my_contacts_count_tv = (TextView) view.findViewById(R.id.my_contacts_count_tv);
         my_focus_count_tv = (TextView) view.findViewById(R.id.my_focus_count_tv);
@@ -160,7 +184,31 @@ public class MeFragment extends BaseFragment {
                 }
             }
         });
+    }
 
+        /**
+         * EventBus 广播
+         *
+         * @param event
+         */
+    public void onEvent(BusEvent event) {
+        switch (event.getMsg()) {
 
+            case BusEvent.MSG_MODIFY_USER_INFO:
+                String avatarStr = PreferenceUtil.load(getActivity(),PreferenceConstant.USER_AVATAR,"");
+                if(my_avatar_image!=null){
+                    Log.e("qwqw","qwqwqw9898");
+                    ImageLoader.getInstance().displayImage("file://"+avatarStr,my_avatar_image, ImageUtils.getOptions());
+                }
+                Log.e("qwqw","qwqwqw102");
+                if(tv_signature!=null)
+                {
+                    Log.e("qwqw","qwqwqw86");
+                    tv_signature.setText(PreferenceUtil.load(getActivity(), PreferenceConstant.USER_SIGNATURE, StringConstant.default_signature));
+                }
+                break;
+            default:
+                break;
+        }
     }
 }

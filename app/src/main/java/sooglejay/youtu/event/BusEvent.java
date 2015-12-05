@@ -7,6 +7,7 @@ public class BusEvent {
     public static final int MSG_REFRESH = 1002;// 删除图片文件
     public static final int MSG_IS_DETECT_FACE = 1003;// 删除图片文件
     public static final int MSG_IS_IDENTIFY_FACE = 1004;// 删除图片文件
+    public static final int MSG_MODIFY_USER_INFO = 1005;// 删除图片文件
     private int msg=0;
     public int getMsg() {
         return msg;
