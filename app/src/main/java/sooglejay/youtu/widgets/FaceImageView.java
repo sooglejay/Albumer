@@ -266,7 +266,9 @@ public class FaceImageView extends PhotoView {
                                 }
                             }
                         });
-                        Toast.makeText(context, "没有可匹配的脸部信息", Toast.LENGTH_SHORT).show();
+                       dialogFragmentCreater.showDialog(context,DialogFragmentCreater.DIALOG_showAddPersonDialog);
+
+
                     }
 
                 } else {

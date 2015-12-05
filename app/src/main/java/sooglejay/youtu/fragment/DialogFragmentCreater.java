@@ -272,9 +272,13 @@ public class DialogFragmentCreater extends DialogFragment {
     //如果用户第一次使用app,或者，没有可匹配的人脸，就弹出添加人脸对话框
    private Dialog showAddPersonDialog(final Context mContext) {
         View convertView = LayoutInflater.from(mContext).inflate(R.layout.dialog_double_choice, null);
+        TextView tv_title = (TextView) convertView.findViewById(R.id.tv_title);
+        TextView tv_content = (TextView) convertView.findViewById(R.id.tv_content);
         TextView tv_confirm = (TextView) convertView.findViewById(R.id.tv_confirm);
         TextView tv_cancel = (TextView) convertView.findViewById(R.id.tv_cancel);
 
+       tv_title.setText("提示");
+       tv_content.setText("你还没有添加任何人脸联系人\n是否现在就去添加？");
        tv_cancel.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View view) {
