@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -28,16 +29,11 @@ import sooglejay.youtu.R;
 import sooglejay.youtu.api.detectface.DetectFaceResponseBean;
 import sooglejay.youtu.api.detectface.DetectFaceUtil;
 import sooglejay.youtu.api.detectface.FaceItem;
-import sooglejay.youtu.api.facecompare.FaceCompareResponseBean;
-import sooglejay.youtu.api.facecompare.FaceCompareUtil;
-import sooglejay.youtu.constant.ExtraConstants;
 import sooglejay.youtu.constant.IntConstant;
 import sooglejay.youtu.constant.NetWorkConstant;
 import sooglejay.youtu.model.NetCallback;
-import sooglejay.youtu.ui.GalleryActivity;
 import sooglejay.youtu.utils.ImageUtils;
-import sooglejay.youtu.utils.ProgressDialogUtil;
-import sooglejay.youtu.widgets.FaceImageView;
+import sooglejay.youtu.widgets.PagerSlidingTabStrip;
 import sooglejay.youtu.widgets.RoundImageView;
 import sooglejay.youtu.widgets.TitleBar;
 import sooglejay.youtu.widgets.decoview.decoviewlib.DecoView;
@@ -45,7 +41,6 @@ import sooglejay.youtu.widgets.decoview.decoviewlib.charts.SeriesItem;
 import sooglejay.youtu.widgets.decoview.decoviewlib.charts.SeriesLabel;
 import sooglejay.youtu.widgets.decoview.decoviewlib.events.DecoEvent;
 import sooglejay.youtu.widgets.imagepicker.MultiImageSelectorActivity;
-import sooglejay.youtu.widgets.imagepicker.bean.Folder;
 import sooglejay.youtu.widgets.youtu.sign.Base64Util;
 
 /**
@@ -62,6 +57,12 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
 
     private boolean a_isSelected = false;
     private boolean b_isSelected = false;
+
+
+    private ArrayList<FaceItem> a_face = new ArrayList<>();
+    private ArrayList<FaceItem> b_face = new ArrayList<>();
+
+
     private ArrayList<String> a_imageList = new ArrayList<>();
     private ArrayList<String> b_imageList = new ArrayList<>();
 
@@ -117,31 +118,29 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
 
         tvATextPercentage.setVisibility(View.GONE);
         tvBTextPercentage.setVisibility(View.GONE);
-        titleBar.initTitleBarInfo("颜值PK", R.drawable.arrow_left, -1, "", "");
+        titleBar.initTitleBarInfo("颜值PK", -1, -1, "", "");
     }
 
     private void setUpListener() {
         tvAReady.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(TextUtils.isEmpty(a_imageStr))
-                {
-                    Toast.makeText(activity,"先选择人脸图片",Toast.LENGTH_SHORT).show();
+                if (TextUtils.isEmpty(a_imageStr)) {
+                    Toast.makeText(activity, "先选择人脸图片", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                tvAReady.setTextColor(ContextCompat.getColor(activity,R.color.light_gray_color));
+                tvAReady.setTextColor(ContextCompat.getColor(activity, R.color.light_gray_color));
                 tvAReady.setEnabled(false);
             }
         });
         tvBReady.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(TextUtils.isEmpty(b_imageStr))
-                {
-                    Toast.makeText(activity,"先选择人脸图片",Toast.LENGTH_SHORT).show();
+                if (TextUtils.isEmpty(b_imageStr)) {
+                    Toast.makeText(activity, "先选择人脸图片", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                tvBReady.setTextColor(ContextCompat.getColor(activity,R.color.light_gray_color));
+                tvBReady.setTextColor(ContextCompat.getColor(activity, R.color.light_gray_color));
                 tvBReady.setEnabled(false);
 
             }
@@ -168,7 +167,86 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
         layoutStartPk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (TextUtils.isEmpty(a_imageStr)) {
+                    Toast.makeText(activity, "请选择左边的人脸图片", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (TextUtils.isEmpty(b_imageStr)) {
+                    Toast.makeText(activity, "请选择右边的人脸图片", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                //先来分析A
+                //1、先把图片转换成为bitmap
+                new AsyncTask<String, String, String>() {
+                    @Override
+                    protected void onPostExecute(String string) {
+                        super.onPostExecute(string);
 
+                        //2、然后去检测人脸
+                        DetectFaceUtil.detectFace(activity, NetWorkConstant.APP_ID, string, 0, new NetCallback<DetectFaceResponseBean>(activity) {
+                            @Override
+                            public void onFailure(RetrofitError error, String message) {
+
+                            }
+
+                            @Override
+                            public void success(DetectFaceResponseBean detectFaceResponseBean, Response response) {
+                                if (detectFaceResponseBean.getFace() != null) {
+                                    a_face.addAll(detectFaceResponseBean.getFace());
+                                    compareAWithB(a_face, b_face);
+
+                                }
+                            }
+                        });
+
+                    }
+
+                    @Override
+                    protected String doInBackground(String... params) {
+                        Bitmap tempBitmap = ImageUtils.getBitmapFromLocalPath(params[0], 1);
+                        Bitmap bitmap = ImageUtils.getResizedBitmap(tempBitmap, IntConstant.IMAGE_SIZE, IntConstant.IMAGE_SIZE);
+                        byte[] bytes = ImageUtils.Bitmap2Bytes(bitmap);
+                        return Base64Util.encode(bytes);
+
+                    }
+                }.execute(a_imageStr);
+
+
+                //再来分析B
+                //1、先把图片转换成为bitmap
+                new AsyncTask<String, String, String>() {
+                    @Override
+                    protected void onPostExecute(String string) {
+                        super.onPostExecute(string);
+
+                        //2、然后去检测人脸
+                        DetectFaceUtil.detectFace(activity, NetWorkConstant.APP_ID, string, 0, new NetCallback<DetectFaceResponseBean>(activity) {
+                            @Override
+                            public void onFailure(RetrofitError error, String message) {
+
+                            }
+
+                            @Override
+                            public void success(DetectFaceResponseBean detectFaceResponseBean, Response response) {
+                                if (detectFaceResponseBean.getFace() != null) {
+                                    b_face.addAll(detectFaceResponseBean.getFace());
+                                    compareAWithB(a_face, b_face);
+
+
+                                }
+                            }
+                        });
+
+                    }
+
+                    @Override
+                    protected String doInBackground(String... params) {
+                        Bitmap tempBitmap = ImageUtils.getBitmapFromLocalPath(params[0], 1);
+                        Bitmap bitmap = ImageUtils.getResizedBitmap(tempBitmap, IntConstant.IMAGE_SIZE, IntConstant.IMAGE_SIZE);
+                        byte[] bytes = ImageUtils.Bitmap2Bytes(bitmap);
+                        return Base64Util.encode(bytes);
+
+                    }
+                }.execute(b_imageStr);
             }
         });
 
@@ -183,6 +261,19 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
 
             }
         });
+    }
+
+    private void compareAWithB(ArrayList<FaceItem> aFaces, ArrayList<FaceItem> bFaces) {
+        if (aFaces.size() > 0 && bFaces.size() > 0) {
+            FaceItem af = aFaces.get(0);
+            FaceItem bf = bFaces.get(0);
+            tvATextPercentage.setVisibility(View.VISIBLE);
+            tvATextPercentage.setText(af.getBeauty() + "");
+
+            tvBTextPercentage.setVisibility(View.VISIBLE);
+            tvBTextPercentage.setText(bf.getBeauty() + "");
+        }
+
     }
 
 
