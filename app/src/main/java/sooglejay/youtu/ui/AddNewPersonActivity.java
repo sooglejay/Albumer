@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -71,6 +72,7 @@ public class AddNewPersonActivity extends BaseActivity {
     private RoundImageView ivAvatar;
     private EditText etName;
     private String groupStrFromIntent;
+    private LinearLayout layout_choose_group_id;
     private TextView tv_group_name;
     private EditText etPhoneNumber;
 
@@ -85,6 +87,7 @@ public class AddNewPersonActivity extends BaseActivity {
         ivAvatar = (RoundImageView) findViewById(R.id.ivAvatar);
         etName = (EditText) findViewById(R.id.et_name);
         tv_group_name = (TextView) findViewById(R.id.tv_group_name);
+        layout_choose_group_id = (LinearLayout) findViewById(R.id.layout_choose_group_id);
         etPhoneNumber = (EditText) findViewById(R.id.et_phone_number);
     }
 
@@ -189,7 +192,7 @@ public class AddNewPersonActivity extends BaseActivity {
     }
 
     private void setUpListener() {
-        tv_group_name.setOnClickListener(new View.OnClickListener() {
+        layout_choose_group_id.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 CreateNewGroupActivity.startActivity(activity, ACTION_CreateNewGroupActivity);

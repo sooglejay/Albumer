@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -138,6 +139,7 @@ public class CreateNewGroupActivity extends BaseActivity {
 
             }
         });
+
     }
 
     private void doSomething() {
