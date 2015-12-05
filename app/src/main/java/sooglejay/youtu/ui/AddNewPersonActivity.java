@@ -158,6 +158,7 @@ public class AddNewPersonActivity extends BaseActivity {
                                     bean.setUser_name(nameStr);
                                     bean.setPhoneNumber(phoneStr);
                                     bean.setImage_path(imageFilePath);
+                                    bean.setPerson_id(person_id);
                                     contactDao.add(bean);
                                     new AsyncTask<Void, Void, Void>() {
                                         @Override

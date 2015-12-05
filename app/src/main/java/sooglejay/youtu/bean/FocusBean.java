@@ -15,19 +15,30 @@ public class FocusBean implements Parcelable {
     @DatabaseField
     private String imagePath;
 
-
-    private boolean isSelected;//在adapter 中辅助显示
-    private boolean isVisible;//在adapter 中辅助显示
-
     @Override
     public String toString() {
         return "FocusBean{" +
                 "imagePath='" + imagePath + '\'' +
+                ", person_id='" + person_id + '\'' +
                 ", isSelected=" + isSelected +
                 ", isVisible=" + isVisible +
                 ", id=" + id +
                 '}';
     }
+
+    public String getPerson_id() {
+        return person_id;
+    }
+
+    public void setPerson_id(String person_id) {
+        this.person_id = person_id;
+    }
+
+    @DatabaseField
+    private String person_id;//用户id
+
+    private boolean isSelected;//在adapter 中辅助显示
+    private boolean isVisible;//在adapter 中辅助显示
 
     public boolean isVisible() {
         return isVisible;
@@ -81,6 +92,7 @@ public class FocusBean implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.imagePath);
+        dest.writeString(this.person_id);
         dest.writeByte(isSelected ? (byte) 1 : (byte) 0);
         dest.writeByte(isVisible ? (byte) 1 : (byte) 0);
         dest.writeInt(this.id);
@@ -88,6 +100,7 @@ public class FocusBean implements Parcelable {
 
     protected FocusBean(Parcel in) {
         this.imagePath = in.readString();
+        this.person_id = in.readString();
         this.isSelected = in.readByte() != 0;
         this.isVisible = in.readByte() != 0;
         this.id = in.readInt();

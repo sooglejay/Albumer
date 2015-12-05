@@ -93,6 +93,10 @@
             android:name=".ui.SettingActivity"
             android:configChanges="orientation|screenSize"></activity>
 
+      <activity
+            android:name=".test.ApiTestActivity"
+            android:configChanges="orientation|screenSize"></activity>
+
         <service android:name="com.amap.api.location.APSService"></service>
 
 

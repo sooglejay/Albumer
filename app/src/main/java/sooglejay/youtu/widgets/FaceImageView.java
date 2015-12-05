@@ -252,6 +252,20 @@ public class FaceImageView extends PhotoView {
                         });
                         dialogFragmentCreater.showDialog(context, DialogFragmentCreater.DIALOG_CHOOSE_FACE);
                     } else {
+
+                        dialogFragmentCreater.setOnAddPersonCallBack(new DialogFragmentCreater.OnAddPersonCallBack() {
+                            @Override
+                            public void onClick(View view) {
+                                switch (view.getId())
+                                {
+                                    case R.id.tv_cancel:
+                                        break;
+                                    case R.id.tv_confirm:
+                                        AddNewPersonActivity.startActivity(context,imageFilePath,identifyItems);
+                                        break;
+                                }
+                            }
+                        });
                         Toast.makeText(context, "没有可匹配的脸部信息", Toast.LENGTH_SHORT).show();
                     }
 

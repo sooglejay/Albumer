@@ -17,20 +17,32 @@ public class ContactBean implements Parcelable {
     @DatabaseField
     private String image_path;//用户图片地址
 
-    private boolean isSelected;//在adapter 中辅助显示
-
-
     @Override
     public String toString() {
         return "ContactBean{" +
                 "user_name='" + user_name + '\'' +
                 ", image_path='" + image_path + '\'' +
+                ", person_id='" + person_id + '\'' +
                 ", isSelected=" + isSelected +
                 ", age=" + age +
                 ", beauty=" + beauty +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 '}';
     }
+
+    public String getPerson_id() {
+        return person_id;
+    }
+
+    public void setPerson_id(String person_id) {
+        this.person_id = person_id;
+    }
+
+    @DatabaseField
+    private String person_id;//用户id
+
+    private boolean isSelected;//在adapter 中辅助显示
+
 
     public boolean isSelected() {
         return isSelected;
@@ -105,6 +117,7 @@ public class ContactBean implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.user_name);
         dest.writeString(this.image_path);
+        dest.writeString(this.person_id);
         dest.writeByte(isSelected ? (byte) 1 : (byte) 0);
         dest.writeInt(this.age);
         dest.writeInt(this.beauty);
@@ -114,6 +127,7 @@ public class ContactBean implements Parcelable {
     protected ContactBean(Parcel in) {
         this.user_name = in.readString();
         this.image_path = in.readString();
+        this.person_id = in.readString();
         this.isSelected = in.readByte() != 0;
         this.age = in.readInt();
         this.beauty = in.readInt();

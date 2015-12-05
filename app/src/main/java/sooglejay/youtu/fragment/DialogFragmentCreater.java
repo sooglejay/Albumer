@@ -36,6 +36,7 @@ public class DialogFragmentCreater extends DialogFragment {
     public static final int DIALOG_FACE_OPERATION = 1000;//after detect and recognize face , do some operation
     public static final int DIALOG_CHOOSE_FACE = 1001;//top 5 faces available to choose
     public static final int DIALOG_showCreateNewGroupDialog = 1002;//create new group
+    public static final int DIALOG_showAddPersonDialog = 1003;//create new group
 
     public final static String dialog_fragment_key = "fragment_id";
     public final static String dialog_fragment_tag = "dialog";
@@ -103,6 +104,8 @@ public class DialogFragmentCreater extends DialogFragment {
                     return showChooseFaceDialog(mContext);
                 case DIALOG_showCreateNewGroupDialog:
                     return showCreateNewGroupDialog(mContext);
+                case DIALOG_showAddPersonDialog:
+                    return showAddPersonDialog(mContext);
             }
         }
         return super.onCreateDialog(savedInstanceState);
@@ -264,6 +267,54 @@ public class DialogFragmentCreater extends DialogFragment {
 
         outerDialog = dialog;
         return dialog;
+    }
+
+    //如果用户第一次使用app,或者，没有可匹配的人脸，就弹出添加人脸对话框
+   private Dialog showAddPersonDialog(final Context mContext) {
+        View convertView = LayoutInflater.from(mContext).inflate(R.layout.dialog_double_choice, null);
+        TextView tv_confirm = (TextView) convertView.findViewById(R.id.tv_confirm);
+        TextView tv_cancel = (TextView) convertView.findViewById(R.id.tv_cancel);
+
+       tv_cancel.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+               onAddPersonCallBack.onClick(view);
+               dismiss();
+
+           }
+       });
+       tv_confirm.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+               onAddPersonCallBack.onClick(view);
+               dismiss();
+           }
+       });
+
+        final Dialog dialog = new Dialog(mContext, R.style.CustomDialog);
+//        dialog.setCanceledOnTouchOutside(false);//要求触碰到外面能够消失
+        dialog.setContentView(convertView);
+
+        dialog.getWindow().setWindowAnimations(R.style.dialog_right_control_style);
+        //当dialog 显示的时候，弹出键盘
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(final DialogInterface dialog) {
+            }
+        });
+
+        outerDialog = dialog;
+        return dialog;
+    }
+
+
+    //用户选择完最相似的一个人脸后，弹出操作对话框
+    public void setOnAddPersonCallBack(OnAddPersonCallBack onAddPersonCallBack) {
+        this.onAddPersonCallBack = onAddPersonCallBack;
+    }
+    private OnAddPersonCallBack onAddPersonCallBack;
+    public interface OnAddPersonCallBack {
+        public void onClick(View view);
     }
 
 

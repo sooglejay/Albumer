@@ -1,5 +1,6 @@
 package sooglejay.youtu.ui;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
@@ -7,6 +8,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -14,6 +16,8 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import sooglejay.youtu.R;
 import sooglejay.youtu.adapter.MyContactsListAdapter;
+import sooglejay.youtu.api.delperson.DelPersonResponseBean;
+import sooglejay.youtu.api.delperson.DelPersonUtil;
 import sooglejay.youtu.api.getgroupids.GetGroupIdsResponseBean;
 import sooglejay.youtu.api.getgroupids.GetGroupIdsUtil;
 import sooglejay.youtu.api.getinfo.GetInfoReponseBean;
@@ -49,10 +53,13 @@ public class MyContactsActivity extends BaseActivity {
     private Animation animation_enter;
     private Animation animation_exit;
 
+    private Activity activity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_contact);
+        activity = this;
         animation_enter = AnimationUtils.loadAnimation(this,
                 R.anim.enter_from_bottom_200);
         animation_exit = AnimationUtils.loadAnimation(this,
@@ -97,14 +104,40 @@ public class MyContactsActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 triangleBottomLayoutOperation(false);
+                final int[] error_count = {0};
+                final int[] success_count = {0};
                 for (int i = 0; i < datas.size(); i++) {
                     if (datas.get(i).isSelected()) {
-                        contactDao.deleteByName(datas.get(i).getImage_path());
+
+                        final int finalI = i;
+                        DelPersonUtil.delPerson(activity, NetWorkConstant.APP_ID, datas.get(i).getPerson_id(), new NetCallback<DelPersonResponseBean>(activity) {
+                            @Override
+                            public void onFailure(RetrofitError error, String message) {
+                                error_count[0]++;
+                            }
+
+                            @Override
+                            public void success(DelPersonResponseBean delPersonResponseBean, Response response) {
+                                success_count[0]++;
+                                contactDao.deleteByName(datas.get(finalI).getImage_path());
+                            }
+                        });
                     }
                 }
+                if(error_count[0]>0) {
+                    if (success_count[0] > 0) {
+                        Toast.makeText(activity, "网络状态不好，只成功删除了" + success_count[0] + "个", Toast.LENGTH_SHORT).show();
+                    }else {
+                        Toast.makeText(activity, "请求超时,请检查网络设置后重试！", Toast.LENGTH_SHORT).show();
+                    }
+                }else  if (success_count[0] > 0){
+                    Toast.makeText(activity, "成功删除人脸联系人" + success_count[0] + "个", Toast.LENGTH_SHORT).show();
+                }
+
                 datas.clear();
                 datas.addAll(contactDao.getAll());
                 adapter.setIsShowSelectIndicator(false);
+                adapter.notifyDataSetChanged();
 
 //                new AsyncTask<Void, List<FocusBean>, List<FocusBean>>() {
 //                    @Override
@@ -131,9 +164,9 @@ public class MyContactsActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 triangleBottomLayoutOperation(false);
+                adapter.setIsShowSelectIndicator(false);
                 for (ContactBean bean : datas) {
                     bean.setIsSelected(false);
-
                 }
                 adapter.notifyDataSetChanged();
             }
