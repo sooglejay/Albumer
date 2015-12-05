@@ -84,13 +84,18 @@ public class MeFragment extends BaseFragment {
                 my_like_count_tv.setText(likeCount + "");
                 my_focus_count_tv.setText(focusCount + "");
             }
-            if(tv_signature!=null)
-            {
-                tv_signature.setText(PreferenceUtil.load(getActivity(), PreferenceConstant.USER_SIGNATURE, StringConstant.default_signature));
+            String avatarStr = PreferenceUtil.load(getActivity(), PreferenceConstant.USER_AVATAR, "");
+            if (my_avatar_image != null) {
+                Log.e("qwqw", "qwqwqw9898");
+                Log.e("qwqw", "avatarStr:" + avatarStr);
+                ImageLoader.getInstance().displayImage("file://" + avatarStr, my_avatar_image, ImageUtils.getOptions());
             }
-
-
-
+            Log.e("qwqw", "qwqwqw102");
+            if (tv_signature != null) {
+                Log.e("qwqw", "qwqwqw86");
+                String signature = PreferenceUtil.load(getActivity(), PreferenceConstant.USER_SIGNATURE, StringConstant.default_signature);
+                tv_signature.setText(signature);
+            }
         }
     }
 
@@ -107,8 +112,9 @@ public class MeFragment extends BaseFragment {
         titleBar = (TitleBar) view.findViewById(R.id.title_bar);
 
         my_avatar_image = (RoundImageView) view.findViewById(R.id.my_avatar_image);
-        String avatarStr = PreferenceUtil.load(getActivity(),PreferenceConstant.USER_AVATAR,"");
-        ImageLoader.getInstance().displayImage("file://"+avatarStr,my_avatar_image, ImageUtils.getOptions());
+        String avatarStr = PreferenceUtil.load(getActivity(), PreferenceConstant.USER_AVATAR, "");
+        Log.e("qwqw", "干扰球");
+        ImageLoader.getInstance().displayImage("file://" + avatarStr, my_avatar_image, ImageUtils.getOptions());
 
         layout_choose_group_id = (LinearLayout) view.findViewById(R.id.layout_choose_group_id);
 
@@ -185,24 +191,24 @@ public class MeFragment extends BaseFragment {
         });
     }
 
-        /**
-         * EventBus 广播
-         *
-         * @param event
-         */
+    /**
+     * EventBus 广播
+     *
+     * @param event
+     */
     public void onEvent(BusEvent event) {
         switch (event.getMsg()) {
 
             case BusEvent.MSG_MODIFY_USER_INFO:
-                String avatarStr = PreferenceUtil.load(getActivity(),PreferenceConstant.USER_AVATAR,"");
-                if(my_avatar_image!=null){
-                    Log.e("qwqw","qwqwqw9898");
-                    ImageLoader.getInstance().displayImage("file://"+avatarStr,my_avatar_image, ImageUtils.getOptions());
+                String avatarStr = PreferenceUtil.load(getActivity(), PreferenceConstant.USER_AVATAR, "");
+                if (my_avatar_image != null) {
+                    Log.e("qwqw", "qwqwqw9898");
+                    Log.e("qwqw", "avatarStr:" + avatarStr);
+                    ImageLoader.getInstance().displayImage("file://" + avatarStr, my_avatar_image, ImageUtils.getOptions());
                 }
-                Log.e("qwqw","qwqwqw102");
-                if(tv_signature!=null)
-                {
-                    Log.e("qwqw","qwqwqw86");
+                Log.e("qwqw", "qwqwqw102");
+                if (tv_signature != null) {
+                    Log.e("qwqw", "qwqwqw86");
                     tv_signature.setText(PreferenceUtil.load(getActivity(), PreferenceConstant.USER_SIGNATURE, StringConstant.default_signature));
                 }
                 break;

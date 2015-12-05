@@ -190,8 +190,8 @@ public class SettingActivity extends BaseActivity {
                     //添加图片到list并且显示出来
                     //上传图片
                     if (!TextUtils.isEmpty(resultPath)) {
-                        EventBus.getDefault().post(new BusEvent(BusEvent.MSG_MODIFY_USER_INFO));
                         PreferenceUtil.save(activity,PreferenceConstant.USER_AVATAR,resultPath);
+                        EventBus.getDefault().post(new BusEvent(BusEvent.MSG_MODIFY_USER_INFO));
                         ImageLoader.getInstance().displayImage("file://"+resultPath,avatar_image,ImageUtils.getOptions());
                     } else {
                         Toast.makeText(activity,"选择图片失败，请重试",Toast.LENGTH_SHORT).show();

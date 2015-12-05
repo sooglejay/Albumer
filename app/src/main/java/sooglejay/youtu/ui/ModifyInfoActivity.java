@@ -42,8 +42,8 @@ public class ModifyInfoActivity extends BaseActivity {
             @Override
             public void onRightButtonClick(View v) {
                 String signatureStr = et_signature.getText().toString();
-                EventBus.getDefault().post(new BusEvent(BusEvent.MSG_MODIFY_USER_INFO));
                 PreferenceUtil.save(activity, PreferenceConstant.USER_SIGNATURE,signatureStr);
+                EventBus.getDefault().post(new BusEvent(BusEvent.MSG_MODIFY_USER_INFO));
                 finish();
             }
         });
