@@ -33,6 +33,8 @@ import sooglejay.youtu.constant.IntConstant;
 import sooglejay.youtu.constant.NetWorkConstant;
 import sooglejay.youtu.model.NetCallback;
 import sooglejay.youtu.utils.ImageUtils;
+import sooglejay.youtu.utils.ProgressDialogUtil;
+import sooglejay.youtu.widgets.CircleButton;
 import sooglejay.youtu.widgets.PagerSlidingTabStrip;
 import sooglejay.youtu.widgets.RoundImageView;
 import sooglejay.youtu.widgets.TitleBar;
@@ -59,6 +61,10 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
     private boolean b_isSelected = false;
 
 
+    private boolean a_determined = false;
+    private boolean b_determined = false;
+
+
     private ArrayList<FaceItem> a_face = new ArrayList<>();
     private ArrayList<FaceItem> b_face = new ArrayList<>();
 
@@ -75,11 +81,14 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
     private RoundImageView ivB;
     private TextView tvBTextPercentage;
     private TextView tvBReady;
-    private FrameLayout layoutStartPk;
+    private CircleButton layoutStartPk;
     private TextView textPercentage;
+    private TextView tv_start;
 
 
     private Activity activity;
+
+    private ProgressDialogUtil progressDialogUtil;
 
     /**
      * Find the Views in the layout<br />
@@ -96,8 +105,9 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
         ivB = (RoundImageView) view.findViewById(R.id.iv_b);
         tvBTextPercentage = (TextView) view.findViewById(R.id.tv_b_textPercentage);
         tvBReady = (TextView) view.findViewById(R.id.tv_b_ready);
-        layoutStartPk = (FrameLayout) view.findViewById(R.id.layout_start_pk);
+        layoutStartPk = (CircleButton) view.findViewById(R.id.layout_start_pk);
         textPercentage = (TextView) view.findViewById(R.id.textPercentage);
+        tv_start = (TextView) view.findViewById(R.id.tv_start);
     }
 
 
@@ -109,6 +119,7 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         activity = getActivity();
+        progressDialogUtil = new ProgressDialogUtil(activity);
         setUpViews(view, savedInstanceState);
         setUpListener();
     }
@@ -131,6 +142,8 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
                 }
                 tvAReady.setTextColor(ContextCompat.getColor(activity, R.color.light_gray_color));
                 tvAReady.setEnabled(false);
+                ivA.setEnabled(false);
+                a_determined = true;
             }
         });
         tvBReady.setOnClickListener(new View.OnClickListener() {
@@ -140,8 +153,12 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
                     Toast.makeText(activity, "先选择人脸图片", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
                 tvBReady.setTextColor(ContextCompat.getColor(activity, R.color.light_gray_color));
                 tvBReady.setEnabled(false);
+                ivB.setEnabled(false);
+                b_determined = true;
+
 
             }
         });
@@ -164,9 +181,95 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
         });
 
 
+        titleBar.setOnTitleBarClickListener(new TitleBar.OnTitleBarClickListener() {
+            @Override
+            public void onLeftButtonClick(View v) {
+
+            }
+
+            @Override
+            public void onRightButtonClick(View v) {
+
+            }
+        });
+        setLayoutStartPkOnClickListener();
+    }
+
+    private void compareAWithB(ArrayList<FaceItem> aFaces, ArrayList<FaceItem> bFaces) {
+        if (aFaces.size() > 0 && bFaces.size() > 0) {
+            FaceItem af = aFaces.get(0);
+            FaceItem bf = bFaces.get(0);
+            tvATextPercentage.setVisibility(View.VISIBLE);
+            tvATextPercentage.setText(af.getBeauty() + "");
+
+            tvBTextPercentage.setVisibility(View.VISIBLE);
+            tvBTextPercentage.setText(bf.getBeauty() + "");
+        }
+
+    }
+
+
+    private void reset(boolean isFailed) {
+        if (isFailed) {
+            tvATextPercentage.setText("");
+            tvAReady.setVisibility(View.VISIBLE);
+            tvAReady.setTextColor(ContextCompat.getColor(activity, R.color.white_color));
+            tvAReady.setEnabled(true);
+            ivA.setEnabled(true);
+
+            tvBTextPercentage.setText("");
+            tvBReady.setVisibility(View.VISIBLE);
+            tvBReady.setTextColor(ContextCompat.getColor(activity, R.color.white_color));
+            tvBReady.setEnabled(true);
+            ivB.setEnabled(true);
+
+            tv_start.setText("开始");
+        } else {
+            tv_start.setText("再来一局");
+            layoutStartPk.setOnClickListener(null);
+            layoutStartPk.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    tv_start.setText("开始");
+
+                    tvATextPercentage.setText("");
+                    tvAReady.setVisibility(View.VISIBLE);
+                    tvAReady.setTextColor(ContextCompat.getColor(activity, R.color.white_color));
+                    tvAReady.setEnabled(true);
+                    ivA.setEnabled(true);
+
+                    tvBTextPercentage.setText("");
+                    tvBReady.setVisibility(View.VISIBLE);
+                    tvBReady.setTextColor(ContextCompat.getColor(activity, R.color.white_color));
+                    tvBReady.setEnabled(true);
+                    ivB.setEnabled(true);
+
+
+                    layoutStartPk.setOnClickListener(null);
+                    setLayoutStartPkOnClickListener();
+
+
+                }
+            });
+        }
+
+    }
+
+    private void setLayoutStartPkOnClickListener() {
         layoutStartPk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (!a_determined) {
+                    Toast.makeText(activity, "请左边的玩家买定离手", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (!b_determined) {
+                    Toast.makeText(activity, "请右边的玩家买定离手", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                a_determined = false;
+                b_determined = false;
+
                 if (TextUtils.isEmpty(a_imageStr)) {
                     Toast.makeText(activity, "请选择左边的人脸图片", Toast.LENGTH_SHORT).show();
                     return;
@@ -174,9 +277,19 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
                     Toast.makeText(activity, "请选择右边的人脸图片", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                tvAReady.setVisibility(View.GONE);
+                tvBReady.setVisibility(View.GONE);
+
+
                 //先来分析A
                 //1、先把图片转换成为bitmap
                 new AsyncTask<String, String, String>() {
+                    @Override
+                    protected void onPreExecute() {
+                        super.onPreExecute();
+                        progressDialogUtil.show("(1/2)正在计算左边的人脸颜值...");
+                    }
+
                     @Override
                     protected void onPostExecute(String string) {
                         super.onPostExecute(string);
@@ -185,15 +298,78 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
                         DetectFaceUtil.detectFace(activity, NetWorkConstant.APP_ID, string, 0, new NetCallback<DetectFaceResponseBean>(activity) {
                             @Override
                             public void onFailure(RetrofitError error, String message) {
-
+                                Toast.makeText(activity, "没网怎么玩！请确保网络质量杠杠滴！", Toast.LENGTH_SHORT).show();
+                                progressDialogUtil.hide();
+                                reset(true);
                             }
 
                             @Override
                             public void success(DetectFaceResponseBean detectFaceResponseBean, Response response) {
                                 if (detectFaceResponseBean.getFace() != null) {
                                     a_face.addAll(detectFaceResponseBean.getFace());
-                                    compareAWithB(a_face, b_face);
+                                    if (a_face.size() > 0) {
+                                        tvATextPercentage.setVisibility(View.VISIBLE);
+                                        tvATextPercentage.setText(a_face.get(0).getBeauty() + "");
 
+
+                                        //再来分析B
+                                        //1、先把图片转换成为bitmap
+                                        new AsyncTask<String, String, String>() {
+                                            @Override
+                                            protected void onPreExecute() {
+                                                super.onPreExecute();
+                                                progressDialogUtil.show("(2/2)正在计算右边的人脸颜值...");
+                                            }
+
+                                            @Override
+                                            protected void onPostExecute(String string) {
+                                                super.onPostExecute(string);
+
+                                                //2、然后去检测人脸
+                                                DetectFaceUtil.detectFace(activity, NetWorkConstant.APP_ID, string, 0, new NetCallback<DetectFaceResponseBean>(activity) {
+                                                    @Override
+                                                    public void onFailure(RetrofitError error, String message) {
+                                                        Toast.makeText(activity, "没网怎么玩！请确保网络质量杠杠滴！", Toast.LENGTH_SHORT).show();
+                                                        progressDialogUtil.hide();
+                                                        reset(true);
+                                                    }
+
+                                                    @Override
+                                                    public void success(DetectFaceResponseBean detectFaceResponseBean, Response response) {
+                                                        progressDialogUtil.hide();
+
+                                                        if (detectFaceResponseBean.getFace() != null) {
+                                                            b_face.addAll(detectFaceResponseBean.getFace());
+                                                            if (b_face.size() > 0) {
+                                                                tvBTextPercentage.setVisibility(View.VISIBLE);
+                                                                tvBTextPercentage.setText(b_face.get(0).getBeauty() + "");
+                                                            }
+                                                            compareAWithB(a_face, b_face);
+                                                            reset(false);
+                                                        } else {
+                                                            Toast.makeText(activity, "右边的人脸图片没发现人脸！", Toast.LENGTH_SHORT).show();
+                                                            reset(true);
+                                                        }
+
+                                                    }
+                                                });
+
+                                            }
+
+                                            @Override
+                                            protected String doInBackground(String... params) {
+                                                Bitmap tempBitmap = ImageUtils.getBitmapFromLocalPath(params[0], 1);
+                                                Bitmap bitmap = ImageUtils.getResizedBitmap(tempBitmap, IntConstant.IMAGE_SIZE, IntConstant.IMAGE_SIZE);
+                                                byte[] bytes = ImageUtils.Bitmap2Bytes(bitmap);
+                                                return Base64Util.encode(bytes);
+
+                                            }
+                                        }.execute(b_imageStr);
+
+                                    } else {
+                                        Toast.makeText(activity, "左边的人脸图片没检测到人脸！", Toast.LENGTH_SHORT).show();
+                                        reset(true);
+                                    }
                                 }
                             }
                         });
@@ -211,71 +387,10 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
                 }.execute(a_imageStr);
 
 
-                //再来分析B
-                //1、先把图片转换成为bitmap
-                new AsyncTask<String, String, String>() {
-                    @Override
-                    protected void onPostExecute(String string) {
-                        super.onPostExecute(string);
-
-                        //2、然后去检测人脸
-                        DetectFaceUtil.detectFace(activity, NetWorkConstant.APP_ID, string, 0, new NetCallback<DetectFaceResponseBean>(activity) {
-                            @Override
-                            public void onFailure(RetrofitError error, String message) {
-
-                            }
-
-                            @Override
-                            public void success(DetectFaceResponseBean detectFaceResponseBean, Response response) {
-                                if (detectFaceResponseBean.getFace() != null) {
-                                    b_face.addAll(detectFaceResponseBean.getFace());
-                                    compareAWithB(a_face, b_face);
-
-
-                                }
-                            }
-                        });
-
-                    }
-
-                    @Override
-                    protected String doInBackground(String... params) {
-                        Bitmap tempBitmap = ImageUtils.getBitmapFromLocalPath(params[0], 1);
-                        Bitmap bitmap = ImageUtils.getResizedBitmap(tempBitmap, IntConstant.IMAGE_SIZE, IntConstant.IMAGE_SIZE);
-                        byte[] bytes = ImageUtils.Bitmap2Bytes(bitmap);
-                        return Base64Util.encode(bytes);
-
-                    }
-                }.execute(b_imageStr);
             }
         });
 
-        titleBar.setOnTitleBarClickListener(new TitleBar.OnTitleBarClickListener() {
-            @Override
-            public void onLeftButtonClick(View v) {
-
-            }
-
-            @Override
-            public void onRightButtonClick(View v) {
-
-            }
-        });
     }
-
-    private void compareAWithB(ArrayList<FaceItem> aFaces, ArrayList<FaceItem> bFaces) {
-        if (aFaces.size() > 0 && bFaces.size() > 0) {
-            FaceItem af = aFaces.get(0);
-            FaceItem bf = bFaces.get(0);
-            tvATextPercentage.setVisibility(View.VISIBLE);
-            tvATextPercentage.setText(af.getBeauty() + "");
-
-            tvBTextPercentage.setVisibility(View.VISIBLE);
-            tvBTextPercentage.setText(bf.getBeauty() + "");
-        }
-
-    }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
