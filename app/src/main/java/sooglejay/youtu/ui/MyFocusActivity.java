@@ -65,6 +65,8 @@ public class MyFocusActivity extends BaseActivity {
         grid = (GridView) findViewById(R.id.grid);
         mTimeLineText = (TextView) findViewById(R.id.timeline_area);
         layout_operation = (FrameLayout) findViewById(R.id.layout_operation);
+        iv_cancel_image = (CircleButton) findViewById(R.id.iv_cancel_image);
+        iv_delete_image = (CircleButton) findViewById(R.id.iv_delete_image);
         // 初始化，先隐藏当前timeline
         mTimeLineText.setVisibility(View.GONE);
 

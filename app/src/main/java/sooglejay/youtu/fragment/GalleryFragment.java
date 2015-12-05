@@ -317,6 +317,8 @@ public class GalleryFragment extends BaseFragment {
      * @param imagePath
      */
     private void getImage(final String imagePath) {
+        final boolean isAllowedIdentify = PreferenceUtil.load(getActivity(), PreferenceConstant.SWITCH_IDENTIFY,true);
+
         final AsyncBitmapLoader.BitmapCallback callback = new AsyncBitmapLoader.BitmapCallback() {
             @Override
             public void facesLoaded(ArrayList<FaceItem> faces) {
@@ -341,7 +343,6 @@ public class GalleryFragment extends BaseFragment {
 
             @Override
             public void faceidentify(Bitmap bitmap) {
-
                 //如果已经做过人脸识别，并且成功了的，就不再做了
                 if (asyncBitmapLoader.getmIdentifiedFaceBitMapCache() != null && asyncBitmapLoader.getmIdentifiedFaceBitMapCache().containsKey(imagePath)) {
                     Log.e("jwjw", 456 + "  containsKey");
@@ -349,7 +350,7 @@ public class GalleryFragment extends BaseFragment {
                     if (identifyItems != null) {
                         imageView.setIdentifyItems(identifyItems);
                     }
-                } else {
+                } else if (isAllowedIdentify){
                     final ProgressDialogUtil progressDialogUtil = new ProgressDialogUtil(activity);
                     progressDialogUtil.show("正在进行人脸识别...");
                     String group_id = PreferenceUtil.load(activity, PreferenceConstant.IDENTIFY_GROUP_NAME, "1");
@@ -405,7 +406,7 @@ public class GalleryFragment extends BaseFragment {
                             if (identifyItems != null) {
                                 imageView.setIdentifyItems(identifyItems);
                             }
-                        } else {
+                        } else if(isAllowedIdentify){
                             final ProgressDialogUtil progressDialogUtil = new ProgressDialogUtil(activity);
                             progressDialogUtil.show("正在进行人脸识别...");
                             String group_id = PreferenceUtil.load(activity, PreferenceConstant.IDENTIFY_GROUP_NAME, "1");
