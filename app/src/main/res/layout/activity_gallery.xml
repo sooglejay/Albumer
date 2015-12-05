@@ -4,7 +4,7 @@
     android:animateLayoutChanges="true"
     android:background="#000000"
     android:orientation="vertical">
-    <android.support.v4.view.ViewPager
+    <sooglejay.youtu.widgets.HackyViewPager
         android:id="@+id/gallery_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
