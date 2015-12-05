@@ -7,8 +7,8 @@
             res/values-vXX/styles.xml, while customizations related to
             backward-compatibility can go here.
         -->
-        <item name="android:clipChildren">true</item>
-        <item name="android:fitsSystemWindows">true</item>
+        <!--<item name="android:clipChildren">true</item>-->
+        <!--<item name="android:fitsSystemWindows">true</item>-->
         <item name="android:windowNoTitle">true</item>
         <item name="android:screenOrientation">portrait</item>
         <item name="colorPrimary">@color/base_color</item>

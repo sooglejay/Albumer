@@ -1,77 +1,139 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:clipChildren="true"
+    android:fitsSystemWindows="true"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <sooglejay.youtu.widgets.TitleBar
         android:id="@+id/title_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"></sooglejay.youtu.widgets.TitleBar>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
-    <ScrollView
+    <FrameLayout
+        android:layout_marginTop="@dimen/middle_padding"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
+        <sooglejay.youtu.widgets.decoview.decoviewlib.DecoView
+            android:id="@+id/dynamicArcView"
+            android:layout_width="0dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_height="0dp"/>
+
+        <sooglejay.youtu.widgets.RoundImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:visibility="gone"
+            android:id="@+id/iv_success_point"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/test" />
+    </FrameLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <RelativeLayout
-                android:id="@+id/layout_history"
-                android:layout_width="match_parent"
-                android:layout_height="250dp">
-                <sooglejay.youtu.widgets.decoview.decoviewlib.DecoView
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:id="@+id/dynamicArcView"
-                    android:layout_margin="8dp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text=""
-                    android:textSize="40sp"
-                    android:id="@+id/textPercentage"
-                    android:layout_centerVertical="true"
-                    android:layout_centerHorizontal="true"
-                    />
-
-                <sooglejay.youtu.widgets.RoundImageView
-                    android:id="@+id/iv_avatar"
-                    android:layout_width="160dp"
-                    android:layout_height="160dp"
-                    android:layout_centerInParent="true"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/place_holder" />
-
-                <TextView
-                    android:id="@+id/tv_test"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_alignParentBottom="true"
-                    android:textColor="@color/white_color"
-                    android:padding="@dimen/small_padding"
-                    android:background="@drawable/btn_select_base_shape_32"
-                    android:gravity="center"
-                    android:textSize="12sp"
-                    android:text="选择图片" />
-            </RelativeLayout>
-
+            android:layout_width="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center_horizontal"
+            android:layout_height="wrap_content">
+            <sooglejay.youtu.widgets.RoundImageView
+                android:id="@+id/iv_a"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="@dimen/middle_padding"
+                android:src="@drawable/test" />
             <TextView
-                android:id="@+id/tv_result"
-                android:textSize="32sp"
-                android:gravity="center"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="结果" />
-            <sooglejay.youtu.widgets.FaceImageView
-                android:id="@+id/iv_image"
-                android:layout_width="200dp"
-                android:layout_height="200dp"
-                android:layout_gravity="center"
-                android:scaleType="centerCrop"/>
+                android:id="@+id/tv_a_textPercentage"
+                android:layout_width="wrap_content"
+                android:text="78"
+                android:textSize="@dimen/big_textsize"
+                android:textColor="@color/dark_black_color"
+                android:layout_gravity="center_horizontal"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/tv_a_ready"
+                android:background="@drawable/btn_select_base"
+                android:textColor="@color/white_color"
+                android:layout_width="wrap_content"
+                android:padding="@dimen/little_padding"
+                android:layout_gravity="center_horizontal"
+                android:text="买定离手"
+                android:layout_height="wrap_content" />
         </LinearLayout>
 
-    </ScrollView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="VS"
+            android:textSize="50sp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center_horizontal"
+            android:layout_height="wrap_content">
+            <sooglejay.youtu.widgets.RoundImageView
+                android:id="@+id/iv_b"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="@dimen/middle_padding"
+                android:src="@drawable/test" />
+            <TextView
+                android:id="@+id/tv_b_textPercentage"
+                android:layout_width="wrap_content"
+                android:text="78"
+                android:textSize="@dimen/big_textsize"
+                android:textColor="@color/dark_black_color"
+                android:layout_gravity="center_horizontal"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/tv_b_ready"
+                android:background="@drawable/btn_select_base"
+                android:textColor="@color/white_color"
+                android:layout_width="wrap_content"
+                android:padding="@dimen/little_padding"
+
+                android:layout_gravity="center_horizontal"
+                android:text="买定离手"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:id="@+id/layout_start_pk"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal">
+
+        <sooglejay.youtu.widgets.CircleButton
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            app:cb_color="@color/base_color"
+            app:cb_pressedRingWidth="8dip" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="开始"
+            android:textColor="@color/white_color" />
+    </FrameLayout>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:id="@+id/textPercentage"
+        android:layout_height="wrap_content" />
 </LinearLayout>

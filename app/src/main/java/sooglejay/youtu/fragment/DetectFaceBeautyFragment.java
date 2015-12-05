@@ -4,17 +4,21 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,24 +52,53 @@ import sooglejay.youtu.widgets.youtu.sign.Base64Util;
  * Created by JammyQtheLab on 2015/11/24.
  */
 public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
-    // 不同loader定义
-    private static final int LOADER_ALL = 0;
     private static final float seriesMax = 100f;
-
-    private ArrayList<String> imageList = new ArrayList<>();
-    private String resultPath;//图片最终位置
-
-    // 结果数据
-    private ArrayList<String> resultList = new ArrayList<>();
-    // 文件夹数据
-    private ArrayList<Folder> mResultFolder = new ArrayList<>();
-
-    private boolean hasFolderGened = false;//是否已经加载了相册
-    private Activity context;
-
-    private RoundImageView iv_avatar;
     private int mTotalScores;
     private int mYourScores;
+
+
+    private String a_imageStr;
+    private String b_imageStr;
+
+    private boolean a_isSelected = false;
+    private boolean b_isSelected = false;
+    private ArrayList<String> a_imageList = new ArrayList<>();
+    private ArrayList<String> b_imageList = new ArrayList<>();
+
+
+    private TitleBar titleBar;
+    private DecoView dynamicArcView;
+    private RoundImageView ivA;
+    private TextView tvATextPercentage;
+    private TextView tvAReady;
+    private RoundImageView ivB;
+    private TextView tvBTextPercentage;
+    private TextView tvBReady;
+    private FrameLayout layoutStartPk;
+    private TextView textPercentage;
+
+
+    private Activity activity;
+
+    /**
+     * Find the Views in the layout<br />
+     * <br />
+     * Auto-created on 2015-12-05 20:52:34 by Android Layout Finder
+     * (http://www.buzzingandroid.com/tools/android-layout-finder)
+     */
+    private void findViews(View view) {
+        titleBar = (TitleBar) view.findViewById(R.id.title_bar);
+        dynamicArcView = (DecoView) view.findViewById(R.id.dynamicArcView);
+        ivA = (RoundImageView) view.findViewById(R.id.iv_a);
+        tvATextPercentage = (TextView) view.findViewById(R.id.tv_a_textPercentage);
+        tvAReady = (TextView) view.findViewById(R.id.tv_a_ready);
+        ivB = (RoundImageView) view.findViewById(R.id.iv_b);
+        tvBTextPercentage = (TextView) view.findViewById(R.id.tv_b_textPercentage);
+        tvBReady = (TextView) view.findViewById(R.id.tv_b_ready);
+        layoutStartPk = (FrameLayout) view.findViewById(R.id.layout_start_pk);
+        textPercentage = (TextView) view.findViewById(R.id.textPercentage);
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -74,89 +107,84 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        context = this.getActivity();
+        activity = getActivity();
         setUpViews(view, savedInstanceState);
+        setUpListener();
     }
 
     private void setUpViews(View view, Bundle savedInstanceState) {
-        context = this.getActivity();
         findViews(view);
+
+        tvATextPercentage.setVisibility(View.GONE);
+        tvBTextPercentage.setVisibility(View.GONE);
+        titleBar.initTitleBarInfo("颜值PK", R.drawable.arrow_left, -1, "", "");
     }
 
-    private TitleBar titleBar;
-    private TextView tvTest;
-    private FaceImageView ivImage;
-    private TextView tvResult;
-    private DecoView dynamicArcView;
-
-    /**
-     * Find the Views in the layout<br />
-     * <br />
-     * Auto-created on 2015-11-24 19:37:49 by Android Layout Finder
-     * (http://www.buzzingandroid.com/tools/android-layout-finder)
-     */
-    private void findViews(View view) {
-        titleBar = (TitleBar) view.findViewById(R.id.title_bar);
-        titleBar.initTitleBarInfo("颜值工作室", -1, -1, "", "");
-        dynamicArcView = (DecoView) view.findViewById(R.id.dynamicArcView);
-        tvTest = (TextView) view.findViewById(R.id.tv_test);
-        iv_avatar = (RoundImageView) view.findViewById(R.id.iv_avatar);
-        ivImage = (FaceImageView) view.findViewById(R.id.iv_image);
-        tvResult = (TextView) view.findViewById(R.id.tv_result);
-        tvTest.setOnClickListener(new View.OnClickListener() {
+    private void setUpListener() {
+        tvAReady.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ImageUtils.startPickPhoto(getActivity(), DetectFaceBeautyFragment.this, imageList, 10, false);
-            }
-        });
-    }
-
-    private void faceCompareUrl() {
-        final ProgressDialogUtil progressDialogUtil = new ProgressDialogUtil(context);
-        progressDialogUtil.show("正在发送请求...");
-        FaceCompareUtil.faceCompareUrl(context, "", "", "http://open.youtu.qq.com/content/img/slide-1.jpg", "http://open.youtu.qq.com/content/img/slide-1.jpg", NetWorkConstant.APP_ID, new NetCallback<FaceCompareResponseBean>(context) {
-            @Override
-            public void onFailure(RetrofitError error, String message) {
-                progressDialogUtil.hide();
-            }
-
-            @Override
-            public void success(FaceCompareResponseBean netWorkResultBean, Response response) {
-                progressDialogUtil.hide();
-
-            }
-        });
-    }
-
-    /**
-     * @param bitmap
-     * @return -1 null; -2 file is bad
-     */
-    private void detectface(final Bitmap bitmap,final String imageFilePath) {
-        final ProgressDialogUtil p = new ProgressDialogUtil(context);
-        p.show("正在检测...");
-        DetectFaceUtil.detectFace(context, NetWorkConstant.APP_ID, Base64Util.encode(ImageUtils.Bitmap2Bytes(bitmap)), 1, new NetCallback<DetectFaceResponseBean>(context) {
-            @Override
-            public void onFailure(RetrofitError error, String message) {
-                p.hide();
-                ivImage.setCanvasBitmapRes(bitmap);
-
-            }
-
-            @Override
-            public void success(DetectFaceResponseBean detectFaceResponseBean, Response response) {
-                p.hide();
-                tvResult.setText(detectFaceResponseBean.toString());
-                ArrayList<FaceItem> faceItem = detectFaceResponseBean.getFace();
-                if(faceItem!=null&&faceItem.size()>0)
+                if(TextUtils.isEmpty(a_imageStr))
                 {
-                    ivImage.setCanvasRes(bitmap, faceItem,imageFilePath);
-                }else {
-                    ivImage.setCanvasBitmapRes(bitmap);
+                    Toast.makeText(activity,"先选择人脸图片",Toast.LENGTH_SHORT).show();
+                    return;
                 }
+                tvAReady.setTextColor(ContextCompat.getColor(activity,R.color.light_gray_color));
+                tvAReady.setEnabled(false);
+            }
+        });
+        tvBReady.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(TextUtils.isEmpty(b_imageStr))
+                {
+                    Toast.makeText(activity,"先选择人脸图片",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                tvBReady.setTextColor(ContextCompat.getColor(activity,R.color.light_gray_color));
+                tvBReady.setEnabled(false);
+
+            }
+        });
+        ivA.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                a_isSelected = true;
+                b_isSelected = false;
+                ImageUtils.startPickPhoto(getActivity(), DetectFaceBeautyFragment.this, a_imageList, 1, false);
+            }
+        });
+        ivB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                b_isSelected = true;
+                a_isSelected = false;
+                ImageUtils.startPickPhoto(getActivity(), DetectFaceBeautyFragment.this, b_imageList, 1, false);
+
+            }
+        });
+
+
+        layoutStartPk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        titleBar.setOnTitleBarClickListener(new TitleBar.OnTitleBarClickListener() {
+            @Override
+            public void onLeftButtonClick(View v) {
+
+            }
+
+            @Override
+            public void onRightButtonClick(View v) {
+
             }
         });
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -165,30 +193,40 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
             case ImageUtils.REQUEST_CODE_PICK_IMAGE:
                 if (resultCode == Activity.RESULT_OK) {
                     // 获取返回的图片列表
-                    List<String> paths = data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
-                    imageList.clear();
-                    imageList.addAll(paths);
-                    if (imageList == null) return;
-                    if (imageList.size() == 1) {
-                        ImageLoader.getInstance().displayImage("file://" + imageList.get(0), iv_avatar, ImageUtils.getOptions());
-                        resultPath = imageList.get(0);
-                        Bitmap bitmap =ImageUtils.getBitmapFromLocalPath(resultPath, 1);
-                        Bitmap resizedBitmap =ImageUtils.getResizedBitmap(bitmap, IntConstant.IMAGE_SIZE, IntConstant.IMAGE_SIZE);
-                        ivImage.setImageBitmap(resizedBitmap);
-                        detectface(resizedBitmap,resultPath);
+                    if (a_isSelected) {
+                        // 获取返回的图片列表
+                        List<String> paths = data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
+                        if (paths.size() > 0) {
+                            a_imageStr = ImageUtils.getImageFolderPath(activity) + File.separator + System.currentTimeMillis() + ".jpg";
+                            ImageUtils.cropImage(this, Uri.fromFile(new File(paths.get(0))), a_imageStr, 1, 1);
+                        }
+                    } else {
+                        // 获取返回的图片列表
+                        List<String> paths = data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
+                        if (paths.size() > 0) {
+                            b_imageStr = ImageUtils.getImageFolderPath(activity) + File.separator + System.currentTimeMillis() + ".jpg";
+                            ImageUtils.cropImage(this, Uri.fromFile(new File(paths.get(0))), b_imageStr, 1, 1);
+                        }
                     }
                 }
+
                 break;
             //裁剪图片
             case ImageUtils.REQUEST_CODE_CROP_IMAGE:
                 if (resultCode == Activity.RESULT_OK) {
                     //添加图片到list并且显示出来
                     //上传图片
-                    if (!TextUtils.isEmpty(resultPath)) {
-//                        ImageLoader.getInstance().displayImage("file://" + resultPath, ivImage, ImageUtils.getOptions());
-//                        String dstPath = ImageUtils.getImageFolderPath(getActivity()) + System.currentTimeMillis() + File.separator + "jpg";
-//                        ImageUtils.compressAndSave(getActivity(), resultPath, dstPath, 600);
-//                        detectface(dstPath,dstPath);
+                    if (a_isSelected) {
+                        a_isSelected = false;
+                        if (!TextUtils.isEmpty(a_imageStr)) {
+                            ImageLoader.getInstance().displayImage("file://" + a_imageStr, ivA, ImageUtils.getOptions());
+                        }
+                    } else {
+                        b_isSelected = false;
+                        if (!TextUtils.isEmpty(b_imageStr)) {
+                            ImageLoader.getInstance().displayImage("file://" + b_imageStr, ivB, ImageUtils.getOptions());
+
+                        }
                     }
                 }
                 break;
