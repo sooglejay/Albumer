@@ -95,10 +95,10 @@ public class MyContactsListAdapter extends BaseAdapter {
         }else {
             holder.iv_choose.setImageResource(R.drawable.icon_choose);
         }
-        holder.item.setTag(bean);
+//        holder.item.setTag(bean);
         holder.iv_choose.setTag(bean);
         holder.iv_choose.setOnClickListener(holder.onClickListener);
-        holder.item.setOnClickListener(holder.onClickListener);
+//        holder.item.setOnClickListener(holder.onClickListener);
         return view;
     }
 

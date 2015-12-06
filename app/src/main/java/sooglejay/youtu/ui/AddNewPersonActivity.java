@@ -34,6 +34,7 @@ import sooglejay.youtu.bean.ContactBean;
 import sooglejay.youtu.constant.ExtraConstants;
 import sooglejay.youtu.constant.IntConstant;
 import sooglejay.youtu.constant.NetWorkConstant;
+import sooglejay.youtu.constant.PreferenceConstant;
 import sooglejay.youtu.db.ContactDao;
 import sooglejay.youtu.event.BusEvent;
 import sooglejay.youtu.model.NetCallback;
@@ -41,6 +42,7 @@ import sooglejay.youtu.utils.CacheUtil;
 import sooglejay.youtu.utils.GetGroupIdsUtil;
 import sooglejay.youtu.utils.GetTagUtil;
 import sooglejay.youtu.utils.ImageUtils;
+import sooglejay.youtu.utils.PreferenceUtil;
 import sooglejay.youtu.utils.ProgressDialogUtil;
 import sooglejay.youtu.widgets.RoundImageView;
 import sooglejay.youtu.widgets.TitleBar;
@@ -147,7 +149,11 @@ public class AddNewPersonActivity extends BaseActivity {
                     protected void onPostExecute(final Bitmap bitmap) {
                         if (bitmap != null) {
                             final String tag = GetTagUtil.getTag(nameStr, phoneStr, groupStrFromIntent);
-                            NewPersonUtil.newPerson(activity, NetWorkConstant.APP_ID, GetGroupIdsUtil.getGroupIdArrayList(groupStrFromIntent), person_id, Base64Util.encode(ImageUtils.Bitmap2Bytes(bitmap)), nameStr, tag, new NetCallback<NewPersonResponseBean>(activity) {
+                            ArrayList<String> arrayList = GetGroupIdsUtil.getGroupIdArrayList(groupStrFromIntent);
+                            if (arrayList.size() > 0) {
+                                PreferenceUtil.save(activity, PreferenceConstant.IDENTIFY_GROUP_NAME, arrayList.get(0));
+                            }
+                            NewPersonUtil.newPerson(activity, NetWorkConstant.APP_ID, arrayList, person_id, Base64Util.encode(ImageUtils.Bitmap2Bytes(bitmap)), nameStr, tag, new NetCallback<NewPersonResponseBean>(activity) {
                                 @Override
                                 public void onFailure(RetrofitError error, String message) {
                                     progressDialogUtil.hide();

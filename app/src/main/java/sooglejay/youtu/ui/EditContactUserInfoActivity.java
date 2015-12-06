@@ -119,6 +119,8 @@ public class EditContactUserInfoActivity extends BaseActivity {
                 String newTag = GetTagUtil.getTag(nameStr, phoneStr, groupStrFromIntent);
                 final ProgressDialogUtil progressDialogUtil = new ProgressDialogUtil(activity);
                 progressDialogUtil.show("正在提交人脸信息...");
+                contactBean.setUser_name(nameStr);
+                contactBean.setPhoneNumber(phoneStr);
 
                 SetInfoUtil.setInfo(activity, NetWorkConstant.APP_ID, contactBean.getPerson_id(), nameStr, newTag, new NetCallback<SetInfoResponseBean>(activity) {
                     @Override

@@ -100,6 +100,12 @@ public class MyContactsActivity extends BaseActivity {
                 return true;
             }
         });
+        list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                EditContactUserInfoActivity.startActivity(activity,datas.get(i));
+            }
+        });
 
 
         title_bar.initTitleBarInfo("我的联系人", R.drawable.arrow_left, -1, "", "");
