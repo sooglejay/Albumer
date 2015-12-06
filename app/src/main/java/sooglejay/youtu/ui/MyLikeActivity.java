@@ -272,6 +272,7 @@ public class MyLikeActivity extends BaseActivity {
                     finish();
                 }
 
+
                 @Override
                 public void onRightButtonClick(View v) {
                 }
