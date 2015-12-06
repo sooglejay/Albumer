@@ -146,7 +146,8 @@ public class AddNewPersonActivity extends BaseActivity {
                     @Override
                     protected void onPostExecute(final Bitmap bitmap) {
                         if (bitmap != null) {
-                            NewPersonUtil.newPerson(activity, NetWorkConstant.APP_ID, GetGroupIdsUtil.getGroupIdArrayList(groupStrFromIntent), person_id, Base64Util.encode(ImageUtils.Bitmap2Bytes(bitmap)), nameStr, GetTagUtil.getTag(nameStr, phoneStr, groupStrFromIntent), new NetCallback<NewPersonResponseBean>(activity) {
+                            final String tag = GetTagUtil.getTag(nameStr, phoneStr, groupStrFromIntent);
+                            NewPersonUtil.newPerson(activity, NetWorkConstant.APP_ID, GetGroupIdsUtil.getGroupIdArrayList(groupStrFromIntent), person_id, Base64Util.encode(ImageUtils.Bitmap2Bytes(bitmap)), nameStr, tag, new NetCallback<NewPersonResponseBean>(activity) {
                                 @Override
                                 public void onFailure(RetrofitError error, String message) {
                                     progressDialogUtil.hide();
@@ -160,6 +161,7 @@ public class AddNewPersonActivity extends BaseActivity {
                                     ContactBean bean = new ContactBean();
                                     bean.setUser_name(nameStr);
                                     bean.setPhoneNumber(phoneStr);
+                                    bean.setTag(tag);
                                     bean.setImage_path(imageFilePath);
                                     bean.setPerson_id(person_id);
                                     contactDao.add(bean);

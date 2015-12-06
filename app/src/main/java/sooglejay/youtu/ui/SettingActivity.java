@@ -55,6 +55,7 @@ public class SettingActivity extends BaseActivity {
     private RoundImageView avatar_image;
     private LinearLayout signature_group;
     private LinearLayout clear_cache_group;
+    private LinearLayout about_me_group;
     private SwitchButton switch_detect_face;
     private SwitchButton switch_identify;
 
@@ -102,6 +103,7 @@ public class SettingActivity extends BaseActivity {
         signature_group = (LinearLayout) findViewById(R.id.signature_group);
         my_signature_count_tv = (TextView) findViewById(R.id.my_signature_count_tv);
         clear_cache_group = (LinearLayout) findViewById(R.id.clear_cache_group);
+        about_me_group = (LinearLayout) findViewById(R.id.about_me_group);
         title_bar = (TitleBar) findViewById(R.id.title_bar);
         title_bar.initTitleBarInfo("设置", R.drawable.arrow_left, -1, "", "");
         title_bar.setOnTitleBarClickListener(new TitleBar.OnTitleBarClickListener() {
@@ -168,7 +170,6 @@ public class SettingActivity extends BaseActivity {
                         }).setNegativeButton("取消", null).create().show();
 
 
-
             }
         });
 
@@ -185,6 +186,13 @@ public class SettingActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(SettingActivity.this, ModifyInfoActivity.class));
+            }
+        });
+
+        about_me_group.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(SettingActivity.this, AboutMeActivity.class));
             }
         });
     }

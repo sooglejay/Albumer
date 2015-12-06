@@ -101,6 +101,9 @@
       <activity
             android:name=".ui.EditContactUserInfoActivity"
             android:configChanges="orientation|screenSize"></activity>
+     <activity
+            android:name=".ui.AboutMeActivity"
+            android:configChanges="orientation|screenSize"></activity>
     </application>
 
 </manifest>

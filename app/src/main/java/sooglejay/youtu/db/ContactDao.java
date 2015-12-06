@@ -102,7 +102,7 @@ public class ContactDao {
         }
     }
 
-    public void uodateGroupNameBean(ContactBean bean) {
+    public void uodateBean(ContactBean bean) {
         try {
             contactDao.update(bean);
         } catch (SQLException e) {

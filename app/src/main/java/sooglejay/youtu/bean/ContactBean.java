@@ -16,18 +16,29 @@ public class ContactBean implements Parcelable {
     private String user_name;//用户名
     @DatabaseField
     private String image_path;//用户图片地址
+   @DatabaseField
+    private String tag;//用户tag
 
     @Override
     public String toString() {
         return "ContactBean{" +
                 "user_name='" + user_name + '\'' +
                 ", image_path='" + image_path + '\'' +
+                ", tag='" + tag + '\'' +
                 ", person_id='" + person_id + '\'' +
                 ", isSelected=" + isSelected +
                 ", age=" + age +
                 ", beauty=" + beauty +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 '}';
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 
     public String getPerson_id() {
@@ -117,6 +128,7 @@ public class ContactBean implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.user_name);
         dest.writeString(this.image_path);
+        dest.writeString(this.tag);
         dest.writeString(this.person_id);
         dest.writeByte(isSelected ? (byte) 1 : (byte) 0);
         dest.writeInt(this.age);
@@ -127,6 +139,7 @@ public class ContactBean implements Parcelable {
     protected ContactBean(Parcel in) {
         this.user_name = in.readString();
         this.image_path = in.readString();
+        this.tag = in.readString();
         this.person_id = in.readString();
         this.isSelected = in.readByte() != 0;
         this.age = in.readInt();
