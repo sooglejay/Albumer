@@ -37,6 +37,7 @@ public class DialogFragmentCreater extends DialogFragment {
     public static final int DIALOG_CHOOSE_FACE = 1001;//top 5 faces available to choose
     public static final int DIALOG_showCreateNewGroupDialog = 1002;//create new group
     public static final int DIALOG_showAddPersonDialog = 1003;//create new group
+    public static final int DIALOG_showEditContactsDialog = 1004;//create new group
 
     public final static String dialog_fragment_key = "fragment_id";
     public final static String dialog_fragment_tag = "dialog";
@@ -106,6 +107,8 @@ public class DialogFragmentCreater extends DialogFragment {
                     return showCreateNewGroupDialog(mContext);
                 case DIALOG_showAddPersonDialog:
                     return showAddPersonDialog(mContext);
+                case DIALOG_showEditContactsDialog:
+                    return showEditContactsDialog(mContext);
             }
         }
         return super.onCreateDialog(savedInstanceState);
@@ -268,6 +271,67 @@ public class DialogFragmentCreater extends DialogFragment {
         outerDialog = dialog;
         return dialog;
     }
+
+    //edit my contact
+   private Dialog showEditContactsDialog(final Context mContext) {
+        View convertView = LayoutInflater.from(mContext).inflate(R.layout.dialog_edit_my_contact, null);
+        TextView tv_edit_info = (TextView) convertView.findViewById(R.id.tv_edit_info);
+        TextView tv_call = (TextView) convertView.findViewById(R.id.tv_call);
+        TextView tv_send_message = (TextView) convertView.findViewById(R.id.tv_send_message);
+        TextView tv_delete_contact = (TextView) convertView.findViewById(R.id.tv_delete_contact);
+        TextView tv_cancel = (TextView) convertView.findViewById(R.id.tv_cancel);
+
+       View.OnClickListener listener = new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+               onEditContactCallBack.onClick(view);
+               dismiss();
+           }
+       };
+
+       tv_edit_info.setOnClickListener(listener);
+       tv_call.setOnClickListener(listener);
+       tv_send_message.setOnClickListener(listener);
+       tv_delete_contact.setOnClickListener(listener);
+       tv_cancel.setOnClickListener(listener);
+
+
+
+
+
+        final Dialog dialog = new Dialog(mContext, R.style.CustomDialog);
+//        dialog.setCanceledOnTouchOutside(false);//要求触碰到外面能够消失
+        dialog.setContentView(convertView);
+
+        dialog.getWindow().setWindowAnimations(R.style.dialog_right_control_style);
+        //当dialog 显示的时候，弹出键盘
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(final DialogInterface dialog) {
+            }
+        });
+
+        outerDialog = dialog;
+        return dialog;
+    }
+    private OnEditContactCallBack onEditContactCallBack;
+
+    public void setOnEditContactCallBack(OnEditContactCallBack onEditContactCallBack) {
+        this.onEditContactCallBack = onEditContactCallBack;
+    }
+
+    public interface OnEditContactCallBack
+    {
+        public void onClick(View view);
+    }
+
+
+
+
+
+
+
+
 
     //如果用户第一次使用app,或者，没有可匹配的人脸，就弹出添加人脸对话框
    private Dialog showAddPersonDialog(final Context mContext) {

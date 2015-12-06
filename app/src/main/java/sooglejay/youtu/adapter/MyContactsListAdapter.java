@@ -64,10 +64,6 @@ public class MyContactsListAdapter extends BaseAdapter {
                     ContactBean bean = (ContactBean)view.getTag();
                     switch (view.getId())
                     {
-                        case R.id.item:
-                            EditContactUserInfoActivity.startActivity(activity,bean);
-                            break;
-
                         case R.id.iv_choose:
                             bean.setIsSelected(!bean.isSelected());
                             notifyDataSetChanged();

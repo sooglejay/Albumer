@@ -1,48 +1,59 @@
 package sooglejay.youtu.utils;
 
-import android.app.ProgressDialog;
+import android.app.Activity;
 import android.content.Context;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.TextView;
 
+import sooglejay.youtu.R;
+import sooglejay.youtu.constant.PreferenceConstant;
 
 public class ProgressDialogUtil {
-    private ProgressDialog dialog;
+    private AlertDialog dialog;
     private TextView tv;
-    public ProgressDialogUtil(Context context){
+    private Context context;
+
+    public ProgressDialogUtil(Context context) {
         initDialog(context);
+        this.context = context;
     }
 
     private void initDialog(Context context) {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-//        View view = LayoutInflater.from(context).inflate(R.layout.view_progress_bar_dialog, null, false);
-//        tv = (TextView) view.findViewById(R.id.tv);
-//        builder.setView(view);
-//        dialog = builder.create();
-//        dialog.setCancelable(false);
-//        dialog.setCanceledOnTouchOutside(false);
-
-        dialog = new ProgressDialog(context);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setCancelable(false);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        View view = LayoutInflater.from(context).inflate(R.layout.view_progress_bar_dialog, null, false);
+        tv = (TextView) view.findViewById(R.id.tv);
+        builder.setView(view);
+        dialog = builder.create();
+        boolean isCanceledOnTouchOutside = PreferenceUtil.load(context, PreferenceConstant.SWITCH_DIALOG_PROGRESS_CANCELED_ON_TOUCH_OUTSIDE, true);
+//        dialog = new ProgressDialog(context);
+        dialog.setCanceledOnTouchOutside(isCanceledOnTouchOutside);
+        dialog.setCancelable(isCanceledOnTouchOutside);
     }
-
 
     /**
      * 显示
      */
-    public void show(String text){
-        if(dialog != null) {
-//            tv.setText(text);
-            dialog.setMessage(text);
-            dialog.show();
+    public void show(String text) {
+        try {
+            if (!((Activity) context).isFinishing())
+                if (dialog != null) {
+                    tv.setText(text);
+                    dialog.show();
+                }
+        } catch (Exception e) {
+            Log.e("jwjw", "catch show dialog error:" + e.toString());
         }
+
     }
 
     /**
      * 隐藏
      */
-    public void hide(){
-        if(dialog != null && dialog.isShowing()) {
+    public void hide() {
+        if (dialog != null && dialog.isShowing()) {
             dialog.dismiss();
         }
     }

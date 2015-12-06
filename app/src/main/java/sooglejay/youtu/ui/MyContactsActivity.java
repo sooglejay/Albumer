@@ -1,9 +1,11 @@
 package sooglejay.youtu.ui;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -31,7 +33,9 @@ import sooglejay.youtu.bean.ContactBean;
 import sooglejay.youtu.bean.FocusBean;
 import sooglejay.youtu.constant.NetWorkConstant;
 import sooglejay.youtu.db.ContactDao;
+import sooglejay.youtu.fragment.DialogFragmentCreater;
 import sooglejay.youtu.model.NetCallback;
+import sooglejay.youtu.utils.UIUtil;
 import sooglejay.youtu.widgets.CircleButton;
 import sooglejay.youtu.widgets.TitleBar;
 
@@ -59,18 +63,23 @@ public class MyContactsActivity extends BaseActivity {
 
     private Activity activity;
 
+    private DialogFragmentCreater dialogFragmentCreater;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_contact);
         activity = this;
+        dialogFragmentCreater = new DialogFragmentCreater();
+        dialogFragmentCreater.initDialogFragment(this, this.getSupportFragmentManager());
+
         animation_enter = AnimationUtils.loadAnimation(this,
                 R.anim.enter_from_bottom_200);
         animation_exit = AnimationUtils.loadAnimation(this,
                 R.anim.exit_to_bottom_200);
 
         title_bar = (TitleBar) findViewById(R.id.title_bar);
-        swipeLayout = (SwipeRefreshLayout)findViewById(R.id.swipe_layout);
+        swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
         swipeLayout.setColorSchemeResources(R.color.base_color);
         list_view = (ListView) findViewById(R.id.list_view);
         layout_operation = (FrameLayout) findViewById(R.id.layout_operation);
@@ -102,8 +111,48 @@ public class MyContactsActivity extends BaseActivity {
         });
         list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                EditContactUserInfoActivity.startActivity(activity,datas.get(i));
+            public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
+                dialogFragmentCreater.setOnEditContactCallBack(new DialogFragmentCreater.OnEditContactCallBack() {
+                    @Override
+                    public void onClick(View view) {
+                        switch (view.getId()) {
+                            case R.id.tv_edit_info:
+                                EditContactUserInfoActivity.startActivity(activity, datas.get(i));
+                                break;
+                            case R.id.tv_call:
+                                UIUtil.takePhoneCall(activity, datas.get(i).getPhoneNumber(), 100);
+                                break;
+                            case R.id.tv_send_message:
+                                UIUtil.sendMessage(activity, datas.get(i).getPhoneNumber(), "责任和信任就是男人的霸气和浪漫", 100);
+                                break;
+                            case R.id.tv_delete_contact:
+                                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                                builder.setTitle("提示").setMessage("真的要删除这个图片么?")
+                                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                DelPersonUtil.delPerson(activity, NetWorkConstant.APP_ID, datas.get(i).getPerson_id(), new NetCallback<DelPersonResponseBean>(activity) {
+                                                    @Override
+                                                    public void onFailure(RetrofitError error, String message) {
+                                                        Toast.makeText(activity, "请求超时,请检查网络设置后重试！", Toast.LENGTH_SHORT).show();
+                                                    }
+
+                                                    @Override
+                                                    public void success(DelPersonResponseBean delPersonResponseBean, Response response) {
+                                                        contactDao.deleteByName(datas.get(i).getImage_path());
+                                                        datas.remove(i);
+                                                        adapter.notifyDataSetChanged();
+                                                    }
+                                                });
+                                            }
+                                        }).setNegativeButton("取消", null).create().show();
+                                break;
+                            case R.id.tv_cancel:
+                                break;
+                        }
+                    }
+                });
+                dialogFragmentCreater.showDialog(activity,DialogFragmentCreater.DIALOG_showEditContactsDialog);
             }
         });
 
@@ -141,23 +190,34 @@ public class MyContactsActivity extends BaseActivity {
                             @Override
                             public void success(DelPersonResponseBean delPersonResponseBean, Response response) {
                                 success_count[0]++;
-                                contactDao.deleteByName(datas.get(finalI).getImage_path());
+                                new AsyncTask<Void, Void, Void>() {
+                                    @Override
+                                    protected void onPostExecute(Void aVoid) {
+                                        super.onPostExecute(aVoid);
+                                        datas.remove(finalI);
+                                        adapter.notifyDataSetChanged();
+                                    }
+
+                                    @Override
+                                    protected Void doInBackground(Void... voids) {
+                                        contactDao.deleteByName(datas.get(finalI).getImage_path());
+                                        return null;
+                                    }
+                                }.execute();
                             }
                         });
                     }
                 }
-                if(error_count[0]>0) {
+                if (error_count[0] > 0) {
                     if (success_count[0] > 0) {
                         Toast.makeText(activity, "网络状态不好，只成功删除了" + success_count[0] + "个", Toast.LENGTH_SHORT).show();
-                    }else {
+                    } else {
                         Toast.makeText(activity, "请求超时,请检查网络设置后重试！", Toast.LENGTH_SHORT).show();
                     }
-                }else  if (success_count[0] > 0){
+                } else if (success_count[0] > 0) {
                     Toast.makeText(activity, "成功删除人脸联系人" + success_count[0] + "个", Toast.LENGTH_SHORT).show();
                 }
 
-                datas.clear();
-                datas.addAll(contactDao.getAll());
                 adapter.setIsShowSelectIndicator();
                 adapter.notifyDataSetChanged();
 
@@ -206,8 +266,7 @@ public class MyContactsActivity extends BaseActivity {
             @Override
             protected void onPostExecute(List<ContactBean> aVoid) {
                 super.onPostExecute(aVoid);
-                if(aVoid!=null)
-                {
+                if (aVoid != null) {
                     datas.clear();
                     datas.addAll(aVoid);
                     adapter.notifyDataSetChanged();

@@ -7,6 +7,7 @@ public class PreferenceConstant {
    public static final String IDENTIFY_GROUP_NAME = "group_id";
    public static final String SWITCH_IDENTIFY = "open_or_close_identify";
    public static final String SWITCH_DETECT_FACE= "open_or_close_detect_face";
+   public static final String SWITCH_DIALOG_PROGRESS_CANCELED_ON_TOUCH_OUTSIDE = "switch_handle_dialog";
    public static final String USER_SIGNATURE = "signature";
    public static final String USER_AVATAR = "avatar";
 }

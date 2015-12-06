@@ -3,9 +3,6 @@ package sooglejay.youtu.ui;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -18,20 +15,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
-import com.umeng.update.UmengUpdateAgent;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-import retrofit.mime.TypedFile;
 import sooglejay.youtu.R;
-import sooglejay.youtu.constant.IntConstant;
 import sooglejay.youtu.constant.PreferenceConstant;
 import sooglejay.youtu.constant.StringConstant;
 import sooglejay.youtu.event.BusEvent;
@@ -56,8 +46,14 @@ public class SettingActivity extends BaseActivity {
     private LinearLayout signature_group;
     private LinearLayout clear_cache_group;
     private LinearLayout about_me_group;
+
+    private LinearLayout layout_detect_face;
+    private LinearLayout layout_identify;
+    private LinearLayout layout_handle_dialog;
+
     private SwitchButton switch_detect_face;
     private SwitchButton switch_identify;
+    private SwitchButton switch_handle_dialog;
 
     private Activity activity;
     private CacheUtil cacheUtil;
@@ -96,10 +92,17 @@ public class SettingActivity extends BaseActivity {
         }
         switch_detect_face = (SwitchButton) findViewById(R.id.switch_detect_face);
         switch_identify = (SwitchButton) findViewById(R.id.switch_identify);
+        switch_handle_dialog = (SwitchButton) findViewById(R.id.switch_handle_dialog);
+
+        layout_detect_face = (LinearLayout) findViewById(R.id.layout_detect_face);
+        layout_identify = (LinearLayout) findViewById(R.id.layout_identify);
+        layout_handle_dialog = (LinearLayout) findViewById(R.id.layout_handle_dialog);
 
 
         switch_identify.setChecked(PreferenceUtil.load(activity, PreferenceConstant.SWITCH_IDENTIFY, true));
         switch_detect_face.setChecked(PreferenceUtil.load(activity, PreferenceConstant.SWITCH_DETECT_FACE, true));
+        switch_handle_dialog.setChecked(PreferenceUtil.load(activity, PreferenceConstant.SWITCH_DIALOG_PROGRESS_CANCELED_ON_TOUCH_OUTSIDE, true));
+
         signature_group = (LinearLayout) findViewById(R.id.signature_group);
         my_signature_count_tv = (TextView) findViewById(R.id.my_signature_count_tv);
         clear_cache_group = (LinearLayout) findViewById(R.id.clear_cache_group);
@@ -117,6 +120,27 @@ public class SettingActivity extends BaseActivity {
 
             }
         });
+
+        layout_detect_face.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switch_detect_face.performClick();
+            }
+        });
+        layout_identify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switch_identify.performClick();
+            }
+        });
+
+        layout_handle_dialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switch_handle_dialog.performClick();
+            }
+        });
+
         switch_detect_face.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -130,6 +154,16 @@ public class SettingActivity extends BaseActivity {
                 PreferenceUtil.save(activity, PreferenceConstant.SWITCH_IDENTIFY, b);
             }
         });
+
+        switch_handle_dialog.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                PreferenceUtil.save(activity, PreferenceConstant.SWITCH_DIALOG_PROGRESS_CANCELED_ON_TOUCH_OUTSIDE, b);
+            }
+        });
+
+
+
         clear_cache_group.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
