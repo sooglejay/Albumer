@@ -1,14 +1,11 @@
 package sooglejay.youtu.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
-import android.media.FaceDetector;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -109,6 +106,7 @@ public class GalleryFragment extends BaseFragment {
                 @Override
                 protected void onPostExecute(Void aVoid) {
                     super.onPostExecute(aVoid);
+                    Log.e("test","laile");
                     getImage(url);
                 }
 
@@ -455,7 +453,8 @@ public class GalleryFragment extends BaseFragment {
 
     }
 
-    static int i = 0;
+    private  int threadCountA = 0;
+    private  int threadCountB = 0;
 
     /**
      * EventBus 广播
@@ -466,9 +465,8 @@ public class GalleryFragment extends BaseFragment {
         switch (event.getMsg()) {
             case BusEvent.MSG_EDIT_FACE_INFO:
                 Log.e("jwjw", "jiangwei");
-                i++;
-                if (i == 1) {
-                    i = 0;
+                threadCountA++;
+                if (threadCountA == 1) {
                     if (cacheUtil != null && imageView != null) {
                         ArrayList<IdentifyItem> identifyItems = cacheUtil.getIdentifiedObjectFromFile().get(url);
                         if (identifyItems != null) {
@@ -479,11 +477,9 @@ public class GalleryFragment extends BaseFragment {
                 }
                 break;
             case BusEvent.MSG_REFRESH:
-
-                i++;
-                if (i == 1) {
-                    i = 0;
-                    Log.e("test", "广播1212：进行人脸识别" + i);
+                threadCountB++;
+                if (threadCountB == 1) {
+                    Log.e("test", "广播1212：进行人脸识别" + threadCountB);
                     refreshViewInThread();
                 }
                 break;
