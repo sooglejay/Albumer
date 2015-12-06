@@ -83,9 +83,14 @@ public class SettingActivity extends BaseActivity {
 
         avatar_group = (LinearLayout) findViewById(R.id.avatar_group);
         avatar_image = (RoundImageView) findViewById(R.id.avatar_image);
-        String s = PreferenceUtil.load(this,PreferenceConstant.USER_AVATAR,"");
-        ImageLoader.getInstance().displayImage("file://"+s,avatar_image,ImageUtils.getOptions());
-
+        String avatarStr = PreferenceUtil.load(this,PreferenceConstant.USER_AVATAR,"");
+        if(TextUtils.isEmpty(avatarStr))
+        {
+            avatar_image.setImageResource(R.drawable.test);
+        }
+        else {
+            ImageLoader.getInstance().displayImage("file://" + avatarStr, avatar_image, ImageUtils.getOptions());
+        }
         switch_detect_face = (SwitchButton) findViewById(R.id.switch_detect_face);
         switch_identify = (SwitchButton) findViewById(R.id.switch_identify);
 

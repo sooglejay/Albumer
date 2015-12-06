@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -88,7 +89,13 @@ public class MeFragment extends BaseFragment {
             if (my_avatar_image != null) {
                 Log.e("qwqw", "qwqwqw9898");
                 Log.e("qwqw", "avatarStr:" + avatarStr);
-                ImageLoader.getInstance().displayImage("file://" + avatarStr, my_avatar_image, ImageUtils.getOptions());
+                if(TextUtils.isEmpty(avatarStr))
+                {
+                    my_avatar_image.setImageResource(R.drawable.test);
+                }
+                else {
+                    ImageLoader.getInstance().displayImage("file://" + avatarStr, my_avatar_image, ImageUtils.getOptions());
+                }
             }
             Log.e("qwqw", "qwqwqw102");
             if (tv_signature != null) {
@@ -113,9 +120,13 @@ public class MeFragment extends BaseFragment {
 
         my_avatar_image = (RoundImageView) view.findViewById(R.id.my_avatar_image);
         String avatarStr = PreferenceUtil.load(getActivity(), PreferenceConstant.USER_AVATAR, "");
-        Log.e("qwqw", "干扰球");
-        ImageLoader.getInstance().displayImage("file://" + avatarStr, my_avatar_image, ImageUtils.getOptions());
-
+        if(TextUtils.isEmpty(avatarStr))
+        {
+            my_avatar_image.setImageResource(R.drawable.test);
+        }
+        else {
+            ImageLoader.getInstance().displayImage("file://" + avatarStr, my_avatar_image, ImageUtils.getOptions());
+        }
         layout_choose_group_id = (LinearLayout) view.findViewById(R.id.layout_choose_group_id);
 
         my_contacts_group = (LinearLayout) view.findViewById(R.id.my_contacts_group);
@@ -204,8 +215,13 @@ public class MeFragment extends BaseFragment {
                 if (my_avatar_image != null) {
                     Log.e("qwqw", "qwqwqw9898");
                     Log.e("qwqw", "avatarStr:" + avatarStr);
-                    ImageLoader.getInstance().displayImage("file://" + avatarStr, my_avatar_image, ImageUtils.getOptions());
-                }
+                    if(TextUtils.isEmpty(avatarStr))
+                    {
+                        my_avatar_image.setImageResource(R.drawable.test);
+                    }
+                    else {
+                        ImageLoader.getInstance().displayImage("file://" + avatarStr, my_avatar_image, ImageUtils.getOptions());
+                    }                }
                 Log.e("qwqw", "qwqwqw102");
                 if (tv_signature != null) {
                     Log.e("qwqw", "qwqwqw86");
