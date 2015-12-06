@@ -131,7 +131,7 @@ public class MyFocusActivity extends BaseActivity {
         grid.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                adapter.setIsShowSelectIndicator(true);
+                adapter.setIsShowSelectIndicator();
 
                 triangleBottomLayoutOperation(true);
                 return true;
@@ -149,7 +149,7 @@ public class MyFocusActivity extends BaseActivity {
                 }
                 datas.clear();
                 datas.addAll(focusDao.getAll());
-                adapter.setIsShowSelectIndicator(false);
+                adapter.setIsShowSelectIndicator();
 
 //                new AsyncTask<Void, List<FocusBean>, List<FocusBean>>() {
 //                    @Override
@@ -175,7 +175,7 @@ public class MyFocusActivity extends BaseActivity {
         iv_cancel_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                adapter.setIsShowSelectIndicator(false);
+                adapter.setIsShowSelectIndicator();
                 triangleBottomLayoutOperation(false);
                 for (FocusBean bean : datas) {
                     bean.setIsSelected(false);

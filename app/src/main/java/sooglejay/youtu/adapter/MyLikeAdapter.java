@@ -29,8 +29,8 @@ public class MyLikeAdapter extends BaseAdapter {
     private List<LikeBean> datas = new ArrayList<>();
     private LayoutInflater mInflater;
 
-    public void setIsShowSelectIndicator(boolean isShowSelectIndicator) {
-        this.isShowSelectIndicator = isShowSelectIndicator;
+    public void setIsShowSelectIndicator() {
+       isShowSelectIndicator = !isShowSelectIndicator;
         notifyDataSetChanged();
     }
 

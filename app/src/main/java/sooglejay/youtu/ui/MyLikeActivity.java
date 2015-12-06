@@ -132,7 +132,7 @@ public class MyLikeActivity extends BaseActivity {
         grid.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                adapter.setIsShowSelectIndicator(true);
+                adapter.setIsShowSelectIndicator();
                 triangleBottomLayoutOperation(true);
                 return true;
             }
@@ -149,7 +149,7 @@ public class MyLikeActivity extends BaseActivity {
                 }
                 datas.clear();
                 datas.addAll(likeDao.getAll());
-                adapter.setIsShowSelectIndicator(false);
+                adapter.setIsShowSelectIndicator();
 //                new AsyncTask<Void, List<LikeBean>, List<LikeBean>>() {
 //                    @Override
 //                    protected void onPostExecute(List<LikeBean> aVoid) {
@@ -175,7 +175,7 @@ public class MyLikeActivity extends BaseActivity {
         iv_cancel_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                adapter.setIsShowSelectIndicator(false);
+                adapter.setIsShowSelectIndicator();
                 triangleBottomLayoutOperation(false);
                 for (LikeBean bean : datas) {
                     bean.setIsSelected(false);

@@ -26,8 +26,8 @@ public class MyFocusAdapter extends BaseAdapter {
     private List<FocusBean> datas = new ArrayList<>();
     private LayoutInflater mInflater;
 
-    public void setIsShowSelectIndicator(boolean isShowSelectIndicator) {
-        this.isShowSelectIndicator = isShowSelectIndicator;
+    public void setIsShowSelectIndicator() {
+        this.isShowSelectIndicator = !this.isShowSelectIndicator;
         notifyDataSetChanged();
     }
 
