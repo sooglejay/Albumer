@@ -19,6 +19,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.greenrobot.event.EventBus;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import sooglejay.youtu.R;
@@ -35,6 +36,7 @@ import sooglejay.youtu.bean.ContactBean;
 import sooglejay.youtu.bean.FocusBean;
 import sooglejay.youtu.constant.NetWorkConstant;
 import sooglejay.youtu.db.ContactDao;
+import sooglejay.youtu.event.BusEvent;
 import sooglejay.youtu.fragment.DialogFragmentCreater;
 import sooglejay.youtu.model.NetCallback;
 import sooglejay.youtu.utils.CacheUtil;
@@ -425,5 +427,9 @@ public class MyContactsActivity extends BaseActivity {
         }
     }
 
-
+    @Override
+    public void finish() {
+        EventBus.getDefault().post(new BusEvent(BusEvent.MSG_MODIFY_USER_INFO));
+        super.finish();
+    }
 }

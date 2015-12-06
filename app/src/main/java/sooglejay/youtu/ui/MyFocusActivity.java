@@ -21,10 +21,12 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.greenrobot.event.EventBus;
 import sooglejay.youtu.R;
 import sooglejay.youtu.adapter.MyFocusAdapter;
 import sooglejay.youtu.bean.FocusBean;
 import sooglejay.youtu.db.FocusDao;
+import sooglejay.youtu.event.BusEvent;
 import sooglejay.youtu.widgets.CircleButton;
 import sooglejay.youtu.widgets.TitleBar;
 import sooglejay.youtu.widgets.imagepicker.utils.TimeUtils;
@@ -276,5 +278,10 @@ public class MyFocusActivity extends BaseActivity {
             });
             title_bar.setRightTv("", -1);
         }
+    }
+    @Override
+    public void finish() {
+        EventBus.getDefault().post(new BusEvent(BusEvent.MSG_MODIFY_USER_INFO));
+        super.finish();
     }
 }
