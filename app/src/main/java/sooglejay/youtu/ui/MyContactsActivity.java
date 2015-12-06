@@ -35,6 +35,7 @@ import sooglejay.youtu.constant.NetWorkConstant;
 import sooglejay.youtu.db.ContactDao;
 import sooglejay.youtu.fragment.DialogFragmentCreater;
 import sooglejay.youtu.model.NetCallback;
+import sooglejay.youtu.utils.CacheUtil;
 import sooglejay.youtu.utils.UIUtil;
 import sooglejay.youtu.widgets.CircleButton;
 import sooglejay.youtu.widgets.TitleBar;
@@ -65,11 +66,14 @@ public class MyContactsActivity extends BaseActivity {
 
     private DialogFragmentCreater dialogFragmentCreater;
 
+    private CacheUtil cacheUtil;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_contact);
         activity = this;
+        cacheUtil = new CacheUtil(this);
         dialogFragmentCreater = new DialogFragmentCreater();
         dialogFragmentCreater.initDialogFragment(this, this.getSupportFragmentManager());
 
@@ -123,11 +127,11 @@ public class MyContactsActivity extends BaseActivity {
                                 UIUtil.takePhoneCall(activity, datas.get(i).getPhoneNumber(), 100);
                                 break;
                             case R.id.tv_send_message:
-                                UIUtil.sendMessage(activity, datas.get(i).getPhoneNumber(), "责任和信任就是男人的霸气和浪漫", 100);
+                                UIUtil.sendMessage(activity, datas.get(i).getPhoneNumber(), "", 100);
                                 break;
                             case R.id.tv_delete_contact:
                                 AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                                builder.setTitle("提示").setMessage("真的要删除这个图片么?")
+                                builder.setTitle("提示").setMessage("删除任何一个联系人，都会导致清除图片缓存，下次查看相册时会重新启动人脸检测哟！是否确定？")
                                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
@@ -142,6 +146,8 @@ public class MyContactsActivity extends BaseActivity {
                                                         contactDao.deleteByName(datas.get(i).getImage_path());
                                                         datas.remove(i);
                                                         adapter.notifyDataSetChanged();
+                                                        cacheUtil.clearIdentifyCache();
+                                                        Toast.makeText(activity, "删除联系人成功！", Toast.LENGTH_SHORT).show();
                                                     }
                                                 });
                                             }
@@ -216,6 +222,8 @@ public class MyContactsActivity extends BaseActivity {
                     }
                 } else if (success_count[0] > 0) {
                     Toast.makeText(activity, "成功删除人脸联系人" + success_count[0] + "个", Toast.LENGTH_SHORT).show();
+                    cacheUtil.clearIdentifyCache();
+                    cacheUtil.clearIdentifyCache();
                 }
 
                 adapter.setIsShowSelectIndicator();

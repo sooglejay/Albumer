@@ -6,69 +6,87 @@
     android:orientation="vertical">
 
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="选择操作"
+        android:layout_margin="34dp"
+        android:textColor="@color/black_color"
+        android:textSize="20sp" />
+
+    <TextView
         android:id="@+id/tv_edit_info"
-        android:text="编辑信息"
-        android:padding="@dimen/middle_padding"
-        android:background="@drawable/btn_select_base"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_margin="@dimen/middle_padding"
+        android:layout_marginLeft="34dp"
+        android:layout_marginRight="34dp"
+        android:background="@drawable/btn_select_base"
         android:gravity="center"
+        android:padding="@dimen/middle_padding"
+        android:text="编辑信息"
         android:textColor="@color/white_color"
-        android:textSize="20sp" />
+        android:textSize="@dimen/middle_textsize" />
 
     <TextView
         android:id="@+id/tv_call"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="34dp"
+        android:layout_marginRight="34dp"
+        android:layout_marginTop="@dimen/middle_padding"
+        android:background="@drawable/btn_select_base"
+        android:gravity="center"
+        android:padding="@dimen/middle_padding"
         android:text="拨打电话"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="@dimen/middle_padding"
-        android:background="@drawable/btn_select_base"
-        android:padding="@dimen/middle_padding"
-        android:gravity="center"
         android:textColor="@color/white_color"
-        android:textIsSelectable="true"
-        android:textSize="20sp" />
-  <TextView
+        android:textSize="@dimen/middle_textsize" />
+
+    <TextView
         android:id="@+id/tv_send_message"
-        android:text="发送短信"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_margin="@dimen/middle_padding"
+        android:layout_marginLeft="34dp"
+        android:layout_marginRight="34dp"
+        android:layout_marginTop="@dimen/middle_padding"
         android:background="@drawable/btn_select_base"
-        android:padding="@dimen/middle_padding"
         android:gravity="center"
+        android:padding="@dimen/middle_padding"
+        android:text="发送短信"
         android:textColor="@color/white_color"
-        android:textIsSelectable="true"
-        android:textSize="20sp" />
+
+        android:textSize="@dimen/middle_textsize" />
+
     <TextView
         android:id="@+id/tv_delete_contact"
-        android:text="移除联系人"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_margin="@dimen/middle_padding"
+        android:layout_marginLeft="34dp"
+        android:layout_marginRight="34dp"
+        android:layout_marginTop="@dimen/middle_padding"
         android:background="@drawable/btn_select_base"
-        android:padding="@dimen/middle_padding"
         android:gravity="center"
+        android:padding="@dimen/middle_padding"
+        android:text="删除联系人"
         android:textColor="@color/white_color"
-        android:textIsSelectable="true"
-        android:textSize="20sp" />
+        android:textSize="@dimen/middle_textsize" />
 
     <TextView
         android:id="@+id/tv_cancel"
-        android:text="取消"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_margin="@dimen/middle_padding"
+        android:layout_marginLeft="34dp"
+        android:layout_marginRight="34dp"
+        android:layout_marginBottom="34dp"
+        android:layout_marginTop="@dimen/middle_padding"
         android:background="@drawable/btn_select_base"
-        android:padding="@dimen/middle_padding"
         android:gravity="center"
+        android:padding="@dimen/middle_padding"
+        android:text="取消"
         android:textColor="@color/white_color"
-        android:textIsSelectable="true"
-        android:textSize="20sp" />
+        android:textSize="@dimen/middle_textsize" />
 </LinearLayout>
