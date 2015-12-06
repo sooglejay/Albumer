@@ -4,9 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
+    android:background="@color/very_light_gray_color"
     android:clipChildren="true"
-    android:fitsSystemWindows="true"
-    android:background="@color/very_light_gray_color">
+    android:fitsSystemWindows="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -38,7 +38,8 @@
                 android:paddingBottom="@dimen/middle_padding"
                 android:paddingTop="@dimen/middle_padding"
                 android:text="头像"
-                android:textSize="@dimen/middle_textsize" />
+                android:textColor="@color/dark_black_color"
+                android:textSize="@dimen/big_textsize" />
 
             <sooglejay.youtu.widgets.RoundImageView
                 android:id="@+id/avatar_image"
@@ -77,7 +78,8 @@
                 android:paddingBottom="@dimen/middle_padding"
                 android:paddingTop="@dimen/middle_padding"
                 android:text="签名"
-                android:textSize="@dimen/middle_textsize" />
+                android:textColor="@color/dark_black_color"
+                android:textSize="@dimen/big_textsize" />
 
             <TextView
                 android:id="@+id/my_signature_count_tv"
@@ -123,6 +125,8 @@
                 android:layout_marginLeft="@dimen/big_padding"
                 android:layout_marginStart="@dimen/big_padding"
                 android:layout_weight="1"
+                android:textColor="@color/dark_black_color"
+                android:textSize="@dimen/big_textsize"
                 android:paddingBottom="@dimen/middle_padding"
                 android:paddingTop="@dimen/middle_padding"
                 android:text="开启人脸检测" />
@@ -160,6 +164,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:textColor="@color/dark_black_color"
+                android:textSize="@dimen/big_textsize"
                 android:layout_marginLeft="@dimen/big_padding"
                 android:layout_marginStart="@dimen/big_padding"
                 android:layout_weight="1"
@@ -196,22 +202,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:textColor="@color/dark_black_color"
+                android:textSize="@dimen/big_textsize"
                 android:layout_marginLeft="@dimen/big_padding"
                 android:layout_marginStart="@dimen/big_padding"
                 android:paddingBottom="@dimen/middle_padding"
                 android:paddingTop="@dimen/middle_padding"
-                android:text="清空缓存"
-                android:textSize="@dimen/middle_textsize" />
+                android:text="清空缓存" />
 
 
         </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginLeft="@dimen/big_padding"
-            android:layout_marginStart="@dimen/big_padding"
-            android:background="@color/very_light_gray_color" />
 
 
         <View
@@ -234,6 +234,8 @@
                 android:layout_marginLeft="@dimen/big_padding"
                 android:layout_weight="1"
                 android:gravity="left"
+                android:textColor="@color/dark_black_color"
+                android:textSize="@dimen/big_textsize"
                 android:paddingBottom="@dimen/middle_padding"
                 android:paddingTop="@dimen/middle_padding"
                 android:text="关于作者" />
