@@ -27,6 +27,7 @@ import sooglejay.youtu.constant.StringConstant;
 import sooglejay.youtu.event.BusEvent;
 import sooglejay.youtu.utils.CacheUtil;
 import sooglejay.youtu.utils.ImageUtils;
+import sooglejay.youtu.utils.PersonsUtil;
 import sooglejay.youtu.utils.PreferenceUtil;
 import sooglejay.youtu.utils.ProgressDialogUtil;
 import sooglejay.youtu.widgets.RoundImageView;
@@ -45,6 +46,7 @@ public class SettingActivity extends BaseActivity {
     private RoundImageView avatar_image;
     private LinearLayout signature_group;
     private LinearLayout clear_cache_group;
+    private LinearLayout layout_delete_all_persons;
     private LinearLayout about_me_group;
 
     private LinearLayout layout_detect_face;
@@ -106,6 +108,7 @@ public class SettingActivity extends BaseActivity {
         signature_group = (LinearLayout) findViewById(R.id.signature_group);
         my_signature_count_tv = (TextView) findViewById(R.id.my_signature_count_tv);
         clear_cache_group = (LinearLayout) findViewById(R.id.clear_cache_group);
+        layout_delete_all_persons = (LinearLayout) findViewById(R.id.layout_delete_all_persons);
         about_me_group = (LinearLayout) findViewById(R.id.about_me_group);
         title_bar = (TitleBar) findViewById(R.id.title_bar);
         title_bar.initTitleBarInfo("设置", R.drawable.arrow_left, -1, "", "");
@@ -159,6 +162,42 @@ public class SettingActivity extends BaseActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 PreferenceUtil.save(activity, PreferenceConstant.SWITCH_DIALOG_PROGRESS_CANCELED_ON_TOUCH_OUTSIDE, b);
+            }
+        });
+        layout_delete_all_persons.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final ProgressDialogUtil progressDialogUtil = new ProgressDialogUtil(activity);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                builder.setTitle("提示").setMessage("删除人脸联系人后，图片缓存依然保留，当您浏览图片时会重新进行人脸识别\n您是否确定要这么做?")
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                new AsyncTask<Void, Void, Void>() {
+                                    @Override
+                                    protected Void doInBackground(Void... voids) {
+                                        PersonsUtil.delAllPersons(activity);
+                                        cacheUtil.clearIdentifyCache();
+                                        return null;
+                                    }
+                                    @Override
+                                    protected void onPreExecute() {
+                                        super.onPreExecute();
+                                        progressDialogUtil.show("正在删除人脸联系人...");
+
+                                    }
+
+                                    @Override
+                                    protected void onPostExecute(Void aVoid) {
+                                        super.onPostExecute(aVoid);
+                                        progressDialogUtil.hide();
+                                        Toast.makeText(activity, "所有人脸联系人都已删除！", Toast.LENGTH_SHORT).show();
+                                    }
+                                }.execute();
+                            }
+                        }).setNegativeButton("取消", null).create().show();
             }
         });
 

@@ -35,69 +35,8 @@ public class ApiTestActivity extends BaseActivity {
         tv_test.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                delAllPersonsByGroupIds();
             }
         });
     }
-
-    private void delPersons(List<String> person_ids)
-    {
-        for (String person_id :person_ids) {
-            DelPersonUtil.delPerson(this, NetWorkConstant.APP_ID, person_id, new NetCallback<DelPersonResponseBean>(this) {
-                @Override
-                public void onFailure(RetrofitError error, String message) {
-
-                }
-
-                @Override
-                public void success(DelPersonResponseBean delPersonResponseBean, Response response) {
-
-                }
-            });
-        }
-    }
-
-
-    private void delAllPersonsByGroupIds() {
-        GetGroupIdsUtil.getGroupIds(this, NetWorkConstant.APP_ID, new NetCallback<GetGroupIdsResponseBean>(this) {
-            @Override
-            public void onFailure(RetrofitError error, String message) {
-
-            }
-
-            @Override
-            public void success(GetGroupIdsResponseBean getGroupIdsResponseBean, Response response) {
-                //获取到所有的组ids
-                if (getGroupIdsResponseBean.getGroup_ids() != null) {
-                    groupidsList.clear();
-                    groupidsList.addAll(getGroupIdsResponseBean.getGroup_ids());
-                }
-                personidsList.clear();
-
-                //根据每个组id 去获取所有用户的信息
-                for (int i = 0; i < groupidsList.size(); i++) {
-                    getAllPersonIds(groupidsList.get(i));
-                }
-            }
-        });
-    }
-
-    private void getAllPersonIds(String group_id)
-    {
-        GetPersonIdsUtil.getPersonIds(this, NetWorkConstant.APP_ID, group_id, new NetCallback<GetPersonIdsResponseBean>(this) {
-            @Override
-            public void onFailure(RetrofitError error, String message) {
-
-            }
-
-            @Override
-            public void success(GetPersonIdsResponseBean getPersonIdsResponseBean, Response response) {
-                //获取了一个组用户的信息之后就删除这个组的用户
-                personidsList.addAll(getPersonIdsResponseBean.getPerson_ids());
-                delPersons(getPersonIdsResponseBean.getPerson_ids());
-            }
-        });
-    }
-
 
 }

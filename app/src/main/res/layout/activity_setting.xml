@@ -268,6 +268,35 @@
 
 
         </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="@dimen/big_padding"
+            android:layout_marginStart="@dimen/big_padding"
+            android:background="@color/very_light_gray_color" />
+
+        <LinearLayout
+            android:id="@+id/layout_delete_all_persons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_select_white"
+            android:clickable="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="@color/dark_black_color"
+                android:textSize="@dimen/big_textsize"
+                android:layout_marginLeft="@dimen/big_padding"
+                android:layout_marginStart="@dimen/big_padding"
+                android:paddingBottom="@dimen/middle_padding"
+                android:paddingTop="@dimen/middle_padding"
+                android:text="清空联系人" />
+
+
+        </LinearLayout>
 
 
         <View
