@@ -34,6 +34,7 @@ public class ProgressDialogUtil {
         dialog.setCancelable(isCanceledOnTouchOutside);
     }
 
+
     /**
      * 显示
      */
