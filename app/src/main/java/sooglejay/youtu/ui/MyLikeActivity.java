@@ -29,6 +29,7 @@ import sooglejay.youtu.widgets.TitleBar;
 import sooglejay.youtu.widgets.imagepicker.bean.Image;
 import sooglejay.youtu.widgets.imagepicker.utils.TimeUtils;
 
+
 /**
  * Created by JammyQtheLab on 2015/12/3.
  */
