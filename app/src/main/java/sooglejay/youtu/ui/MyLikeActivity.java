@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
@@ -135,6 +136,7 @@ public class MyLikeActivity extends BaseActivity {
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 adapter.setIsShowSelectIndicator();
                 triangleBottomLayoutOperation(true);
+
                 return true;
             }
         });
@@ -143,7 +145,7 @@ public class MyLikeActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 triangleBottomLayoutOperation(false);
-                for (int i = 0 ; i <datas.size();i++) {
+                for (int i = 0; i < datas.size(); i++) {
                     if (datas.get(i).isSelected()) {
                         likeDao.deleteByName(datas.get(i).getImagePath());
                     }
@@ -238,8 +240,7 @@ public class MyLikeActivity extends BaseActivity {
                 break;
         }
 
-        if(isShowSelectAll)
-        {
+        if (isShowSelectAll) {
 
             title_bar.setOnTitleBarClickListener(null);
             title_bar.setOnTitleBarClickListener(new TitleBar.OnTitleBarClickListener() {
@@ -256,8 +257,12 @@ public class MyLikeActivity extends BaseActivity {
                     adapter.notifyDataSetChanged();
                 }
             });
-            title_bar.setRightTv("全选", -1);
-        }else {
+            if (TextUtils.isEmpty(title_bar.getRightTv())) {
+                title_bar.setRightTv("全选",-1);
+            } else {
+                title_bar.setRightTv("", -1);
+            }
+        } else {
             title_bar.setOnTitleBarClickListener(null);
             title_bar.setOnTitleBarClickListener(new TitleBar.OnTitleBarClickListener() {
                 @Override

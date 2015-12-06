@@ -6,12 +6,14 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -83,6 +85,7 @@ public class MyContactsActivity extends BaseActivity {
                 R.anim.exit_to_bottom_200);
 
         title_bar = (TitleBar) findViewById(R.id.title_bar);
+
         swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
         swipeLayout.setColorSchemeResources(R.color.base_color);
         list_view = (ListView) findViewById(R.id.list_view);
@@ -110,6 +113,7 @@ public class MyContactsActivity extends BaseActivity {
                 adapter.setIsShowSelectIndicator();
                 adapter.notifyDataSetChanged();
                 triangleBottomLayoutOperation(true);
+
                 return true;
             }
         });
@@ -158,7 +162,7 @@ public class MyContactsActivity extends BaseActivity {
                         }
                     }
                 });
-                dialogFragmentCreater.showDialog(activity,DialogFragmentCreater.DIALOG_showEditContactsDialog);
+                dialogFragmentCreater.showDialog(activity, DialogFragmentCreater.DIALOG_showEditContactsDialog);
             }
         });
 
@@ -399,7 +403,11 @@ public class MyContactsActivity extends BaseActivity {
                     adapter.notifyDataSetChanged();
                 }
             });
-            title_bar.setRightTv("全选", -1);
+            if (TextUtils.isEmpty(title_bar.getRightTv())) {
+                title_bar.setRightTv("全选", -1);
+            } else {
+                title_bar.setRightTv("", -1);
+            }
         } else {
 
             title_bar.setOnTitleBarClickListener(null);
