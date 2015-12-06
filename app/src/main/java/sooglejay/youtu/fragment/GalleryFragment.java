@@ -236,7 +236,7 @@ public class GalleryFragment extends BaseFragment {
         iv_share_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ShareUtils shareUtils = new ShareUtils();
+                ShareUtils shareUtils = new ShareUtils(activity,url);
                 shareUtils.addCustomPlatforms(activity);
             }
         });

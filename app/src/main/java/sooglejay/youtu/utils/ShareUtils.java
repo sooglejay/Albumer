@@ -1,7 +1,6 @@
 package sooglejay.youtu.utils;
 
 import android.app.Activity;
-import android.widget.Toast;
 
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.umeng.socialize.bean.SocializeEntity;
@@ -54,7 +53,17 @@ public class ShareUtils{
     private final UMSocialService mController = UMServiceFactory
             .getUMSocialService("com.umeng.share");
     private SHARE_MEDIA mPlatform = SHARE_MEDIA.SINA;
+    
+    private String imageFilePath;
 
+    public ShareUtils(Activity activity, String imageFilePath) {
+        this.activity = activity;
+        this.imageFilePath = imageFilePath;
+    }
+
+    private Activity activity;
+
+ 
 
 
     /**
@@ -66,23 +75,23 @@ public class ShareUtils{
         // 添加QQ平台
         addQQQZonePlatform(context);
         // 添加印象笔记平台
-//        addEverNote(context);
+        addEverNote(context);
         // 添加facebook平台
-//        addFacebook(context);
+        addFacebook(context);
         // 添加Instagram平台
-//        addInstagram(context);
+        addInstagram(context);
         // 添加来往、来往动态平台
 //        addLaiWang(context);
         // 添加LinkedIn平台
 //        addLinkedIn(context);
         // 添加Pinterest平台
-//        addPinterest(context);
+        addPinterest(context);
         // 添加Pocket平台
-//        addPocket(context);
+        addPocket(context);
         // 添加有道云平台
-//        addYNote(context);
+        addYNote(context);
         // 添加易信平台
-//        addYXPlatform(context);
+        addYXPlatform(context);
         // 添加短信平台
         addSMS();
         // 添加email平台
@@ -117,6 +126,7 @@ public class ShareUtils{
                 SHARE_MEDIA.YIXIN_CIRCLE, SHARE_MEDIA.YNOTE, SHARE_MEDIA.WHATSAPP,
                 SHARE_MEDIA.LINE, SHARE_MEDIA.TUMBLR, SHARE_MEDIA.FLICKR, SHARE_MEDIA.KAKAO);
         mController.openShare(context, false);
+        mController.setShareImage(new UMImage(context,imageFilePath));
     }
 
 
@@ -147,6 +157,7 @@ public class ShareUtils{
         pocketHandler.addToSocialSDK();
         PocketShareContent pocketShareContent = new PocketShareContent();
         pocketShareContent.setShareContent("责任和信任就是男人的霸气和浪漫");
+        pocketShareContent.setShareImage(new UMImage(context,imageFilePath));
         mController.setShareMedia(pocketShareContent);
     }
 
@@ -172,7 +183,7 @@ public class ShareUtils{
         yNoteShareContent
                 .setShareContent("责任和信任就是男人的霸气和浪漫 ");
         yNoteShareContent.setTitle("责任和信任就是男人的霸气和浪漫");
-        yNoteShareContent.setShareImage(new UMImage(context, R.drawable.ic_menu));
+        yNoteShareContent.setShareImage(new UMImage(context, imageFilePath));
         mController.setShareMedia(yNoteShareContent);
     }
 
@@ -186,7 +197,7 @@ public class ShareUtils{
         // 设置evernote的分享内容
         EvernoteShareContent shareContent = new EvernoteShareContent(
                 "责任和信任就是男人的霸气和浪漫");
-        shareContent.setShareMedia(new UMImage(context, R.drawable.ic_menu));
+        shareContent.setShareMedia(new UMImage(context, imageFilePath));
         mController.setShareMedia(shareContent);
     }
 
@@ -204,7 +215,7 @@ public class ShareUtils{
         // 设置Pinterest的分享内容
         PinterestShareContent shareContent = new PinterestShareContent(
                 "责任和信任就是男人的霸气和浪漫");
-        shareContent.setShareMedia(new UMImage(context, R.drawable.ic_menu));
+        shareContent.setShareMedia(new UMImage(context, imageFilePath));
         mController.setShareMedia(shareContent);
     }
 
@@ -259,8 +270,9 @@ public class ShareUtils{
         // 添加QQ支持, 并且设置QQ分享内容的target url
         UMQQSsoHandler qqSsoHandler = new UMQQSsoHandler(context,
                 appId, appKey);
-        qqSsoHandler.setTargetUrl("责任和信任就是男人的霸气和浪漫");
+        
         qqSsoHandler.addToSocialSDK();
+        qqSsoHandler.setTitle(context.getString(R.string.app_name));
 
         // 添加QZone平台
         QZoneSsoHandler qZoneSsoHandler = new QZoneSsoHandler(context, appId, appKey);
@@ -280,7 +292,7 @@ public class ShareUtils{
         // 关闭分享时的等待Dialog
         yixinHandler.enableLoadingDialog(false);
         // 设置target Url, 必须以http或者https开头
-        yixinHandler.setTargetUrl("责任和信任就是男人的霸气和浪漫");
+        yixinHandler.setTitle("责任和信任就是男人的霸气和浪漫");
         yixinHandler.addToSocialSDK();
 
         // 易信朋友圈平台
@@ -301,7 +313,7 @@ public class ShareUtils{
         UMFacebookHandler mFacebookHandler = new UMFacebookHandler(context);
         mFacebookHandler.addToSocialSDK();
 
-        UMImage localImage = new UMImage(context, R.drawable.ic_menu);
+        UMImage localImage = new UMImage(context,imageFilePath);
 
         UMVideo umVedio = new UMVideo(
                 "http://v.youku.com/v_show/id_XNTc0ODM4OTM2.html");
@@ -314,10 +326,10 @@ public class ShareUtils{
 //        fbContent.setShareImage(localImage);
 //         fbContent.setShareContent("This is my facebook social share sdk.");
 //        fbContent.setShareVideo(umVedio);
-        fbContent.setTitle("FB title");
         fbContent.setCaption("Caption - Fb");
-        fbContent.setShareContent("友盟分享组件支持FB最新版啦~");
-        fbContent.setTargetUrl("责任和信任就是男人的霸气和浪漫");
+        fbContent.setShareImage(localImage);
+        fbContent.setShareContent("Wish 赛亚人 success in the games!");
+        fbContent.setTitle(context.getString(R.string.app_name));
         mController.setShareMedia(fbContent);
 
     }
@@ -331,7 +343,7 @@ public class ShareUtils{
                 context);
         instagramHandler.addToSocialSDK();
 
-        UMImage localImage = new UMImage(context, R.drawable.ic_menu);
+        UMImage localImage = new UMImage(context, imageFilePath);
 
         // // 添加分享到Instagram的内容
         InstagramShareContent instagramShareContent = new InstagramShareContent(
@@ -344,7 +356,7 @@ public class ShareUtils{
         whatsAppHandler.addToSocialSDK();
         WhatsAppShareContent whatsAppShareContent = new WhatsAppShareContent();
         // whatsAppShareContent.setShareContent("share ic_menu");
-        whatsAppShareContent.setShareImage(new UMImage(context, R.drawable.ic_menu));
+        whatsAppShareContent.setShareImage(new UMImage(context, imageFilePath));
         mController.setShareMedia(whatsAppShareContent);
         // mController.openShare(context, false);
     }
@@ -354,7 +366,7 @@ public class ShareUtils{
         lineHandler.addToSocialSDK();
         LineShareContent lineShareContent = new LineShareContent();
         // lineShareContent.setShareContent("share ic_menu");
-        lineShareContent.setShareImage(new UMImage(context, R.drawable.ic_menu));
+        lineShareContent.setShareImage(new UMImage(context,imageFilePath));
         mController.setShareMedia(lineShareContent);
         // mController.openShare(context, false);
     }
@@ -363,9 +375,9 @@ public class ShareUtils{
         UMTumblrHandler tumblrHandler = new UMTumblrHandler(context);
         tumblrHandler.addToSocialSDK();
         TumblrShareContent tumblrShareContent = new TumblrShareContent();
-        tumblrShareContent.setTitle("title");
+        tumblrShareContent.setTitle(context.getString(R.string.app_name));
         tumblrShareContent.setShareContent("责任和信任就是男人的霸气和浪漫");
-        tumblrShareContent.setShareImage(new UMImage(context, R.drawable.ic_menu));
+        tumblrShareContent.setShareImage(new UMImage(context, imageFilePath));
         mController.setShareMedia(tumblrShareContent);
         // mController.openShare(context, false);
     }
@@ -376,7 +388,7 @@ public class ShareUtils{
 
         KakaoShareContent kakaoShareContent = new KakaoShareContent();
         // kakaoShareContent.setShareContent("share ic_menu");
-        kakaoShareContent.setShareImage(new UMImage(context, R.drawable.ic_menu));
+        kakaoShareContent.setShareImage(new UMImage(context, imageFilePath));
         mController.setShareMedia(kakaoShareContent);
         // mController.openShare(context, false);
     }
@@ -385,7 +397,7 @@ public class ShareUtils{
         UMFlickrHandler flickrHandler = new UMFlickrHandler(context);
         flickrHandler.addToSocialSDK();
         FlickrShareContent flickrShareContent = new FlickrShareContent();
-        flickrShareContent.setShareImage(new UMImage(context, R.drawable.ic_menu));
+        flickrShareContent.setShareImage(new UMImage(context, imageFilePath));
         // flickrShareContent.setShareContent("share ic_menu");
         mController.setShareMedia(flickrShareContent);
         // mController.openShare(context, false);
