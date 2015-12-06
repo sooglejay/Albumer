@@ -26,6 +26,7 @@ import sooglejay.youtu.bean.GroupBean;
 import sooglejay.youtu.constant.NetWorkConstant;
 import sooglejay.youtu.constant.PreferenceConstant;
 import sooglejay.youtu.constant.StringConstant;
+import sooglejay.youtu.db.ContactDao;
 import sooglejay.youtu.db.FocusDao;
 import sooglejay.youtu.db.GroupNameDao;
 import sooglejay.youtu.db.LikeDao;
@@ -65,6 +66,7 @@ public class MeFragment extends BaseFragment {
 
     private LikeDao likeDao;
     private FocusDao focusDao;
+    private ContactDao contactDao;
 
 
     @Nullable
@@ -77,32 +79,39 @@ public class MeFragment extends BaseFragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
-            if (likeDao != null && focusDao != null) {
-                int likeCount = 0;
-                int focusCount = 0;
-                likeCount = likeDao.getCount();
-                focusCount = focusDao.getCount();
-                my_like_count_tv.setText(likeCount + "");
-                my_focus_count_tv.setText(focusCount + "");
+            refreshData();
+        }
+    }
+
+    private void refreshData() {
+        if (likeDao != null && focusDao != null) {
+            int likeCount = 0;
+            int focusCount = 0;
+            int contactCount = 0;
+            likeCount = likeDao.getCount();
+            focusCount = focusDao.getCount();
+            contactCount = contactDao.getCount();
+            my_like_count_tv.setText(likeCount + "");
+            my_focus_count_tv.setText(focusCount + "");
+            my_contacts_count_tv.setText(contactCount + "");
+        }
+        String avatarStr = PreferenceUtil.load(getActivity(), PreferenceConstant.USER_AVATAR, "");
+        if (my_avatar_image != null) {
+            Log.e("qwqw", "qwqwqw9898");
+            Log.e("qwqw", "avatarStr:" + avatarStr);
+            if(TextUtils.isEmpty(avatarStr))
+            {
+                my_avatar_image.setImageResource(R.drawable.test);
             }
-            String avatarStr = PreferenceUtil.load(getActivity(), PreferenceConstant.USER_AVATAR, "");
-            if (my_avatar_image != null) {
-                Log.e("qwqw", "qwqwqw9898");
-                Log.e("qwqw", "avatarStr:" + avatarStr);
-                if(TextUtils.isEmpty(avatarStr))
-                {
-                    my_avatar_image.setImageResource(R.drawable.test);
-                }
-                else {
-                    ImageLoader.getInstance().displayImage("file://" + avatarStr, my_avatar_image, ImageUtils.getOptions());
-                }
+            else {
+                ImageLoader.getInstance().displayImage("file://" + avatarStr, my_avatar_image, ImageUtils.getOptions());
             }
-            Log.e("qwqw", "qwqwqw102");
-            if (tv_signature != null) {
-                Log.e("qwqw", "qwqwqw86");
-                String signature = PreferenceUtil.load(getActivity(), PreferenceConstant.USER_SIGNATURE, StringConstant.default_signature);
-                tv_signature.setText(signature);
-            }
+        }
+        Log.e("qwqw", "qwqwqw102");
+        if (tv_signature != null) {
+            Log.e("qwqw", "qwqwqw86");
+            String signature = PreferenceUtil.load(getActivity(), PreferenceConstant.USER_SIGNATURE, StringConstant.default_signature);
+            tv_signature.setText(signature);
         }
     }
 
@@ -113,6 +122,7 @@ public class MeFragment extends BaseFragment {
 
         likeDao = new LikeDao(getActivity());
         focusDao = new FocusDao(getActivity());
+        contactDao = new ContactDao(getActivity());
 
 
         groupNameDao = new GroupNameDao(getActivity());
@@ -207,26 +217,10 @@ public class MeFragment extends BaseFragment {
      *
      * @param event
      */
-    public void onEvent(BusEvent event) {
+    public void onEventMainThread(BusEvent event) {
         switch (event.getMsg()) {
-
             case BusEvent.MSG_MODIFY_USER_INFO:
-                String avatarStr = PreferenceUtil.load(getActivity(), PreferenceConstant.USER_AVATAR, "");
-                if (my_avatar_image != null) {
-                    Log.e("qwqw", "qwqwqw9898");
-                    Log.e("qwqw", "avatarStr:" + avatarStr);
-                    if(TextUtils.isEmpty(avatarStr))
-                    {
-                        my_avatar_image.setImageResource(R.drawable.test);
-                    }
-                    else {
-                        ImageLoader.getInstance().displayImage("file://" + avatarStr, my_avatar_image, ImageUtils.getOptions());
-                    }                }
-                Log.e("qwqw", "qwqwqw102");
-                if (tv_signature != null) {
-                    Log.e("qwqw", "qwqwqw86");
-                    tv_signature.setText(PreferenceUtil.load(getActivity(), PreferenceConstant.USER_SIGNATURE, StringConstant.default_signature));
-                }
+                refreshData();
                 break;
             default:
                 break;

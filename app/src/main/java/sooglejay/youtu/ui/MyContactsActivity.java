@@ -1,6 +1,7 @@
 package sooglejay.youtu.ui;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.Animation;
@@ -11,6 +12,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -71,10 +73,32 @@ public class MyContactsActivity extends BaseActivity {
         iv_cancel_image = (CircleButton) findViewById(R.id.iv_cancel_image);
         iv_delete_image = (CircleButton) findViewById(R.id.iv_delete_image);
 
-        contactDao = new ContactDao(this);
-        datas.addAll(contactDao.getAll());
         adapter = new MyContactsListAdapter(datas, this);
         list_view.setAdapter(adapter);
+        contactDao = new ContactDao(this);
+
+
+        //先读取文件结束才设置
+        new AsyncTask<Void, List<ContactBean>, List<ContactBean>>() {
+            @Override
+            protected List<ContactBean> doInBackground(Void... voids) {
+                return contactDao.getAll();
+            }
+
+            @Override
+            protected void onPostExecute(List<ContactBean> aVoid) {
+                super.onPostExecute(aVoid);
+                if(aVoid!=null)
+                {
+
+                    datas.addAll(aVoid);
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        }.execute();
+
+
+
         list_view.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
