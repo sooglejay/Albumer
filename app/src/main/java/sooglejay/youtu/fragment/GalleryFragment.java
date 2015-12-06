@@ -476,6 +476,14 @@ public class GalleryFragment extends BaseFragment {
                 }
                 break;
             case BusEvent.MSG_REFRESH:
+                if(dialogFragmentCreater == null)
+                {
+                    Log.e("test","DialogFragmentCreater  is  nulll");
+                    dialogFragmentCreater = new DialogFragmentCreater();
+                    dialogFragmentCreater.initDialogFragment(getActivity(), getActivity().getSupportFragmentManager());
+                    imageView.setDialogFragmentCreater(dialogFragmentCreater);
+                }
+                Log.e("test","广播：进行人脸识别");
                 getImage(url);
                 break;
             case BusEvent.MSG_IS_DETECT_FACE:
