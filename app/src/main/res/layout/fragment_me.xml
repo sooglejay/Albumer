@@ -102,7 +102,7 @@
                     android:orientation="horizontal">
 
                     <ImageView
-                        android:layout_width="24dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginLeft="@dimen/most_big_padding"
@@ -110,19 +110,19 @@
                         android:paddingBottom="@dimen/middle_padding"
                         android:paddingTop="@dimen/middle_padding"
                         android:scaleType="center"
-                        android:src="@drawable/icon_choose" />
+                        android:src="@drawable/icon_choose_group" />
 
                     <TextView
                         android:id="@+id/request_as_senior_tv"
                         android:textColor="@color/dark_black_color"
                         android:layout_width="0dp"
-                        android:textSize="@dimen/middle_textsize"
+                        android:textSize="@dimen/big_textsize"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
                         android:layout_marginLeft="@dimen/big_padding"
-                        android:layout_marginStart="@dimen/big_padding"
+                        android:layout_marginStart="@dimen/big_padding"      android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:padding="@dimen/middle_padding"
+                        android:paddingTop="@dimen/middle_padding"
+                        android:paddingBottom="@dimen/middle_padding"
                         android:text="选择人脸识别匹配库" />
 
                     <ImageView
@@ -159,7 +159,7 @@
                     android:paddingBottom="@dimen/middle_padding"
                     android:paddingTop="@dimen/middle_padding"
                     android:scaleType="center"
-                    android:src="@drawable/icon_choose" />
+                    android:src="@drawable/icon_contacts" />
 
                 <TextView
                     android:id="@+id/my_contacts_des_tv"
@@ -171,7 +171,7 @@
                     android:layout_weight="1"
                     android:text="联系人"
                     android:textColor="@color/dark_black_color"
-                    android:textSize="@dimen/middle_textsize" />
+                    android:textSize="@dimen/big_textsize" />
 
                 <TextView
                     android:id="@+id/my_contacts_count_tv"
@@ -219,14 +219,14 @@
                     android:paddingBottom="@dimen/middle_padding"
                     android:paddingTop="@dimen/middle_padding"
                     android:scaleType="center"
-                    android:src="@drawable/icon_choose" />
+                    android:src="@drawable/setting_icon_focused" />
 
                 <TextView
                     android:id="@+id/my_focus_des_tv"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:textSize="@dimen/middle_textsize"
+                    android:textSize="@dimen/big_textsize"
                     android:layout_marginLeft="@dimen/big_padding"
                     android:layout_marginStart="@dimen/big_padding"
                     android:layout_weight="1"
@@ -277,7 +277,7 @@
                     android:paddingBottom="@dimen/middle_padding"
                     android:paddingTop="@dimen/middle_padding"
                     android:scaleType="center"
-                    android:src="@drawable/icon_choose" />
+                    android:src="@drawable/setting_icon_like" />
 
                 <TextView
                     android:id="@+id/my_like_des_tv"
@@ -288,7 +288,7 @@
                     android:layout_marginStart="@dimen/big_padding"
                     android:layout_weight="1"
                     android:text="喜欢"
-                    android:textSize="@dimen/middle_textsize"
+                    android:textSize="@dimen/big_textsize"
                     android:textColor="@color/dark_black_color" />
 
                 <TextView
@@ -336,13 +336,13 @@
                     android:paddingBottom="@dimen/middle_padding"
                     android:paddingTop="@dimen/middle_padding"
                     android:scaleType="center"
-                    android:src="@drawable/icon_choose" />
+                    android:src="@drawable/icon_setting" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:textSize="@dimen/middle_textsize"
+                    android:textSize="@dimen/big_textsize"
                     android:layout_marginLeft="@dimen/big_padding"
                     android:textColor="@color/dark_black_color"    android:layout_marginStart="@dimen/big_padding"
                     android:layout_weight="1"
