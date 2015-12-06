@@ -134,7 +134,7 @@ public class SettingActivity extends BaseActivity {
                 final ProgressDialogUtil progressDialogUtil = new ProgressDialogUtil(activity);
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                builder.setTitle("提示").setMessage("清除缓存之后，将重新对图片进行人脸检测和识别\n会影响用户体验，您是否确定要这么做?")
+                builder.setTitle("提示").setMessage("清除缓存之后，将重新对图片进行人脸检测和识别,会产生大量用户流量，也会影响用户体验。\n您是否确定要这么做?")
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
