@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -50,6 +51,7 @@ public class MyContactsListAdapter extends BaseAdapter {
         if (view == null)
         {
             view = View.inflate(activity, R.layout.list_item_my_contact,null);
+            holder.item = (LinearLayout)view.findViewById(R.id.item);
             holder.iv_avatar = (ImageView)view.findViewById(R.id.iv_avatar);
             holder.tv_user_name = (TextView)view.findViewById(R.id.tv_user_name);
             holder.iv_choose = (ImageView)view.findViewById(R.id.iv_choose);
@@ -60,7 +62,7 @@ public class MyContactsListAdapter extends BaseAdapter {
                     ContactBean bean = (ContactBean)view.getTag();
                     switch (view.getId())
                     {
-                        case R.id.iv_choose:
+                        case R.id.item:
                             bean.setIsSelected(!bean.isSelected());
                             notifyDataSetChanged();
                             break;
@@ -87,19 +89,20 @@ public class MyContactsListAdapter extends BaseAdapter {
         }else {
             holder.iv_choose.setImageResource(R.drawable.icon_choose);
         }
-        holder.iv_choose.setTag(bean);
-        holder.iv_choose.setOnClickListener(holder.onClickListener);
+        holder.item.setTag(bean);
+        holder.item.setOnClickListener(holder.onClickListener);
         return view;
     }
 
     private ViewHolder holder;
 
-    public void setIsShowSelectIndicator(boolean isShowSelectIndicator) {
-        this.isShowSelectIndicator = isShowSelectIndicator;
+    public void setIsShowSelectIndicator() {
+        this.isShowSelectIndicator = !this.isShowSelectIndicator;
     }
 
     private class ViewHolder
     {
+        private LinearLayout item;
         private ImageView iv_avatar;
         private TextView tv_user_name;
         private TextView tv_phone_number;

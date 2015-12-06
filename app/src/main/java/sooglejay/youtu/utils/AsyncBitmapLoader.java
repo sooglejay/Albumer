@@ -132,6 +132,7 @@ public class AsyncBitmapLoader {
                     DetectFaceUtil.detectFace(context, NetWorkConstant.APP_ID, Base64Util.encode(ImageUtils.Bitmap2Bytes(bitmap)), 1, new NetCallback<DetectFaceResponseBean>(context) {
                         @Override
                         public void onFailure(RetrofitError error, String message) {
+
                             progressDialogUtil.hide();
                             Toast.makeText(context, "请求超时,请确保网络良好再重试", Toast.LENGTH_SHORT).show();
 

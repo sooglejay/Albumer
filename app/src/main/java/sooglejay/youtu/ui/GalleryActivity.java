@@ -42,7 +42,7 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.OnR
 
 
     private ViewPager galleryViewPager;
-    private float width;
+    private int outerPosition=0;
     private TitleBar titleBar;
 
     public CacheUtil cacheUtil;
@@ -87,7 +87,7 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.OnR
 
         titleBar = (TitleBar) findViewById(R.id.title_bar);
         folderName = TextUtils.isEmpty(folderName) ? "" : folderName;
-        titleBar.initTitleBarInfo((position + 1) + "/" + originUrls.size(), R.drawable.arrow_left, -1, folderName, "");
+        titleBar.initTitleBarInfo((position + 1) + "/" + originUrls.size(), R.drawable.arrow_left, -1, folderName, "刷新");
         titleBar.setOnTitleBarClickListener(new TitleBar.OnTitleBarClickListener() {
             @Override
             public void onLeftButtonClick(View v) {
@@ -96,7 +96,7 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.OnR
 
             @Override
             public void onRightButtonClick(View v) {
-
+              fragments.get(outerPosition).refreshViewInThread();
             }
         });
 
@@ -222,6 +222,7 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.OnR
         @Override
         public Fragment getItem(int position) {
             // TODO Auto-generated method stub
+            outerPosition = position;
             return fragments.get(position);
         }
 

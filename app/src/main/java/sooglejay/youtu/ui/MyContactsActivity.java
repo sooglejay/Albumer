@@ -3,6 +3,7 @@ package sooglejay.youtu.ui;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -39,6 +40,7 @@ import sooglejay.youtu.widgets.TitleBar;
  */
 public class MyContactsActivity extends BaseActivity {
     private TitleBar title_bar;
+    private SwipeRefreshLayout swipeLayout;
     private ListView list_view;
     private MyContactsListAdapter adapter;
     private ArrayList<ContactBean> datas = new ArrayList<>();
@@ -68,6 +70,8 @@ public class MyContactsActivity extends BaseActivity {
                 R.anim.exit_to_bottom_200);
 
         title_bar = (TitleBar) findViewById(R.id.title_bar);
+        swipeLayout = (SwipeRefreshLayout)findViewById(R.id.swipe_layout);
+        swipeLayout.setColorSchemeResources(R.color.base_color);
         list_view = (ListView) findViewById(R.id.list_view);
         layout_operation = (FrameLayout) findViewById(R.id.layout_operation);
         iv_cancel_image = (CircleButton) findViewById(R.id.iv_cancel_image);
@@ -76,33 +80,21 @@ public class MyContactsActivity extends BaseActivity {
         adapter = new MyContactsListAdapter(datas, this);
         list_view.setAdapter(adapter);
         contactDao = new ContactDao(this);
+        refresh();
 
 
-        //先读取文件结束才设置
-        new AsyncTask<Void, List<ContactBean>, List<ContactBean>>() {
+        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            protected List<ContactBean> doInBackground(Void... voids) {
-                return contactDao.getAll();
+            public void onRefresh() {
+                refresh();
             }
-
-            @Override
-            protected void onPostExecute(List<ContactBean> aVoid) {
-                super.onPostExecute(aVoid);
-                if(aVoid!=null)
-                {
-
-                    datas.addAll(aVoid);
-                    adapter.notifyDataSetChanged();
-                }
-            }
-        }.execute();
-
+        });
 
 
         list_view.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                adapter.setIsShowSelectIndicator(true);
+                adapter.setIsShowSelectIndicator();
                 adapter.notifyDataSetChanged();
                 triangleBottomLayoutOperation(true);
                 return true;
@@ -160,7 +152,7 @@ public class MyContactsActivity extends BaseActivity {
 
                 datas.clear();
                 datas.addAll(contactDao.getAll());
-                adapter.setIsShowSelectIndicator(false);
+                adapter.setIsShowSelectIndicator();
                 adapter.notifyDataSetChanged();
 
 //                new AsyncTask<Void, List<FocusBean>, List<FocusBean>>() {
@@ -188,13 +180,36 @@ public class MyContactsActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 triangleBottomLayoutOperation(false);
-                adapter.setIsShowSelectIndicator(false);
+                adapter.setIsShowSelectIndicator();
                 for (ContactBean bean : datas) {
                     bean.setIsSelected(false);
                 }
                 adapter.notifyDataSetChanged();
             }
         });
+    }
+
+    private void refresh() {
+        //先读取文件结束才设置
+        new AsyncTask<Void, List<ContactBean>, List<ContactBean>>() {
+            @Override
+            protected List<ContactBean> doInBackground(Void... voids) {
+                return contactDao.getAll();
+            }
+
+            @Override
+            protected void onPostExecute(List<ContactBean> aVoid) {
+                super.onPostExecute(aVoid);
+                if(aVoid!=null)
+                {
+                    datas.clear();
+                    datas.addAll(aVoid);
+                    adapter.notifyDataSetChanged();
+
+                }
+                swipeLayout.setRefreshing(false);
+            }
+        }.execute();
     }
 
     //
@@ -296,7 +311,6 @@ public class MyContactsActivity extends BaseActivity {
         }
 
         if (isShowSelectAll) {
-
             title_bar.setOnTitleBarClickListener(null);
             title_bar.setOnTitleBarClickListener(new TitleBar.OnTitleBarClickListener() {
                 @Override
@@ -314,6 +328,7 @@ public class MyContactsActivity extends BaseActivity {
             });
             title_bar.setRightTv("全选", -1);
         } else {
+
             title_bar.setOnTitleBarClickListener(null);
             title_bar.setOnTitleBarClickListener(new TitleBar.OnTitleBarClickListener() {
                 @Override

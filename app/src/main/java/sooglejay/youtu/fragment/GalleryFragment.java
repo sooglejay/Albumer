@@ -52,7 +52,6 @@ import sooglejay.youtu.widgets.youtu.sign.Base64Util;
 
 public class GalleryFragment extends BaseFragment {
 
-    FaceDetector.Face face1;
     private FaceImageView imageView;
     private CircleButton iv_delete_image;
     private CircleButton iv_like_image;
@@ -85,8 +84,6 @@ public class GalleryFragment extends BaseFragment {
     private FocusDao focusDao;
     private List<FocusBean> focusImageList = new ArrayList<>();
     private boolean isFocused = false;
-
-
 
 
     private boolean isDetectFace;
@@ -271,7 +268,7 @@ public class GalleryFragment extends BaseFragment {
             public void onFailure(RetrofitError error, String message) {
                 progressContainer.setVisibility(View.GONE);
                 imageView.setCanvasBitmapRes(bitmap);
-                Toast.makeText(activity,"请求超时,请确保网络良好再重试",Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "请求超时,请确保网络良好再重试", Toast.LENGTH_SHORT).show();
 
             }
 
@@ -303,7 +300,7 @@ public class GalleryFragment extends BaseFragment {
         System.gc();
     }
 
-    public void init(String s, int i,boolean isDetectFace) {
+    public void init(String s, int i, boolean isDetectFace) {
         url = s;
         position = i;
         this.isDetectFace = isDetectFace;
@@ -320,7 +317,7 @@ public class GalleryFragment extends BaseFragment {
      */
     private void getImage(final String imagePath) {
 
-        final boolean isAllowedIdentify = PreferenceUtil.load(getActivity(), PreferenceConstant.SWITCH_IDENTIFY,true);
+        final boolean isAllowedIdentify = PreferenceUtil.load(activity, PreferenceConstant.SWITCH_IDENTIFY, true);
 
         final AsyncBitmapLoader.BitmapCallback callback = new AsyncBitmapLoader.BitmapCallback() {
             @Override
@@ -332,7 +329,7 @@ public class GalleryFragment extends BaseFragment {
 
             @Override
             public void bitmapLoaded(final Bitmap bitmap) {
-                getActivity().runOnUiThread(new Runnable() {
+                activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         if (bitmap != null) {
@@ -353,7 +350,7 @@ public class GalleryFragment extends BaseFragment {
                     if (identifyItems != null) {
                         imageView.setIdentifyItems(identifyItems);
                     }
-                } else if (isAllowedIdentify){
+                } else if (isAllowedIdentify) {
                     final ProgressDialogUtil progressDialogUtil = new ProgressDialogUtil(activity);
                     progressDialogUtil.show("正在进行人脸识别...");
                     String group_id = PreferenceUtil.load(activity, PreferenceConstant.IDENTIFY_GROUP_NAME, "1");
@@ -361,7 +358,7 @@ public class GalleryFragment extends BaseFragment {
                         @Override
                         public void onFailure(RetrofitError error, String message) {
                             progressDialogUtil.hide();
-                            Toast.makeText(activity,"请求超时,请确保网络良好再重试",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(activity, "请求超时,请确保网络良好再重试", Toast.LENGTH_SHORT).show();
 
                         }
 
@@ -380,7 +377,7 @@ public class GalleryFragment extends BaseFragment {
         };
 
         //人脸检测缓存，如果已经检测到人脸
-        final ArrayList<FaceItem> faces = asyncBitmapLoader.loadAsyncBean(getActivity(), imagePath, callback);
+        final ArrayList<FaceItem> faces = asyncBitmapLoader.loadAsyncBean(activity, imagePath, callback);
         if (faces != null && faces.size() > 0) {
             new AsyncTask<String, Bitmap, Bitmap>() {
                 @Override
@@ -409,7 +406,7 @@ public class GalleryFragment extends BaseFragment {
                             if (identifyItems != null) {
                                 imageView.setIdentifyItems(identifyItems);
                             }
-                        } else if(isAllowedIdentify){
+                        } else if (isAllowedIdentify) {
                             final ProgressDialogUtil progressDialogUtil = new ProgressDialogUtil(activity);
                             progressDialogUtil.show("正在进行人脸识别...");
                             String group_id = PreferenceUtil.load(activity, PreferenceConstant.IDENTIFY_GROUP_NAME, "1");
@@ -417,7 +414,7 @@ public class GalleryFragment extends BaseFragment {
                                 @Override
                                 public void onFailure(RetrofitError error, String message) {
                                     progressDialogUtil.hide();
-                                    Toast.makeText(activity,"请求超时,请确保网络良好再重试",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(activity, "请求超时,请确保网络良好再重试", Toast.LENGTH_SHORT).show();
 
                                 }
 
@@ -459,6 +456,7 @@ public class GalleryFragment extends BaseFragment {
     }
 
     static int i = 0;
+
     /**
      * EventBus 广播
      *
@@ -469,7 +467,7 @@ public class GalleryFragment extends BaseFragment {
             case BusEvent.MSG_EDIT_FACE_INFO:
                 Log.e("jwjw", "jiangwei");
                 i++;
-                if(i==1) {
+                if (i == 1) {
                     i = 0;
                     if (cacheUtil != null && imageView != null) {
                         ArrayList<IdentifyItem> identifyItems = cacheUtil.getIdentifiedObjectFromFile().get(url);
@@ -483,48 +481,56 @@ public class GalleryFragment extends BaseFragment {
             case BusEvent.MSG_REFRESH:
 
                 i++;
-                if(i==1)
-                {
-                    if(dialogFragmentCreater == null)
-                    {
-                        Log.e("test","DialogFragmentCreater  is  nulll");
-                        dialogFragmentCreater = new DialogFragmentCreater();
-                        dialogFragmentCreater.initDialogFragment(getActivity(), getActivity().getSupportFragmentManager());
-                        imageView.setDialogFragmentCreater(dialogFragmentCreater);
-                    }
-
-                    i=0;
+                if (i == 1) {
+                    i = 0;
                     Log.e("test", "广播1212：进行人脸识别" + i);
-
-
-
-                    //先读取文件结束才设置
-                    new AsyncTask<Void, Void, Void>() {
-                        @Override
-                        protected Void doInBackground(Void... voids) {
-                            asyncBitmapLoader.setmDetectedFaceBitMapCache(cacheUtil.getDetectedObjectFromFile());
-                            asyncBitmapLoader.setmIdentifiedFaceBitMapCache(cacheUtil.getIdentifiedObjectFromFile());
-                            return null;
-                        }
-
-                        @Override
-                        protected void onPostExecute(Void aVoid) {
-                            super.onPostExecute(aVoid);
-                            getImage(url);
-                        }
-                    }.execute();
-
+                    refreshViewInThread();
                 }
                 break;
             case BusEvent.MSG_IS_DETECT_FACE:
-                isDetectFace = PreferenceUtil.load(getActivity(),PreferenceConstant.SWITCH_DETECT_FACE,true);
-                if(!isDetectFace)
-                {
+                isDetectFace = PreferenceUtil.load(activity, PreferenceConstant.SWITCH_DETECT_FACE, true);
+                if (!isDetectFace) {
 
                 }
                 break;
             default:
                 break;
+        }
+    }
+
+    public void refreshViewInThread() {
+        imageView.setActivity(getActivity());
+        imageView.setImageFilePath(url);
+
+        if (dialogFragmentCreater == null) {
+            Log.e("test", "DialogFragmentCreater  is  nulll");
+            dialogFragmentCreater = new DialogFragmentCreater();
+            dialogFragmentCreater.initDialogFragment(activity, activity.getSupportFragmentManager());
+            imageView.setDialogFragmentCreater(dialogFragmentCreater);
+        }
+
+        //先读取文件结束才设置
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                asyncBitmapLoader.setmDetectedFaceBitMapCache(cacheUtil.getDetectedObjectFromFile());
+                asyncBitmapLoader.setmIdentifiedFaceBitMapCache(cacheUtil.getIdentifiedObjectFromFile());
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                refreshImageView();
+            }
+        }.execute();
+    }
+
+    public void refreshImageView() {
+        try {
+            getImage(url);
+        } catch (NullPointerException npe) {
+            Log.e("test", "activity 已经销毁");
         }
     }
 
