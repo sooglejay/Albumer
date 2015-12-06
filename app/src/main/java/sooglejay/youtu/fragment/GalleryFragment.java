@@ -8,6 +8,7 @@ import android.graphics.RectF;
 import android.media.FaceDetector;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -89,6 +90,7 @@ public class GalleryFragment extends BaseFragment {
 
 
     private boolean isDetectFace;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -317,6 +319,7 @@ public class GalleryFragment extends BaseFragment {
      * @param imagePath
      */
     private void getImage(final String imagePath) {
+
         final boolean isAllowedIdentify = PreferenceUtil.load(getActivity(), PreferenceConstant.SWITCH_IDENTIFY,true);
 
         final AsyncBitmapLoader.BitmapCallback callback = new AsyncBitmapLoader.BitmapCallback() {
@@ -452,39 +455,66 @@ public class GalleryFragment extends BaseFragment {
     @Override
     public void onPause() {
         super.onPause();
-        if (dialogFragmentCreater != null) {
-            dialogFragmentCreater = null;
-        }
+
     }
 
-
+    static int i = 0;
     /**
      * EventBus 广播
      *
      * @param event
      */
-    public void onEvent(BusEvent event) {
+    public void onEventMainThread(BusEvent event) {
         switch (event.getMsg()) {
             case BusEvent.MSG_EDIT_FACE_INFO:
                 Log.e("jwjw", "jiangwei");
-                if (cacheUtil != null && imageView != null) {
-                    ArrayList<IdentifyItem> identifyItems = cacheUtil.getIdentifiedObjectFromFile().get(url);
-                    if (identifyItems != null) {
-                        Log.e("jwjw", "2");
-                        imageView.setIdentifyItems(identifyItems);
+                i++;
+                if(i==1) {
+                    i = 0;
+                    if (cacheUtil != null && imageView != null) {
+                        ArrayList<IdentifyItem> identifyItems = cacheUtil.getIdentifiedObjectFromFile().get(url);
+                        if (identifyItems != null) {
+                            Log.e("jwjw", "2");
+                            imageView.setIdentifyItems(identifyItems);
+                        }
                     }
                 }
                 break;
             case BusEvent.MSG_REFRESH:
-                if(dialogFragmentCreater == null)
+
+                i++;
+                if(i==1)
                 {
-                    Log.e("test","DialogFragmentCreater  is  nulll");
-                    dialogFragmentCreater = new DialogFragmentCreater();
-                    dialogFragmentCreater.initDialogFragment(getActivity(), getActivity().getSupportFragmentManager());
-                    imageView.setDialogFragmentCreater(dialogFragmentCreater);
+                    if(dialogFragmentCreater == null)
+                    {
+                        Log.e("test","DialogFragmentCreater  is  nulll");
+                        dialogFragmentCreater = new DialogFragmentCreater();
+                        dialogFragmentCreater.initDialogFragment(getActivity(), getActivity().getSupportFragmentManager());
+                        imageView.setDialogFragmentCreater(dialogFragmentCreater);
+                    }
+
+                    i=0;
+                    Log.e("test", "广播1212：进行人脸识别" + i);
+
+
+
+                    //先读取文件结束才设置
+                    new AsyncTask<Void, Void, Void>() {
+                        @Override
+                        protected Void doInBackground(Void... voids) {
+                            asyncBitmapLoader.setmDetectedFaceBitMapCache(cacheUtil.getDetectedObjectFromFile());
+                            asyncBitmapLoader.setmIdentifiedFaceBitMapCache(cacheUtil.getIdentifiedObjectFromFile());
+                            return null;
+                        }
+
+                        @Override
+                        protected void onPostExecute(Void aVoid) {
+                            super.onPostExecute(aVoid);
+                            getImage(url);
+                        }
+                    }.execute();
+
                 }
-                Log.e("test","广播：进行人脸识别");
-                getImage(url);
                 break;
             case BusEvent.MSG_IS_DETECT_FACE:
                 isDetectFace = PreferenceUtil.load(getActivity(),PreferenceConstant.SWITCH_DETECT_FACE,true);
