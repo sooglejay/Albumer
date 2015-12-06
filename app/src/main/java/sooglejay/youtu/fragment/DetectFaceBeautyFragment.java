@@ -166,7 +166,6 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
             @Override
             public void onClick(View view) {
                 a_isSelected = true;
-                b_isSelected = false;
                 ImageUtils.startPickPhoto(getActivity(), DetectFaceBeautyFragment.this, a_imageList, 1, false);
             }
         });
@@ -174,7 +173,6 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
             @Override
             public void onClick(View view) {
                 b_isSelected = true;
-                a_isSelected = false;
                 ImageUtils.startPickPhoto(getActivity(), DetectFaceBeautyFragment.this, b_imageList, 1, false);
 
             }
@@ -210,6 +208,8 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
 
 
     private void reset(boolean isFailed) {
+        a_face.clear();
+        b_face.clear();
         if (isFailed) {
             tvATextPercentage.setText("");
             tvAReady.setVisibility(View.VISIBLE);
