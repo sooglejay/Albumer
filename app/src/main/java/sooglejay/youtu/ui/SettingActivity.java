@@ -1,6 +1,7 @@
 package sooglejay.youtu.ui;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -8,6 +9,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -130,29 +132,42 @@ public class SettingActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 final ProgressDialogUtil progressDialogUtil = new ProgressDialogUtil(activity);
-                new AsyncTask<Void, Void, Void>() {
-                    @Override
-                    protected Void doInBackground(Void... voids) {
-                        cacheUtil.clearIdentifyCache();
-                        cacheUtil.clearDetectFaceCache();
-                        return null;
-                    }
 
-                    @Override
-                    protected void onPreExecute() {
-                        super.onPreExecute();
-                        progressDialogUtil.show("正在删除缓存文件...");
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                builder.setTitle("提示").setMessage("清除缓存之后，将重新对图片进行人脸检测和识别\n会影响用户体验，您是否确定要这么做?")
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
 
-                    }
+                                new AsyncTask<Void, Void, Void>() {
+                                    @Override
+                                    protected Void doInBackground(Void... voids) {
+                                        cacheUtil.clearIdentifyCache();
+                                        cacheUtil.clearDetectFaceCache();
+                                        return null;
+                                    }
 
-                    @Override
-                    protected void onPostExecute(Void aVoid) {
+                                    @Override
+                                    protected void onPreExecute() {
+                                        super.onPreExecute();
+                                        progressDialogUtil.show("正在删除缓存文件...");
 
-                        super.onPostExecute(aVoid);
-                        progressDialogUtil.hide();
-                        Toast.makeText(activity, "缓存已清除！", Toast.LENGTH_SHORT).show();
-                    }
-                }.execute();
+                                    }
+
+                                    @Override
+                                    protected void onPostExecute(Void aVoid) {
+
+                                        super.onPostExecute(aVoid);
+                                        progressDialogUtil.hide();
+                                        Toast.makeText(activity, "缓存已清除！", Toast.LENGTH_SHORT).show();
+                                    }
+                                }.execute();
+
+
+                            }
+                        }).setNegativeButton("取消", null).create().show();
+
+
 
             }
         });
