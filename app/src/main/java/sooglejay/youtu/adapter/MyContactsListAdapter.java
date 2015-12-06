@@ -14,6 +14,8 @@ import java.util.ArrayList;
 
 import sooglejay.youtu.R;
 import sooglejay.youtu.bean.ContactBean;
+import sooglejay.youtu.ui.EditContactUserInfoActivity;
+import sooglejay.youtu.ui.EditFaceUserInfoActivity;
 import sooglejay.youtu.utils.ImageUtils;
 import sooglejay.youtu.widgets.imagepicker.bean.Image;
 
@@ -63,6 +65,10 @@ public class MyContactsListAdapter extends BaseAdapter {
                     switch (view.getId())
                     {
                         case R.id.item:
+                            EditContactUserInfoActivity.startActivity(activity,bean);
+                            break;
+
+                        case R.id.iv_choose:
                             bean.setIsSelected(!bean.isSelected());
                             notifyDataSetChanged();
                             break;
@@ -90,6 +96,8 @@ public class MyContactsListAdapter extends BaseAdapter {
             holder.iv_choose.setImageResource(R.drawable.icon_choose);
         }
         holder.item.setTag(bean);
+        holder.iv_choose.setTag(bean);
+        holder.iv_choose.setOnClickListener(holder.onClickListener);
         holder.item.setOnClickListener(holder.onClickListener);
         return view;
     }
