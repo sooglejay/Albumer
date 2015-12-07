@@ -115,6 +115,8 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
         tv_start = (TextView) view.findViewById(R.id.tv_start);
         iv_crown_a = (ImageView) view.findViewById(R.id.iv_crown_a);
         iv_crown_b = (ImageView) view.findViewById(R.id.iv_crown_b);
+        iv_crown_b.setVisibility(View.GONE);
+        iv_crown_a.setVisibility(View.GONE);
     }
 
 
@@ -236,10 +238,12 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
     private void reset(boolean isFailed) {
         a_face.clear();
         b_face.clear();
-        iv_crown_b.setVisibility(View.GONE);
-        iv_crown_a.setVisibility(View.GONE);
+
 
         if (isFailed) {
+            iv_crown_b.setVisibility(View.GONE);
+            iv_crown_a.setVisibility(View.GONE);
+
             tvATextPercentage.setText("");
             tvAReady.setVisibility(View.VISIBLE);
             tvAReady.setTextColor(ContextCompat.getColor(activity, R.color.white_color));
@@ -260,6 +264,8 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
             layoutStartPk.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    iv_crown_b.setVisibility(View.GONE);
+                    iv_crown_a.setVisibility(View.GONE);
                     tv_start.setText("开始");
                     tvATextPercentage.setText("");
                     tvAReady.setVisibility(View.VISIBLE);
