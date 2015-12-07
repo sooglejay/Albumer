@@ -285,4 +285,41 @@ public class MyLikeActivity extends BaseActivity {
         EventBus.getDefault().post(new BusEvent(BusEvent.MSG_MODIFY_USER_INFO));
         super.finish();
     }
+
+    /**
+     * EventBus 广播
+     *
+     * @param event
+     */
+    public void onEventMainThread(BusEvent event) {
+        switch (event.getMsg()) {
+            case BusEvent.MSG_LIKE_AND_FOCUS:
+                refreshData();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void refreshData() {
+
+        new AsyncTask<Void, Void, List<LikeBean>>() {
+            @Override
+            protected void onPostExecute(List<LikeBean> aVoid) {
+                super.onPostExecute(aVoid);
+                datas.clear();
+                datas.addAll(aVoid);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            protected List<LikeBean> doInBackground(Void... voids) {
+                return likeDao.getAll();
+            }
+        }.execute();
+
+
+
+
+    }
 }

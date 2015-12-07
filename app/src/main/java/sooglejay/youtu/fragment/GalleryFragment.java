@@ -26,6 +26,7 @@ import com.umeng.socialize.sso.UMSsoHandler;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.greenrobot.event.EventBus;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import sooglejay.youtu.R;
@@ -198,10 +199,12 @@ public class GalleryFragment extends BaseFragment {
                 {
                     likeDao.deleteByName(url);
                     Toast.makeText(activity, "取消喜欢", Toast.LENGTH_SHORT).show();
+                    EventBus.getDefault().post(new BusEvent(BusEvent.MSG_LIKE_AND_FOCUS));
                 } else {
                     LikeBean bean = new LikeBean();
                     bean.setImagePath(url);
                     likeDao.add(bean);
+                    EventBus.getDefault().post(new BusEvent(BusEvent.MSG_LIKE_AND_FOCUS));
                     Toast.makeText(activity, "已喜欢", Toast.LENGTH_SHORT).show();
                 }
                 isLiked = !isLiked;
@@ -228,11 +231,15 @@ public class GalleryFragment extends BaseFragment {
                 {
                     focusDao.deleteByName(url);
                     Toast.makeText(activity, "取消关注", Toast.LENGTH_SHORT).show();
+                    EventBus.getDefault().post(new BusEvent(BusEvent.MSG_LIKE_AND_FOCUS));
+
                 } else {
                     FocusBean bean = new FocusBean();
                     bean.setImagePath(url);
                     focusDao.add(bean);
                     Toast.makeText(activity, "已关注", Toast.LENGTH_SHORT).show();
+                    EventBus.getDefault().post(new BusEvent(BusEvent.MSG_LIKE_AND_FOCUS));
+
                 }
                 isFocused = !isFocused;
                 iv_focus_image.setImageResource(isFocused ? R.drawable.icon_focused : R.drawable.icon_focus);

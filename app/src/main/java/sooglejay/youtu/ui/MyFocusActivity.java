@@ -25,6 +25,7 @@ import de.greenrobot.event.EventBus;
 import sooglejay.youtu.R;
 import sooglejay.youtu.adapter.MyFocusAdapter;
 import sooglejay.youtu.bean.FocusBean;
+import sooglejay.youtu.bean.LikeBean;
 import sooglejay.youtu.db.FocusDao;
 import sooglejay.youtu.event.BusEvent;
 import sooglejay.youtu.widgets.CircleButton;
@@ -283,5 +284,38 @@ public class MyFocusActivity extends BaseActivity {
     public void finish() {
         EventBus.getDefault().post(new BusEvent(BusEvent.MSG_MODIFY_USER_INFO));
         super.finish();
+    }
+
+
+    /**
+     * EventBus 广播
+     *
+     * @param event
+     */
+    public void onEventMainThread(BusEvent event) {
+        switch (event.getMsg()) {
+            case BusEvent.MSG_LIKE_AND_FOCUS:
+                refreshData();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void refreshData() {
+        new AsyncTask<Void, Void, List<FocusBean>>() {
+            @Override
+            protected void onPostExecute(List<FocusBean> aVoid) {
+                super.onPostExecute(aVoid);
+                datas.clear();
+                datas.addAll(aVoid);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            protected List<FocusBean> doInBackground(Void... voids) {
+                return focusDao.getAll();
+            }
+        }.execute();
     }
 }

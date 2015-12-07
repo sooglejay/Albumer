@@ -7,7 +7,8 @@ public class BusEvent {
     public static final int MSG_REFRESH = 1002;// 删除图片文件
     public static final int MSG_IS_DETECT_FACE = 1003;// 删除图片文件
     public static final int MSG_IS_IDENTIFY_FACE = 1004;// 删除图片文件
-    public static final int MSG_MODIFY_USER_INFO = 1005;// 删除图片文件
+    public static final int MSG_MODIFY_USER_INFO = 1005;//
+    public static final int MSG_LIKE_AND_FOCUS = 1006;// 用户取消关注和取消喜欢时的广播
     private int msg=0;
     public int getMsg() {
         return msg;
