@@ -58,7 +58,6 @@ public class DialogFragmentCreater extends DialogFragment {
 
     private Dialog outerDialog;
 
-
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
@@ -305,7 +304,7 @@ public class DialogFragmentCreater extends DialogFragment {
             }
         };
 
-        ImageLoader.getInstance().displayImage(bean.getImage_path(), iv_avatar, ImageUtils.getOptions());
+        ImageLoader.getInstance().displayImage("file://"+bean.getImage_path(), iv_avatar, ImageUtils.getOptions());
         tv_edit_info.setOnClickListener(listener);
         tv_call.setOnClickListener(listener);
         tv_send_message.setOnClickListener(listener);
