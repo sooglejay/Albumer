@@ -246,7 +246,7 @@ public class GalleryFragment extends BaseFragment {
             public void onClick(View view) {
 
 
-              new ShareUtils(activity);
+              new ShareUtils(activity,url);
 
 //                mCallback.onShare(url);
 

@@ -1,23 +1,14 @@
 
 package sooglejay.youtu.utils;
 
-import java.io.File;
-
 import android.app.Activity;
-import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
+import android.os.AsyncTask;
 import android.widget.Toast;
 
 import com.umeng.socialize.bean.MultiStatus;
 import com.umeng.socialize.bean.SHARE_MEDIA;
-import com.umeng.socialize.bean.SocializeConfig;
 import com.umeng.socialize.bean.SocializeEntity;
 import com.umeng.socialize.bean.StatusCode;
 import com.umeng.socialize.controller.UMEvernoteHandler;
@@ -64,10 +55,8 @@ import com.umeng.socialize.sso.SinaSsoHandler;
 import com.umeng.socialize.sso.SmsHandler;
 import com.umeng.socialize.sso.TencentWBSsoHandler;
 import com.umeng.socialize.sso.UMQQSsoHandler;
-import com.umeng.socialize.sso.UMSsoHandler;
 import com.umeng.socialize.tumblr.controller.UMTumblrHandler;
 import com.umeng.socialize.tumblr.media.TumblrShareContent;
-import com.umeng.socialize.utils.Log;
 import com.umeng.socialize.weixin.controller.UMWXHandler;
 import com.umeng.socialize.weixin.media.CircleShareContent;
 import com.umeng.socialize.weixin.media.WeiXinShareContent;
@@ -77,8 +66,20 @@ import com.umeng.socialize.yixin.controller.UMYXHandler;
 import com.umeng.socialize.ynote.controller.UMYNoteHandler;
 import com.umeng.socialize.ynote.media.YNoteShareContent;
 
+import java.io.File;
+import java.util.ArrayList;
+
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import sooglejay.youtu.R;
+import sooglejay.youtu.api.detectface.DetectFaceResponseBean;
+import sooglejay.youtu.api.detectface.DetectFaceUtil;
+import sooglejay.youtu.api.detectface.FaceItem;
+import sooglejay.youtu.constant.IntConstant;
+import sooglejay.youtu.constant.NetWorkConstant;
 import sooglejay.youtu.constant.StringConstant;
+import sooglejay.youtu.model.NetCallback;
+import sooglejay.youtu.widgets.youtu.sign.Base64Util;
 
 
 /**
@@ -98,15 +99,43 @@ public class ShareUtils {
             .getUMSocialService(StringConstant.DESCRIPTOR);
     private SHARE_MEDIA mPlatform = SHARE_MEDIA.SINA;
     private Activity activity;
+    
+    private String imageFileStr;
+    
+    Bitmap imageBitmap;
 
-    public ShareUtils(Activity a) {
-        activity = a;
-        // 配置需要分享的相关平台
-        configPlatforms();
-        // 设置分享的内容
-        setShareContent();
-        initViewListener();
+    public ShareUtils(Activity activity, String imageFileStr) {
+        this.activity = activity;
+        this.imageFileStr = imageFileStr;
+        new AsyncTask<String, Bitmap, Bitmap>() {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+
+            }
+
+            @Override
+            protected Bitmap doInBackground(String... params) {
+                Bitmap tempBitmap = ImageUtils.getBitmapFromLocalPath(params[0], 1);
+                Bitmap bitmap = ImageUtils.getResizedBitmap(tempBitmap, IntConstant.IMAGE_SIZE, IntConstant.IMAGE_SIZE);
+
+                return bitmap;
+            }
+
+            @Override
+            protected void onPostExecute(final Bitmap bitmap) {
+                imageBitmap = bitmap;
+                // 配置需要分享的相关平台
+                configPlatforms();
+                // 设置分享的内容
+                setShareContent();
+                initViewListener();
+
+            }
+        }.execute(imageFileStr);
+     
     }
+
 
     /**
      * 配置分享平台参数</br>
@@ -242,7 +271,7 @@ public class ShareUtils {
         QZoneSsoHandler qZoneSsoHandler = new QZoneSsoHandler(activity,
                 "100424468", "c7394704798a158208a74ab60104f0ba");
         qZoneSsoHandler.addToSocialSDK();
-        mController.setShareContent("友盟社会化组件（SDK）让移动应用快速整合社交分享功能。http://www.umeng.com/social");
+        mController.setShareContent("友盟社会化组件（SDK）让移动应用快速整合社交分享功能。http://www.baidu.com/");
 
         // APP ID：201874, API
         // * KEY：28401c0964f04a72a14c812d6132fcef, Secret
@@ -252,10 +281,9 @@ public class ShareUtils {
                 "3bf66e42db1e4fa9829b955cc300b737");
         mController.getConfig().setSsoHandler(renrenSsoHandler);
 
-        UMImage localImage = new UMImage(activity, R.drawable.test);
-        UMImage urlImage = new UMImage(activity,
-                "http://www.umeng.com/images/pic/social/integrated_3.png");
-        // UMImage resImage = new UMImage(activity, R.drawable.test);
+        UMImage localImage = new UMImage(activity,imageBitmap);
+        UMImage urlImage = new UMImage(activity, imageBitmap);
+        // UMImage resImage = new UMImage(activity,imageBitmap);
 
         // 视频分享
         UMVideo video = new UMVideo(
@@ -278,56 +306,54 @@ public class ShareUtils {
 
         WeiXinShareContent weixinContent = new WeiXinShareContent();
         weixinContent
-                .setShareContent("来自友盟社会化组件（SDK）让移动应用快速整合社交分享功能-微信。http://www.umeng.com/social");
+                .setShareContent("来自友盟社会化组件（SDK）让移动应用快速整合社交分享功能-微信。http://www.baidu.com/");
         weixinContent.setTitle("友盟社会化分享组件-微信");
-        weixinContent.setTargetUrl("http://www.umeng.com/social");
+        weixinContent.setTargetUrl("http://www.baidu.com/");
         weixinContent.setShareMedia(urlImage);
         mController.setShareMedia(weixinContent);
 
         // 设置朋友圈分享的内容
         CircleShareContent circleMedia = new CircleShareContent();
         circleMedia
-                .setShareContent("来自友盟社会化组件（SDK）让移动应用快速整合社交分享功能-朋友圈。http://www.umeng.com/social");
+                .setShareContent("来自友盟社会化组件（SDK）让移动应用快速整合社交分享功能-朋友圈。http://www.baidu.com/");
         circleMedia.setTitle("友盟社会化分享组件-朋友圈");
         circleMedia.setShareMedia(urlImage);
         // circleMedia.setShareMedia(uMusic);
         // circleMedia.setShareMedia(video);
-        circleMedia.setTargetUrl("http://www.umeng.com/social");
+        circleMedia.setTargetUrl("http://www.baidu.com/");
         mController.setShareMedia(circleMedia);
 
         // 设置renren分享内容
         RenrenShareContent renrenShareContent = new RenrenShareContent();
         renrenShareContent.setShareContent("人人分享内容");
         UMImage image = new UMImage(activity,
-                BitmapFactory.decodeResource(activity.getResources(), R.drawable.test));
+                imageBitmap);
         image.setTitle("thumb title");
         image.setThumb("http://www.umeng.com/images/pic/social/integrated_3.png");
         renrenShareContent.setShareImage(image);
-        renrenShareContent.setAppWebSite("http://www.umeng.com/social");
+        renrenShareContent.setAppWebSite("http://www.baidu.com/");
         mController.setShareMedia(renrenShareContent);
 
-        UMImage qzoneImage = new UMImage(activity,
-                "http://www.umeng.com/images/pic/social/integrated_3.png");
+        UMImage qzoneImage = new UMImage(activity, imageBitmap);
         qzoneImage
                 .setTargetUrl("http://www.umeng.com/images/pic/social/integrated_3.png");
 
         // 设置QQ空间分享内容
         QZoneShareContent qzone = new QZoneShareContent();
-        qzone.setShareContent("share test");
+        qzone.setShareContent("share icon_share");
         qzone.setTargetUrl("http://www.umeng.com");
-        qzone.setTitle("QZone title");
+        qzone.setTitle(activity.getString(R.string.app_name));
         qzone.setShareMedia(urlImage);
         // qzone.setShareMedia(uMusic);
         mController.setShareMedia(qzone);
 
-        video.setThumb(new UMImage(activity, BitmapFactory.decodeResource(
-                activity.getResources(), R.drawable.test)));
+        video.setThumb(new UMImage(activity,imageBitmap));
 
         QQShareContent qqShareContent = new QQShareContent();
         qqShareContent.setShareContent("来自友盟社会化组件（SDK）让移动应用快速整合社交分享功能 -- QQ");
         qqShareContent.setTitle("hello, title");
         qqShareContent.setShareMedia(image);
-        qqShareContent.setTargetUrl("http://www.umeng.com/social");
+        qqShareContent.setTargetUrl("http://www.baidu.com/");
         mController.setShareMedia(qqShareContent);
 
         // 视频分享
@@ -337,39 +363,38 @@ public class ShareUtils {
         umVideo.setTitle("友盟社会化组件视频");
 
         TencentWbShareContent tencent = new TencentWbShareContent();
-        tencent.setShareContent("来自友盟社会化组件（SDK）让移动应用快速整合社交分享功能-腾讯微博。http://www.umeng.com/social");
+        tencent.setShareContent("来自友盟社会化组件（SDK）让移动应用快速整合社交分享功能-腾讯微博。http://www.baidu.com/");
         // 设置tencent分享内容
         mController.setShareMedia(tencent);
 
         // 设置邮件分享内容， 如果需要分享图片则只支持本地图片
         MailShareContent mail = new MailShareContent(localImage);
         mail.setTitle("share form umeng social sdk");
-        mail.setShareContent("来自友盟社会化组件（SDK）让移动应用快速整合社交分享功能-email。http://www.umeng.com/social");
+        mail.setShareContent("来自友盟社会化组件（SDK）让移动应用快速整合社交分享功能-email。http://www.baidu.com/");
         // 设置tencent分享内容
         mController.setShareMedia(mail);
 
         // 设置短信分享内容
         SmsShareContent sms = new SmsShareContent();
-        sms.setShareContent("来自友盟社会化组件（SDK）让移动应用快速整合社交分享功能-短信。http://www.umeng.com/social");
+        sms.setShareContent("来自友盟社会化组件（SDK）让移动应用快速整合社交分享功能-短信。http://www.baidu.com/");
         // sms.setShareImage(urlImage);
         mController.setShareMedia(sms);
 
         SinaShareContent sinaContent = new SinaShareContent();
         sinaContent
-                .setShareContent("来自友盟社会化组件（SDK）让移动应用快速整合社交分享功能-新浪微博。http://www.umeng.com/social");
-        sinaContent.setShareImage(new UMImage(activity, R.drawable.test));
+                .setShareContent("来自友盟社会化组件（SDK）让移动应用快速整合社交分享功能-新浪微博。http://www.baidu.com/");
+        sinaContent.setShareImage(new UMImage(activity,imageBitmap));
         mController.setShareMedia(sinaContent);
 
         TwitterShareContent twitterShareContent = new TwitterShareContent();
         twitterShareContent
-                .setShareContent("来自友盟社会化组件（SDK）让移动应用快速整合社交分享功能-TWITTER。http://www.umeng.com/social");
-        twitterShareContent.setShareMedia(new UMImage(activity, new File(
-                "/storage/sdcard0/emoji.gif")));
+                .setShareContent("来自友盟社会化组件（SDK）让移动应用快速整合社交分享功能-TWITTER。http://www.baidu.com/");
+        twitterShareContent.setShareMedia(new UMImage(activity,imageBitmap));
         mController.setShareMedia(twitterShareContent);
 
         GooglePlusShareContent googlePlusShareContent = new GooglePlusShareContent();
         googlePlusShareContent
-                .setShareContent("来自友盟社会化组件（SDK）让移动应用快速整合社交分享功能-G+。http://www.umeng.com/social");
+                .setShareContent("来自友盟社会化组件（SDK）让移动应用快速整合社交分享功能-G+。http://www.baidu.com/");
         googlePlusShareContent.setShareMedia(localImage);
         mController.setShareMedia(googlePlusShareContent);
 
@@ -381,7 +406,7 @@ public class ShareUtils {
         lwShareContent.setTitle("友盟社会化分享组件-来往");
         lwShareContent.setMessageFrom("友盟分享组件");
         lwShareContent
-                .setShareContent("来自友盟社会化组件（SDK）让移动应用快速整合社交分享功能-来往。http://www.umeng.com/social");
+                .setShareContent("来自友盟社会化组件（SDK）让移动应用快速整合社交分享功能-来往。http://www.baidu.com/");
         mController.setShareMedia(lwShareContent);
 
         // 来往动态分享内容
@@ -392,8 +417,8 @@ public class ShareUtils {
         lwDynamicShareContent.setTitle("友盟社会化分享组件-来往动态");
         lwDynamicShareContent.setMessageFrom("来自友盟");
         lwDynamicShareContent
-                .setShareContent("来自友盟社会化组件（SDK）让移动应用快速整合社交分享功能-来往动态。http://www.umeng.com/social");
-        lwDynamicShareContent.setTargetUrl("http://www.umeng.com/social");
+                .setShareContent("来自友盟社会化组件（SDK）让移动应用快速整合社交分享功能-来往动态。http://www.baidu.com/");
+        lwDynamicShareContent.setTargetUrl("http://www.baidu.com/");
         mController.setShareMedia(lwDynamicShareContent);
 
     }
@@ -485,7 +510,7 @@ public class ShareUtils {
         UMPocketHandler pocketHandler = new UMPocketHandler(activity);
         pocketHandler.addToSocialSDK();
         PocketShareContent pocketShareContent = new PocketShareContent();
-        pocketShareContent.setShareContent("http://www.umeng.com/social");
+        pocketShareContent.setShareContent("http://www.baidu.com/");
         mController.setShareMedia(pocketShareContent);
     }
 
@@ -497,7 +522,7 @@ public class ShareUtils {
         linkedInHandler.addToSocialSDK();
         LinkedInShareContent linkedInShareContent = new LinkedInShareContent();
         linkedInShareContent
-                .setShareContent("来自友盟社会化组件（SDK）让移动应用快速整合社交分享功能-LinkedIn。http://www.umeng.com/social");
+                .setShareContent("来自友盟社会化组件（SDK）让移动应用快速整合社交分享功能-LinkedIn。http://www.baidu.com/");
         mController.setShareMedia(linkedInShareContent);
     }
 
@@ -509,9 +534,9 @@ public class ShareUtils {
         yNoteHandler.addToSocialSDK();
         YNoteShareContent yNoteShareContent = new YNoteShareContent();
         yNoteShareContent
-                .setShareContent("来自友盟社会化组件（SDK）让移动应用快速整合社交分享功能-云有道笔记。http://www.umeng.com/social");
+                .setShareContent("来自友盟社会化组件（SDK）让移动应用快速整合社交分享功能-云有道笔记。http://www.baidu.com/");
         yNoteShareContent.setTitle("友盟分享组件");
-        yNoteShareContent.setShareImage(new UMImage(activity, R.drawable.test));
+        yNoteShareContent.setShareImage(new UMImage(activity, imageBitmap));
         mController.setShareMedia(yNoteShareContent);
     }
 
@@ -524,8 +549,8 @@ public class ShareUtils {
 
         // 设置evernote的分享内容
         EvernoteShareContent shareContent = new EvernoteShareContent(
-                "来自友盟社会化组件（SDK）让移动应用快速整合社交分享功能-EverNote。http://www.umeng.com/social");
-        shareContent.setShareMedia(new UMImage(activity, R.drawable.test));
+                "来自友盟社会化组件（SDK）让移动应用快速整合社交分享功能-EverNote。http://www.baidu.com/");
+        shareContent.setShareMedia(new UMImage(activity, imageBitmap));
         mController.setShareMedia(shareContent);
     }
 
@@ -542,8 +567,8 @@ public class ShareUtils {
 
         // 设置Pinterest的分享内容
         PinterestShareContent shareContent = new PinterestShareContent(
-                "来自友盟社会化组件（SDK）让移动应用快速整合社交分享功能-Pinterest。http://www.umeng.com/social");
-        shareContent.setShareMedia(new UMImage(activity, R.drawable.test));
+                "来自友盟社会化组件（SDK）让移动应用快速整合社交分享功能-Pinterest。http://www.baidu.com/");
+        shareContent.setShareMedia(new UMImage(activity,imageBitmap));
         mController.setShareMedia(shareContent);
     }
 
@@ -601,7 +626,7 @@ public class ShareUtils {
         // 添加QQ支持, 并且设置QQ分享内容的target url
         UMQQSsoHandler qqSsoHandler = new UMQQSsoHandler(activity,
                 appId, appKey);
-        qqSsoHandler.setTargetUrl("http://www.umeng.com/social");
+        qqSsoHandler.setTargetUrl("http://www.baidu.com/");
         qqSsoHandler.addToSocialSDK();
 
         // 添加QZone平台
@@ -622,7 +647,7 @@ public class ShareUtils {
         // 关闭分享时的等待Dialog
         yixinHandler.enableLoadingDialog(false);
         // 设置target Url, 必须以http或者https开头
-        yixinHandler.setTargetUrl("http://www.umeng.com/social");
+        yixinHandler.setTargetUrl("http://www.baidu.com/");
         yixinHandler.addToSocialSDK();
 
         // 易信朋友圈平台
@@ -643,7 +668,7 @@ public class ShareUtils {
         UMFacebookHandler mFacebookHandler = new UMFacebookHandler(activity);
         mFacebookHandler.addToSocialSDK();
 
-        UMImage localImage = new UMImage(activity, R.drawable.test);
+        UMImage localImage = new UMImage(activity,imageBitmap);
 
         UMVideo umVedio = new UMVideo(
                 "http://v.youku.com/v_show/id_XNTc0ODM4OTM2.html");
@@ -659,7 +684,7 @@ public class ShareUtils {
         fbContent.setTitle("FB title");
         fbContent.setCaption("Caption - Fb");
         fbContent.setShareContent("友盟分享组件支持FB最新版啦~");
-        fbContent.setTargetUrl("http://www.umeng.com/social");
+        fbContent.setTargetUrl("http://www.baidu.com/");
         mController.setShareMedia(fbContent);
 
     }
@@ -673,7 +698,7 @@ public class ShareUtils {
                 activity);
         instagramHandler.addToSocialSDK();
 
-        UMImage localImage = new UMImage(activity, R.drawable.test);
+        UMImage localImage = new UMImage(activity, imageBitmap);
 
         // // 添加分享到Instagram的内容
         InstagramShareContent instagramShareContent = new InstagramShareContent(
@@ -685,8 +710,8 @@ public class ShareUtils {
         UMWhatsAppHandler whatsAppHandler = new UMWhatsAppHandler(activity);
         whatsAppHandler.addToSocialSDK();
         WhatsAppShareContent whatsAppShareContent = new WhatsAppShareContent();
-        // whatsAppShareContent.setShareContent("share test");
-        whatsAppShareContent.setShareImage(new UMImage(activity, R.drawable.test));
+        // whatsAppShareContent.setShareContent("share icon_share");
+        whatsAppShareContent.setShareImage(new UMImage(activity,imageBitmap));
         mController.setShareMedia(whatsAppShareContent);
         // mController.openShare(activity, false);
     }
@@ -695,8 +720,8 @@ public class ShareUtils {
         UMLineHandler lineHandler = new UMLineHandler(activity);
         lineHandler.addToSocialSDK();
         LineShareContent lineShareContent = new LineShareContent();
-        // lineShareContent.setShareContent("share test");
-        lineShareContent.setShareImage(new UMImage(activity, R.drawable.test));
+        // lineShareContent.setShareContent("share icon_share");
+        lineShareContent.setShareImage(new UMImage(activity,imageBitmap));
         mController.setShareMedia(lineShareContent);
         // mController.openShare(activity, false);
     }
@@ -706,8 +731,8 @@ public class ShareUtils {
         tumblrHandler.addToSocialSDK();
         TumblrShareContent tumblrShareContent = new TumblrShareContent();
         tumblrShareContent.setTitle("title");
-        tumblrShareContent.setShareContent("share test");
-        tumblrShareContent.setShareImage(new UMImage(activity, R.drawable.test));
+        tumblrShareContent.setShareContent("share icon_share");
+        tumblrShareContent.setShareImage(new UMImage(activity,imageBitmap));
         mController.setShareMedia(tumblrShareContent);
         // mController.openShare(activity, false);
     }
@@ -717,8 +742,8 @@ public class ShareUtils {
         kakaoHandler.addToSocialSDK();
 
         KakaoShareContent kakaoShareContent = new KakaoShareContent();
-        // kakaoShareContent.setShareContent("share test");
-        kakaoShareContent.setShareImage(new UMImage(activity, R.drawable.test));
+        // kakaoShareContent.setShareContent("share icon_share");
+        kakaoShareContent.setShareImage(new UMImage(activity,imageBitmap));
         mController.setShareMedia(kakaoShareContent);
         // mController.openShare(activity, false);
     }
@@ -727,8 +752,8 @@ public class ShareUtils {
         UMFlickrHandler flickrHandler = new UMFlickrHandler(activity);
         flickrHandler.addToSocialSDK();
         FlickrShareContent flickrShareContent = new FlickrShareContent();
-        flickrShareContent.setShareImage(new UMImage(activity, R.drawable.test));
-        // flickrShareContent.setShareContent("share test");
+        flickrShareContent.setShareImage(new UMImage(activity,imageBitmap));
+        // flickrShareContent.setShareContent("share icon_share");
         mController.setShareMedia(flickrShareContent);
         // mController.openShare(activity, false);
     }

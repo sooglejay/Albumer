@@ -19,8 +19,9 @@ public class StringConstant {
 
 
 
-
-
+//      新浪微博
+//    App Key：823269722
+//    App Secret：5cb8e86d0836148f5b894e64df3f997b
 
 
 
