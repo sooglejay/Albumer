@@ -1,30 +1,23 @@
 package sooglejay.youtu.ui;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-
-import java.io.File;
-import java.util.List;
+import com.umeng.analytics.MobclickAgent;
+import com.umeng.update.UmengUpdateAgent;
 
 import sooglejay.youtu.R;
 import sooglejay.youtu.fragment.AlbumFragment;
 import sooglejay.youtu.fragment.DetectFaceBeautyFragment;
 import sooglejay.youtu.fragment.MeFragment;
-import sooglejay.youtu.utils.ImageUtils;
+import sooglejay.youtu.utils.ScreenUtils;
 import sooglejay.youtu.widgets.TabBar;
-import sooglejay.youtu.widgets.imagepicker.MultiImageSelectorActivity;
 import sooglejay.youtu.widgets.jazzyviewpager.JazzyViewPager;
 
 
@@ -33,12 +26,13 @@ public class MainActivity extends BaseActivity {
     private TabBar tabBar = null;
     private ViewPagerAdapter viewPagerAdapter = null;
     private int currentPos = 0;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setUp();
+        UmengUpdateAgent.update(this);
+        UmengUpdateAgent.setUpdateOnlyWifi(false);
     }
 
     private void setUp() {
@@ -124,4 +118,16 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);       //统计时长
+
+    }
 }

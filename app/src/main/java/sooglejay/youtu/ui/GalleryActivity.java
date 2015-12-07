@@ -17,6 +17,12 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.umeng.socialize.controller.UMServiceFactory;
+import com.umeng.socialize.controller.UMSocialService;
+import com.umeng.socialize.media.UMImage;
+import com.umeng.socialize.sso.UMSsoHandler;
+import com.umeng.socialize.weixin.controller.UMWXHandler;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -27,11 +33,13 @@ import de.greenrobot.event.EventBus;
 import sooglejay.youtu.R;
 import sooglejay.youtu.constant.ExtraConstants;
 import sooglejay.youtu.constant.PreferenceConstant;
+import sooglejay.youtu.constant.StringConstant;
 import sooglejay.youtu.event.BusEvent;
 import sooglejay.youtu.fragment.GalleryFragment;
 import sooglejay.youtu.utils.AsyncBitmapLoader;
 import sooglejay.youtu.utils.CacheUtil;
 import sooglejay.youtu.utils.PreferenceUtil;
+import sooglejay.youtu.utils.ShareUtils;
 import sooglejay.youtu.widgets.TitleBar;
 
 
@@ -59,7 +67,6 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.OnR
 
 
     private ArrayList<GalleryFragment>fragments = new ArrayList<>();
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -212,6 +219,11 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.OnR
 
     }
 
+    @Override
+    public void onShare(String url) {
+
+    }
+
 
     class GalleryAdapter extends FragmentPagerAdapter {
         public GalleryAdapter(FragmentManager fm) {
@@ -259,4 +271,5 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.OnR
         }
         ImageLoader.getInstance().clearMemoryCache();
     }
+
 }

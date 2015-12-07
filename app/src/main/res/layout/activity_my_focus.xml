@@ -64,7 +64,7 @@
                         android:id="@+id/iv_delete_image"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/icon_delete"
+                        android:src="@drawable/icon_minus"
                         app:cb_color="@color/base_color"
                         app:cb_pressedRingWidth="8dip" />
 
@@ -90,7 +90,7 @@
                         android:id="@+id/iv_cancel_image"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/icon_delete"
+                        android:src="@drawable/icon_cancel"
                         app:cb_color="@color/base_color"
                         app:cb_pressedRingWidth="8dip" />
 

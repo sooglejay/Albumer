@@ -2,6 +2,7 @@ package sooglejay.youtu.fragment;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 import android.os.AsyncTask;
@@ -14,6 +15,13 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.umeng.socialize.bean.SocializeConfig;
+import com.umeng.socialize.controller.UMServiceFactory;
+import com.umeng.socialize.controller.UMSocialService;
+import com.umeng.socialize.media.UMImage;
+import com.umeng.socialize.sso.UMSsoHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -236,8 +244,12 @@ public class GalleryFragment extends BaseFragment {
         iv_share_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ShareUtils shareUtils = new ShareUtils(activity,url);
-                shareUtils.addCustomPlatforms(activity);
+
+
+              new ShareUtils(activity);
+
+//                mCallback.onShare(url);
+
             }
         });
 
@@ -541,7 +553,16 @@ public class GalleryFragment extends BaseFragment {
 
         void onTouchImageView();
 
-    }
+        void onShare(String url);
 
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        UMSsoHandler ssoHandler = SocializeConfig.getSocializeConfig().getSsoHandler(requestCode);
+        if (ssoHandler != null) {
+            ssoHandler.authorizeCallBack(requestCode, resultCode, data);
+        }
+    }
 
 }

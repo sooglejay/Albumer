@@ -45,7 +45,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <!-- 100424468，如果你使用的公用账号，则不需要修改；否则修改成你在QQ开放平台申请的 APP ID-->
-                <data android:scheme="tencent100424468" />
+                <data android:scheme="1105007650" />
             </intent-filter>
         </activity>
         <activity
@@ -57,7 +57,7 @@
         <!-- ###################添加UmengAppkey###################### -->
         <meta-data
             android:name="UMENG_APPKEY"
-            android:value="563b70ec67e58e94a4003075"></meta-data>
+            android:value="56650f5967e58eb398002d9a"></meta-data>
 
     </application>
 

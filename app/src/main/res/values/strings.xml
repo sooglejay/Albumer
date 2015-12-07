@@ -36,6 +36,6 @@
         <item>RotateDown</item>
         <item>Accordion</item>
     </string-array>
-
-
+    <string name="fb_app_id">567261760019884</string>
+    <string name="facebook_app_id">1444817025830662</string>
 </resources>
