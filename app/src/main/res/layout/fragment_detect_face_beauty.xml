@@ -51,13 +51,28 @@
                 android:layout_gravity="center_horizontal"
                 android:orientation="vertical">
 
-                <sooglejay.youtu.widgets.RoundImageView
-                    android:id="@+id/iv_a"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_margin="@dimen/middle_padding"
-                    android:src="@drawable/test" />
+                    android:layout_margin="@dimen/middle_padding">
+
+                    <ImageView
+                        android:id="@+id/iv_crown_a"
+                        android:layout_gravity="top|center"
+                        android:visibility="gone"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/icon_crown" />
+
+                    <sooglejay.youtu.widgets.RoundImageView
+                        android:id="@+id/iv_a"
+                        android:layout_marginTop="48dp"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:src="@drawable/test" />
+                </FrameLayout>
+
 
                 <TextView
                     android:id="@+id/tv_a_textPercentage"
@@ -93,13 +108,27 @@
                 android:layout_gravity="center_horizontal"
                 android:orientation="vertical">
 
-                <sooglejay.youtu.widgets.RoundImageView
-                    android:id="@+id/iv_b"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_margin="@dimen/middle_padding"
-                    android:src="@drawable/test" />
+                    android:layout_margin="@dimen/middle_padding">
+
+                    <ImageView
+                        android:id="@+id/iv_crown_b"
+                        android:layout_gravity="top|center"
+                        android:layout_width="48dp"
+                        android:visibility="gone"
+                        android:layout_height="48dp"
+                        android:src="@drawable/icon_crown" />
+
+                    <sooglejay.youtu.widgets.RoundImageView
+                        android:id="@+id/iv_b"
+                        android:layout_width="100dp"
+                        android:layout_marginTop="48dp"
+                        android:layout_height="100dp"
+                      android:src="@drawable/test" />
+                </FrameLayout>
 
                 <TextView
                     android:id="@+id/tv_b_textPercentage"

@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -90,6 +91,10 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
 
     private ProgressDialogUtil progressDialogUtil;
 
+
+    private ImageView iv_crown_a;
+    private ImageView iv_crown_b;
+
     /**
      * Find the Views in the layout<br />
      * <br />
@@ -108,6 +113,8 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
         layoutStartPk = (CircleButton) view.findViewById(R.id.layout_start_pk);
         textPercentage = (TextView) view.findViewById(R.id.textPercentage);
         tv_start = (TextView) view.findViewById(R.id.tv_start);
+        iv_crown_a = (ImageView) view.findViewById(R.id.iv_crown_a);
+        iv_crown_b = (ImageView) view.findViewById(R.id.iv_crown_b);
     }
 
 
@@ -197,11 +204,30 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
         if (aFaces.size() > 0 && bFaces.size() > 0) {
             FaceItem af = aFaces.get(0);
             FaceItem bf = bFaces.get(0);
+
+            int ab = af.getBeauty();
+            int bb = bf.getBeauty();
+
+
             tvATextPercentage.setVisibility(View.VISIBLE);
-            tvATextPercentage.setText(af.getBeauty() + "");
+            tvATextPercentage.setText(ab + "");
 
             tvBTextPercentage.setVisibility(View.VISIBLE);
-            tvBTextPercentage.setText(bf.getBeauty() + "");
+            tvBTextPercentage.setText(bb + "");
+
+
+            if(ab>bb)
+            {
+                iv_crown_a.setVisibility(View.VISIBLE);
+                iv_crown_b.setVisibility(View.GONE);
+            }else if(ab<bb)
+            {
+                iv_crown_b.setVisibility(View.VISIBLE);
+                iv_crown_a.setVisibility(View.GONE);
+            }else {
+                iv_crown_b.setVisibility(View.VISIBLE);
+                iv_crown_a.setVisibility(View.VISIBLE);
+            }
         }
 
     }
@@ -210,6 +236,9 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
     private void reset(boolean isFailed) {
         a_face.clear();
         b_face.clear();
+        iv_crown_b.setVisibility(View.GONE);
+        iv_crown_a.setVisibility(View.GONE);
+
         if (isFailed) {
             tvATextPercentage.setText("");
             tvAReady.setVisibility(View.VISIBLE);
@@ -224,6 +253,7 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
             ivB.setEnabled(true);
 
             tv_start.setText("开始");
+
         } else {
             tv_start.setText("再来一局");
             layoutStartPk.setOnClickListener(null);
@@ -231,7 +261,6 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
                 @Override
                 public void onClick(View view) {
                     tv_start.setText("开始");
-
                     tvATextPercentage.setText("");
                     tvAReady.setVisibility(View.VISIBLE);
                     tvAReady.setTextColor(ContextCompat.getColor(activity, R.color.white_color));
