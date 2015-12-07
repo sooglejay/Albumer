@@ -306,7 +306,6 @@ public class SettingActivity extends BaseActivity {
             }
 
         } else {
-
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
