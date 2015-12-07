@@ -18,15 +18,20 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+
 import java.util.ArrayList;
 
 import sooglejay.youtu.R;
 import sooglejay.youtu.adapter.ChooseFaceAdapter;
 import sooglejay.youtu.api.faceidentify.IdentifyItem;
+import sooglejay.youtu.bean.ContactBean;
 import sooglejay.youtu.constant.PreferenceConstant;
+import sooglejay.youtu.utils.ImageUtils;
 import sooglejay.youtu.utils.PreferenceUtil;
 import sooglejay.youtu.utils.ScreenUtils;
 import sooglejay.youtu.utils.SpannableStringUtil;
+import sooglejay.youtu.widgets.RoundImageView;
 
 
 /**
@@ -158,7 +163,7 @@ public class DialogFragmentCreater extends DialogFragment {
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onCreateNewGroupCallBack.onClick(view,etName);
+                onCreateNewGroupCallBack.onClick(view, etName);
                 dismiss();
             }
         };
@@ -167,7 +172,7 @@ public class DialogFragmentCreater extends DialogFragment {
         tvConfirm.setOnClickListener(listener);
 
 
-        final Dialog dialog = new Dialog(mContext,R.style.CreateNewGroupDialog);
+        final Dialog dialog = new Dialog(mContext, R.style.CreateNewGroupDialog);
 //        dialog.setCanceledOnTouchOutside(false);//要求触碰到外面能够消失
         dialog.setContentView(convertView);
 
@@ -227,11 +232,11 @@ public class DialogFragmentCreater extends DialogFragment {
         TextView tv_add_new_person = (TextView) convertView.findViewById(R.id.tv_add_new_person);
         ChooseFaceAdapter adapter = new ChooseFaceAdapter(mContext, identifyItems);
         listView.setAdapter(adapter);
-        tv_title.setText("相似度Top"+identifyItems.size());
-        String groupNameStr = PreferenceUtil.load(mContext, PreferenceConstant.IDENTIFY_GROUP_NAME,"1");
+        tv_title.setText("相似度Top" + identifyItems.size());
+        String groupNameStr = PreferenceUtil.load(mContext, PreferenceConstant.IDENTIFY_GROUP_NAME, "1");
 
         tv_from_group_name.setText("");
-        tv_from_group_name.append(SpannableStringUtil.addUnderLineSpan("人脸数据源来自群组："+groupNameStr));
+        tv_from_group_name.append(SpannableStringUtil.addUnderLineSpan("人脸数据源来自群组：" + groupNameStr));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -273,30 +278,39 @@ public class DialogFragmentCreater extends DialogFragment {
     }
 
     //edit my contact
-   private Dialog showEditContactsDialog(final Context mContext) {
+    private ContactBean bean;
+
+    public ContactBean getBean() {
+        return bean;
+    }
+
+    public void setBean(ContactBean bean) {
+        this.bean = bean;
+    }
+
+    private Dialog showEditContactsDialog(final Context mContext) {
         View convertView = LayoutInflater.from(mContext).inflate(R.layout.dialog_edit_my_contact, null);
+        RoundImageView iv_avatar = (RoundImageView) convertView.findViewById(R.id.iv_avatar);
         TextView tv_edit_info = (TextView) convertView.findViewById(R.id.tv_edit_info);
         TextView tv_call = (TextView) convertView.findViewById(R.id.tv_call);
         TextView tv_send_message = (TextView) convertView.findViewById(R.id.tv_send_message);
         TextView tv_delete_contact = (TextView) convertView.findViewById(R.id.tv_delete_contact);
         TextView tv_cancel = (TextView) convertView.findViewById(R.id.tv_cancel);
 
-       View.OnClickListener listener = new View.OnClickListener() {
-           @Override
-           public void onClick(View view) {
-               onEditContactCallBack.onClick(view);
-               dismiss();
-           }
-       };
+        View.OnClickListener listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onEditContactCallBack.onClick(view);
+                dismiss();
+            }
+        };
 
-       tv_edit_info.setOnClickListener(listener);
-       tv_call.setOnClickListener(listener);
-       tv_send_message.setOnClickListener(listener);
-       tv_delete_contact.setOnClickListener(listener);
-       tv_cancel.setOnClickListener(listener);
-
-
-
+        ImageLoader.getInstance().displayImage(bean.getImage_path(), iv_avatar, ImageUtils.getOptions());
+        tv_edit_info.setOnClickListener(listener);
+        tv_call.setOnClickListener(listener);
+        tv_send_message.setOnClickListener(listener);
+        tv_delete_contact.setOnClickListener(listener);
+        tv_cancel.setOnClickListener(listener);
 
 
         final Dialog dialog = new Dialog(mContext, R.style.CustomDialog);
@@ -314,50 +328,43 @@ public class DialogFragmentCreater extends DialogFragment {
         outerDialog = dialog;
         return dialog;
     }
+
     private OnEditContactCallBack onEditContactCallBack;
 
     public void setOnEditContactCallBack(OnEditContactCallBack onEditContactCallBack) {
         this.onEditContactCallBack = onEditContactCallBack;
     }
 
-    public interface OnEditContactCallBack
-    {
+    public interface OnEditContactCallBack {
         public void onClick(View view);
     }
 
 
-
-
-
-
-
-
-
     //如果用户第一次使用app,或者，没有可匹配的人脸，就弹出添加人脸对话框
-   private Dialog showAddPersonDialog(final Context mContext) {
+    private Dialog showAddPersonDialog(final Context mContext) {
         View convertView = LayoutInflater.from(mContext).inflate(R.layout.dialog_double_choice, null);
         TextView tv_title = (TextView) convertView.findViewById(R.id.tv_title);
         TextView tv_content = (TextView) convertView.findViewById(R.id.tv_content);
         TextView tv_confirm = (TextView) convertView.findViewById(R.id.tv_confirm);
         TextView tv_cancel = (TextView) convertView.findViewById(R.id.tv_cancel);
 
-       tv_title.setText("提示");
-       tv_content.setText("你还没有添加任何人脸联系人\n是否现在就去添加？");
-       tv_cancel.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View view) {
-               onAddPersonCallBack.onClick(view);
-               dismiss();
+        tv_title.setText("提示");
+        tv_content.setText("你还没有添加任何人脸联系人\n是否现在就去添加？");
+        tv_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onAddPersonCallBack.onClick(view);
+                dismiss();
 
-           }
-       });
-       tv_confirm.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View view) {
-               onAddPersonCallBack.onClick(view);
-               dismiss();
-           }
-       });
+            }
+        });
+        tv_confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onAddPersonCallBack.onClick(view);
+                dismiss();
+            }
+        });
 
         final Dialog dialog = new Dialog(mContext, R.style.CustomDialog);
 //        dialog.setCanceledOnTouchOutside(false);//要求触碰到外面能够消失
@@ -380,7 +387,9 @@ public class DialogFragmentCreater extends DialogFragment {
     public void setOnAddPersonCallBack(OnAddPersonCallBack onAddPersonCallBack) {
         this.onAddPersonCallBack = onAddPersonCallBack;
     }
+
     private OnAddPersonCallBack onAddPersonCallBack;
+
     public interface OnAddPersonCallBack {
         public void onClick(View view);
     }
@@ -390,7 +399,9 @@ public class DialogFragmentCreater extends DialogFragment {
     public void setOnFaceOperationCallBack(OnFaceOperationCallBack onFaceOperationCallBack) {
         this.onFaceOperationCallBack = onFaceOperationCallBack;
     }
+
     private OnFaceOperationCallBack onFaceOperationCallBack;
+
     public interface OnFaceOperationCallBack {
         public void onClick(View view);
     }
@@ -400,9 +411,12 @@ public class DialogFragmentCreater extends DialogFragment {
     public void setOnChooseFaceCallBack(OnChooseFaceCallBack onChooseFaceCallBack) {
         this.onChooseFaceCallBack = onChooseFaceCallBack;
     }
+
     private OnChooseFaceCallBack onChooseFaceCallBack;
+
     public interface OnChooseFaceCallBack {
         public void onItemClickListener(AdapterView<?> adapterView, View view, int i, long l);
+
         public void onClick(View view);
     }
 
@@ -411,9 +425,11 @@ public class DialogFragmentCreater extends DialogFragment {
     public void setOnCreateNewGroupCallBack(OnCreateNewGroupCallBack onCreateNewGroupCallBack) {
         this.onCreateNewGroupCallBack = onCreateNewGroupCallBack;
     }
+
     private OnCreateNewGroupCallBack onCreateNewGroupCallBack;
+
     public interface OnCreateNewGroupCallBack {
-        public void onClick(View view,EditText editText);
+        public void onClick(View view, EditText editText);
     }
 
 

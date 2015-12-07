@@ -122,6 +122,8 @@ public class MyContactsActivity extends BaseActivity {
         list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
+                dialogFragmentCreater.setBean(datas.get(i));
+
                 dialogFragmentCreater.setOnEditContactCallBack(new DialogFragmentCreater.OnEditContactCallBack() {
                     @Override
                     public void onClick(View view) {
