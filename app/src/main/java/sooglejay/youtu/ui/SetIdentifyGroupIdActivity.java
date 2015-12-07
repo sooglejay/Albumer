@@ -1,5 +1,6 @@
 package sooglejay.youtu.ui;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -14,6 +15,7 @@ import sooglejay.youtu.adapter.SetIdentifyGroupIdAdapter;
 import sooglejay.youtu.bean.GroupBean;
 import sooglejay.youtu.constant.PreferenceConstant;
 import sooglejay.youtu.db.GroupNameDao;
+import sooglejay.youtu.utils.CacheUtil;
 import sooglejay.youtu.utils.PreferenceUtil;
 import sooglejay.youtu.widgets.TitleBar;
 
@@ -27,13 +29,18 @@ public class SetIdentifyGroupIdActivity extends BaseActivity {
     private SetIdentifyGroupIdAdapter adapter;
     private ArrayList<GroupBean>datas = new ArrayList<>();
     private GroupNameDao groupNameDao ;
+    private Activity activity;
+    private CacheUtil cacheUtil;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_identify_group_id);
         groupNameDao = new GroupNameDao(this);
+        cacheUtil = new CacheUtil(this);
+        activity = this;
         title_bar = (TitleBar)findViewById(R.id.title_bar);
-        title_bar.initTitleBarInfo("选择匹配群组",R.drawable.arrow_left,-1,"","");
+        title_bar.initTitleBarInfo("选择匹配群组",R.drawable.arrow_left,-1,"","确定");
         title_bar.setOnTitleBarClickListener(new TitleBar.OnTitleBarClickListener() {
             @Override
             public void onLeftButtonClick(View v) {
@@ -43,6 +50,22 @@ public class SetIdentifyGroupIdActivity extends BaseActivity {
             @Override
             public void onRightButtonClick(View v) {
 
+
+                for(GroupBean bean :datas) {
+                    groupNameDao.updateGroupNameBean(bean);
+                }
+
+                for(GroupBean bean :datas)
+                {
+                    if(bean.isUsedForIdentify())
+                    {
+                        String name = bean.getName();
+                        PreferenceUtil.save(activity, PreferenceConstant.IDENTIFY_GROUP_NAME, name);
+                        cacheUtil.clearIdentifyCache();
+                        break;
+                    }
+                }
+                finish();
             }
         });
         list_view = (ListView)findViewById(R.id.list_view);

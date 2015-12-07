@@ -1,7 +1,6 @@
 package sooglejay.youtu.adapter;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -12,10 +11,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import sooglejay.youtu.R;
-import sooglejay.youtu.api.faceidentify.IdentifyItem;
 import sooglejay.youtu.bean.GroupBean;
 import sooglejay.youtu.db.GroupNameDao;
-import sooglejay.youtu.utils.GetTagUtil;
 
 /**
  * Created by JammyQtheLab on 2015/11/30.
@@ -64,7 +61,7 @@ public class SetGroupIdAdapter extends BaseAdapter {
                         switch (view.getId()) {
                             case R.id.item:
                                 bean.setIsSelected(!bean.isSelected());
-                                groupNameDao.uodateGroupNameBean(bean);
+                                groupNameDao.updateGroupNameBean(bean);
 
                                 break;
                             default:

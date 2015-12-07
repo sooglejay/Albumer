@@ -24,6 +24,7 @@ import de.greenrobot.event.EventBus;
 import sooglejay.youtu.R;
 import sooglejay.youtu.constant.PreferenceConstant;
 import sooglejay.youtu.constant.StringConstant;
+import sooglejay.youtu.db.ContactDao;
 import sooglejay.youtu.event.BusEvent;
 import sooglejay.youtu.utils.CacheUtil;
 import sooglejay.youtu.utils.ImageUtils;
@@ -61,6 +62,7 @@ public class SettingActivity extends BaseActivity {
     private CacheUtil cacheUtil;
 
 
+    private ContactDao contactDao;
 
     private ArrayList<String> imageList = new ArrayList<>();
     private String resultPath;//图片最终位置
@@ -81,6 +83,7 @@ public class SettingActivity extends BaseActivity {
         activity = this;
         cacheUtil = new CacheUtil(this);
 
+        contactDao = new ContactDao(this);
 
         avatar_group = (LinearLayout) findViewById(R.id.avatar_group);
         avatar_image = (RoundImageView) findViewById(R.id.avatar_image);
@@ -179,6 +182,7 @@ public class SettingActivity extends BaseActivity {
                                     @Override
                                     protected Void doInBackground(Void... voids) {
                                         PersonsUtil.delAllPersons(activity);
+                                        contactDao.deleteAll();
                                         cacheUtil.clearIdentifyCache();
                                         return null;
                                     }
@@ -194,6 +198,7 @@ public class SettingActivity extends BaseActivity {
                                         super.onPostExecute(aVoid);
                                         progressDialogUtil.hide();
                                         Toast.makeText(activity, "所有人脸联系人都已删除！", Toast.LENGTH_SHORT).show();
+
                                     }
                                 }.execute();
                             }
@@ -303,8 +308,12 @@ public class SettingActivity extends BaseActivity {
         } else {
 
         }
-
         super.onActivityResult(requestCode, resultCode, data);
+    }
 
+    @Override
+    public void finish() {
+        EventBus.getDefault().post(new BusEvent(BusEvent.MSG_MODIFY_USER_INFO));
+        super.finish();
     }
 }

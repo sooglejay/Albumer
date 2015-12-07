@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="sooglejay.youtu">
 
     <uses-permission android:name="android.permission.CAMERA" />
@@ -205,9 +206,21 @@
             android:configChanges="orientation|screenSize"></activity>
 
 
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="Umeng" >
+        </meta-data>
 
+        <uses-library
+            android:name="com.google.android.maps"
+            android:required="false" />
+        <uses-library android:name="android.test.runner" />
 
 
     </application>
-
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="14"
+        tools:overrideLibrary="com.umeng.socialize.evernote,com.umeng.socialize.pinterest"
+        />
 </manifest>

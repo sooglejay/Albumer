@@ -98,7 +98,7 @@ public class GroupNameDao {
         }
     }
 
-    public void uodateGroupNameBean(GroupBean bean) {
+    public void updateGroupNameBean(GroupBean bean) {
         try {
             groupNameDaoOpe.update(bean);
         } catch (SQLException e) {
