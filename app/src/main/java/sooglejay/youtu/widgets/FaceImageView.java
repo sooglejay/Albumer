@@ -16,7 +16,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -135,7 +134,6 @@ public class FaceImageView extends PhotoView {
 
     @Override
     protected void onDraw(final Canvas canvas) {
-        super.onDraw(canvas);
         if (isDetectFace) {
             cx = 0;
             cy = 0;
@@ -173,6 +171,7 @@ public class FaceImageView extends PhotoView {
                 }
             }
         }
+        super.onDraw(canvas);
     }
 
     /**
