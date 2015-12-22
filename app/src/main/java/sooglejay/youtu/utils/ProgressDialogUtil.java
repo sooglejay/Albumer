@@ -28,7 +28,7 @@ public class ProgressDialogUtil {
         tv = (TextView) view.findViewById(R.id.tv);
         builder.setView(view);
         dialog = builder.create();
-        isCanceledOnTouchOutside = PreferenceUtil.load(context, PreferenceConstant.SWITCH_DIALOG_PROGRESS_CANCELED_ON_TOUCH_OUTSIDE, true);
+        isCanceledOnTouchOutside = !PreferenceUtil.load(context, PreferenceConstant.SWITCH_DIALOG_PROGRESS_CANCELED_ON_TOUCH_OUTSIDE, false);
 //        dialog = new ProgressDialog(context);
         dialog.setCanceledOnTouchOutside(isCanceledOnTouchOutside);
         dialog.setCancelable(isCanceledOnTouchOutside);

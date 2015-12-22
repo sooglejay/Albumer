@@ -190,19 +190,17 @@
 
 
 
-        <!--隐藏 了一个-->
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginLeft="@dimen/big_padding"
-            android:visibility="gone"
             android:layout_marginStart="@dimen/big_padding"
             android:background="@color/very_light_gray_color" />
 
         <LinearLayout
             android:id="@+id/layout_handle_dialog"
             android:layout_width="match_parent"
-            android:visibility="gone"
             android:layout_height="wrap_content"
             android:background="@drawable/btn_select_white"
             android:clickable="true"
@@ -219,7 +217,7 @@
                 android:layout_weight="1"
                 android:paddingBottom="@dimen/middle_padding"
                 android:paddingTop="@dimen/middle_padding"
-                android:text="人脸检测和识别时显示提示信息" />
+                android:text="允许提示信息阻塞用户操作" />
 
             <sooglejay.youtu.widgets.customswitch.SwitchButton
                 android:id="@+id/switch_handle_dialog"
@@ -232,7 +230,7 @@
 
 
         </LinearLayout>
-        <!--隐藏 结束-->
+
 
 
 

@@ -279,11 +279,8 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
                     tvBReady.setEnabled(true);
                     ivB.setEnabled(true);
 
-
                     layoutStartPk.setOnClickListener(null);
                     setLayoutStartPkOnClickListener();
-
-
                 }
             });
         }
@@ -382,7 +379,8 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
                                                             compareAWithB(a_face, b_face);
                                                             reset(false);
                                                         } else {
-                                                            Toast.makeText(activity, "右边的人脸图片没发现人脸！", Toast.LENGTH_SHORT).show();
+                                                            progressDialogUtil.hide();
+                                                            Toast.makeText(activity, "右边的人脸图片没有发现人脸！游戏终止！", Toast.LENGTH_SHORT).show();
                                                             reset(true);
                                                         }
 
@@ -402,7 +400,8 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
                                         }.execute(b_imageStr);
 
                                     } else {
-                                        Toast.makeText(activity, "左边的人脸图片没检测到人脸！", Toast.LENGTH_SHORT).show();
+                                        progressDialogUtil.hide();
+                                        Toast.makeText(activity, "左边的人脸图片没有检测到人脸！游戏终止！", Toast.LENGTH_SHORT).show();
                                         reset(true);
                                     }
                                 }
@@ -458,16 +457,24 @@ public class DetectFaceBeautyFragment extends DecoViewBaseFragment {
                     //添加图片到list并且显示出来
                     //上传图片
                     if (a_isSelected) {
-                        a_isSelected = false;
+                        a_isSelected = false;//完成
                         if (!TextUtils.isEmpty(a_imageStr)) {
                             ImageLoader.getInstance().displayImage("file://" + a_imageStr, ivA, ImageUtils.getOptions());
                         }
                     } else {
-                        b_isSelected = false;
+                        b_isSelected = false;//完成
                         if (!TextUtils.isEmpty(b_imageStr)) {
                             ImageLoader.getInstance().displayImage("file://" + b_imageStr, ivB, ImageUtils.getOptions());
-
                         }
+                    }
+                }else {
+                    if (a_isSelected) {
+                        a_isSelected = false;
+                        a_imageStr = "";
+                    }
+                    if (b_isSelected) {
+                        b_imageStr = "";
+                        b_isSelected = false;
                     }
                 }
                 break;

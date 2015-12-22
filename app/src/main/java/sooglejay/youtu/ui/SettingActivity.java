@@ -66,11 +66,12 @@ public class SettingActivity extends BaseActivity {
 
     private ArrayList<String> imageList = new ArrayList<>();
     private String resultPath;//图片最终位置
+
+
     @Override
     protected void onResume() {
         super.onResume();
-        if (my_signature_count_tv != null)
-        {
+        if (my_signature_count_tv != null) {
             my_signature_count_tv.setText(PreferenceUtil.load(this, PreferenceConstant.USER_SIGNATURE, StringConstant.default_signature));
         }
 
@@ -87,12 +88,10 @@ public class SettingActivity extends BaseActivity {
 
         avatar_group = (LinearLayout) findViewById(R.id.avatar_group);
         avatar_image = (RoundImageView) findViewById(R.id.avatar_image);
-        String avatarStr = PreferenceUtil.load(this,PreferenceConstant.USER_AVATAR,"");
-        if(TextUtils.isEmpty(avatarStr))
-        {
+        String avatarStr = PreferenceUtil.load(this, PreferenceConstant.USER_AVATAR, "");
+        if (TextUtils.isEmpty(avatarStr)) {
             avatar_image.setImageResource(R.drawable.test);
-        }
-        else {
+        } else {
             ImageLoader.getInstance().displayImage("file://" + avatarStr, avatar_image, ImageUtils.getOptions());
         }
         switch_detect_face = (SwitchButton) findViewById(R.id.switch_detect_face);
@@ -106,7 +105,8 @@ public class SettingActivity extends BaseActivity {
 
         switch_identify.setChecked(PreferenceUtil.load(activity, PreferenceConstant.SWITCH_IDENTIFY, true));
         switch_detect_face.setChecked(PreferenceUtil.load(activity, PreferenceConstant.SWITCH_DETECT_FACE, true));
-        switch_handle_dialog.setChecked(PreferenceUtil.load(activity, PreferenceConstant.SWITCH_DIALOG_PROGRESS_CANCELED_ON_TOUCH_OUTSIDE, true));
+        switch_handle_dialog.setChecked(PreferenceUtil.load(activity, PreferenceConstant.SWITCH_DIALOG_PROGRESS_CANCELED_ON_TOUCH_OUTSIDE, false));
+
 
         signature_group = (LinearLayout) findViewById(R.id.signature_group);
         my_signature_count_tv = (TextView) findViewById(R.id.my_signature_count_tv);
@@ -163,7 +163,7 @@ public class SettingActivity extends BaseActivity {
 
         switch_handle_dialog.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+            public void onCheckedChanged(CompoundButton compoundButton, final boolean b) {
                 PreferenceUtil.save(activity, PreferenceConstant.SWITCH_DIALOG_PROGRESS_CANCELED_ON_TOUCH_OUTSIDE, b);
             }
         });
@@ -186,6 +186,7 @@ public class SettingActivity extends BaseActivity {
                                         cacheUtil.clearIdentifyCache();
                                         return null;
                                     }
+
                                     @Override
                                     protected void onPreExecute() {
                                         super.onPreExecute();
@@ -205,7 +206,6 @@ public class SettingActivity extends BaseActivity {
                         }).setNegativeButton("取消", null).create().show();
             }
         });
-
 
 
         clear_cache_group.setOnClickListener(new View.OnClickListener() {
@@ -286,7 +286,7 @@ public class SettingActivity extends BaseActivity {
                     imageList.clear();
                     imageList.addAll(paths);
                     if (imageList.size() > 0) {
-                        resultPath = ImageUtils.getImageFolderPath(activity)+File.separator+System.currentTimeMillis()+".jpg";
+                        resultPath = ImageUtils.getImageFolderPath(activity) + File.separator + System.currentTimeMillis() + ".jpg";
                         ImageUtils.cropImage(this, Uri.fromFile(new File(imageList.get(0))), resultPath, 1, 1);
                     }
                     break;
@@ -296,11 +296,11 @@ public class SettingActivity extends BaseActivity {
                     //添加图片到list并且显示出来
                     //上传图片
                     if (!TextUtils.isEmpty(resultPath)) {
-                        PreferenceUtil.save(activity,PreferenceConstant.USER_AVATAR,resultPath);
+                        PreferenceUtil.save(activity, PreferenceConstant.USER_AVATAR, resultPath);
                         EventBus.getDefault().post(new BusEvent(BusEvent.MSG_MODIFY_USER_INFO));
-                        ImageLoader.getInstance().displayImage("file://"+resultPath,avatar_image,ImageUtils.getOptions());
+                        ImageLoader.getInstance().displayImage("file://" + resultPath, avatar_image, ImageUtils.getOptions());
                     } else {
-                        Toast.makeText(activity,"选择图片失败，请重试",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity, "选择图片失败，请重试", Toast.LENGTH_SHORT).show();
                     }
                     break;
             }
