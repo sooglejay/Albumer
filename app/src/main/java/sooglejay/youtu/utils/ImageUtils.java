@@ -11,6 +11,8 @@ import android.graphics.PointF;
 import android.hardware.Camera.Size;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -38,9 +40,7 @@ import sooglejay.youtu.constant.IntConstant;
 import sooglejay.youtu.widgets.imagepicker.MultiImageSelectorActivity;
 
 
-public class ImageUtils {
-
-    public static final String mimeType = "image/jpg";
+public class ImageUtils implements Parcelable {
 
     /**
      * 选择图片
@@ -681,4 +681,29 @@ public class ImageUtils {
         }
         return optimalSize;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+    }
+
+    public ImageUtils() {
+    }
+
+    protected ImageUtils(Parcel in) {
+    }
+
+    public static final Parcelable.Creator<ImageUtils> CREATOR = new Parcelable.Creator<ImageUtils>() {
+        public ImageUtils createFromParcel(Parcel source) {
+            return new ImageUtils(source);
+        }
+
+        public ImageUtils[] newArray(int size) {
+            return new ImageUtils[size];
+        }
+    };
 }
